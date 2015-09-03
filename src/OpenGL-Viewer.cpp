@@ -13,6 +13,7 @@
 
 #include "Shader.h"
 #include "TextRender.h"
+#include "LineRender.h"
 
 int main(int argc, const char* argv[])
 {
@@ -26,7 +27,7 @@ int main(int argc, const char* argv[])
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+	glfwWindowHint(GLFW_DEPTH_BITS,24);
 
 	GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
 	if (!window)
@@ -52,18 +53,11 @@ int main(int argc, const char* argv[])
 	glfwSwapInterval(1);
 
 
-	// Set OpenGL options
-    	glEnable(GL_CULL_FACE);
-    	glEnable(GL_BLEND);
-    	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	 // Compile and setup the shader
-    	Shader shader("/home/dominik/workspace/OpenGL-Viewer/Shader/text.vs", "/home/dominik/workspace/OpenGL-Viewer/Shader/text.frag");
-    	glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
-    	shader.Use();
-    	glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    textRender rndmText(width, height);
+    rndmText.loadFont();
 
-    	loadFont();
+    LineRender line(width, height);
 
 	//Mainloop
 	while (!glfwWindowShouldClose(window))
@@ -74,12 +68,18 @@ int main(int argc, const char* argv[])
 		double time = glfwGetTime(); //time since init
 
 
-		 // Clear the colorbuffer
-		 glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		 glClear(GL_COLOR_BUFFER_BIT);
+		// Clear the colorbuffer
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		 RenderText(shader, "This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-		 RenderText(shader, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+		rndmText.activateContext();
+		rndmText.RenderText( "Corsika Viewer", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+		rndmText.RenderText( "-!*", 200.0f, 70.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+		rndmText.deactivateContext();
+
+
+		line.line(0,-3,0, 0,3,0,  0.1,  1.,0.2,0.2,  1.0);
+		line.line(0,-3,3, 0,3,3,  0.1,  0.2,1.,0.2,  1.0);
 
 		glfwSwapBuffers(window);
 	}
