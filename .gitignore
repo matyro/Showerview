@@ -1,0 +1,28 @@
+# Compiled Onkect files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled
+*-gch
+*.pch
+
+# Compiled Dynamic lib
+*.so
+*.dll
+*.dylib
+
+# Fortran
+*.mod
+
+# Compiled Static lib
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
