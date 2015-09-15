@@ -2,6 +2,9 @@
 #include<thread>
 #include<sstream>
 
+#include <functional>
+#include <random>
+
 #include <unistd.h>
 
 #include <GL/glew.h>
@@ -9,13 +12,15 @@
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+
+
 
 #include "Shader.h"
 #include "TextRender.h"
 #include "LineRender.h"
 #include "Callback.h"
+
+
 
 int main(int argc, const char* argv[])
 {
@@ -59,20 +64,32 @@ int main(int argc, const char* argv[])
 
 	////////////////////////////////////////////////
 	/// Init things before the main loop
-
 	//Callback
 
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
 
+	glfwSetCursorPosCallback(window, cursor_position_callback);
 
 
 	// Inits
-    textRender rndmText(width, height);
-    rndmText.loadFont();
 
-    LineRender line(width, height);
+	Camera cam(width, height);
+
+
+    textRender rndmText;
+    rndmText.loadFont();
 
 
     double timeCache = glfwGetTime();
+    unsigned long long counter = 0;
+
+    LineRender line[3000];
+    for (int i=0; i<3000; i++)
+    {
+    	line[i].init();
+
+    	line[i].line(-5+((5*i)/3000),-3,0, -5+((5*i)/3000),3,0,  0.1,  i/3000.0,i/3000.0,i/3000.0,  1.0);
+    }
 
     ////////////////////////////////////////////////
 	//Mainloop
@@ -83,10 +100,16 @@ int main(int argc, const char* argv[])
 		double time = glfwGetTime(); //time since init
 
 		//FPS Calculation
-		std::stringstream sstr;
-		sstr << (1.0/(timeCache - time));
-		glfwSetWindowTitle(window,sstr.str().c_str());
-		timeCache = time;
+		if(time > timeCache+1)
+		{
+			std::stringstream sstr;
+			sstr << ((counter/(time - timeCache)));
+			glfwSetWindowTitle(window,sstr.str().c_str());
+
+			counter = 0;
+			timeCache = time;
+		}
+		counter++;
 
 
 
@@ -102,8 +125,11 @@ int main(int argc, const char* argv[])
 		rndmText.deactivateContext();
 
 		// Render lines
-		line.line(0,-3,0, 0,3,0,  0.1,  1.,0.2,0.2,  1.0);
-		line.line(0,-3,3, 0,3,3,  0.1,  0.2,1.,0.2,  1.0);
+
+		for(int i=0; i<3000; i++)
+		{
+			line[i].draw( cam.getMatrix() );
+		}
 
 		//Buffer switch
 		glfwSwapBuffers(window);

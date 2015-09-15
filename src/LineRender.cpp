@@ -9,18 +9,17 @@
 
 #include <GL/glew.h>
 
-#define GLM_FORCE_RADIANS
-#include <glm/glm.hpp>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/matrix.hpp>
 #include <glm/mat4x4.hpp>
 
 
-LineRender::LineRender(float pwidth, float pheight)
+LineRender::LineRender()
 {
 	this->shader = nullptr;
-	init(pwidth, pheight);
+	init();
 }
 
 LineRender::~LineRender()
@@ -31,29 +30,12 @@ LineRender::~LineRender()
 	glDeleteVertexArrays(1, &this->vertexArrayObject);
 }
 
-void LineRender::init(float width, float height)
+void LineRender::init()
 {
 	shader = new Shader("/home/dominik/workspace/OpenGL-Viewer/Shader/line.vs", "/home/dominik/workspace/OpenGL-Viewer/Shader/line.frag");
 
-	glm::mat4 ModelMatrix = glm::mat4(1.0f);
+	ModelMatrix = glm::mat4(1.0f);
 
-	glm::mat4 CameraMatrix = glm::lookAt(
-	    glm::vec3(1,0,10), // the position of your camera, in world space
-	    glm::vec3(0,0,0),   // where you want to look at, in world space
-	    glm::vec3(0,1,0)        // probably glm::vec3(0,1,0), but (0,-1,0) would make you looking upside-down, which can be great too
-	);
-
-	glm::mat4 projectionMatrix = glm::perspective(
-	   60.0f*(3.1415926f/180.0f),         // The horizontal Field of View, in degrees : the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
-	    4.0f / 3.0f, // Aspect Ratio. Depends on the size of your window. Notice that 4/3 == 800/600 == 1280/960, sounds familiar ?
-	    0.1f,        // Near clipping plane. Keep as big as possible, or you'll get precision issues.
-	    1000.0f       // Far clipping plane. Keep as little as possible.
-	);
-
-	glm::mat4 MVP        = projectionMatrix * CameraMatrix * ModelMatrix; // Remember, matrix multiplication is the other way around
-
-	shader->Use();
-	glUniformMatrix4fv(glGetUniformLocation(shader->Program, "projection"), 1, GL_FALSE, &MVP[0][0]);
 
 	GLint inPosLocation = shader->addAttribute("in_Pos");
 	GLint inColLocation = shader->addAttribute("in_Col");
@@ -121,7 +103,7 @@ void LineRender::line(double x1, double y1, double z1, double x2, double y2, dou
 	float alpha    					// alpha channel
 	)
 {
-	activateContext();
+
 
 	/* Local frame: z->Length Axis, x->Width axis, y->Depth
 
@@ -171,15 +153,23 @@ void LineRender::line(double x1, double y1, double z1, double x2, double y2, dou
 	};
 
 
-
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 	glBufferData(GL_ARRAY_BUFFER, 3*8*sizeof(float) + 8*4*sizeof(float), para_vertex, GL_STATIC_DRAW);
+}
+
+void LineRender::draw(glm::mat4 camMatrix)
+{
+	activateContext();
+
+
+	glm::mat4 MVP        = camMatrix * ModelMatrix; // Remember, matrix multiplication is the other way around
+
+	shader->Use();
+	glUniformMatrix4fv(glGetUniformLocation(shader->Program, "projection"), 1, GL_FALSE, &MVP[0][0]);
 
 
 	glBindVertexArray(this->vertexArrayObject);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
-
-
 
 	deactivateContext();
 }
