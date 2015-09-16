@@ -15,9 +15,9 @@
 
 
 
-#include "Shader.h"
-#include "TextRender.h"
-#include "LineRender.h"
+#include "Shader/Shader.h"
+#include "RenderUnits/TextRender.h"
+#include "RenderUnits/LineRender.h"
 #include "Callback.h"
 
 
@@ -73,10 +73,10 @@ int main(int argc, const char* argv[])
 
 	// Inits
 
-	Camera cam(width, height);
+	camera::Camera* cam = new camera::CameraPerspective();
 
 
-    textRender rndmText;
+    render::textRender rndmText;
     rndmText.loadFont();
 
 
@@ -136,6 +136,7 @@ int main(int argc, const char* argv[])
 	}
 
 	//Terminate everything
+    delete cam;
 
 	//Close window
 	glfwDestroyWindow(window);

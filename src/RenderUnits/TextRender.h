@@ -13,44 +13,52 @@
 
 #include "Shader.h"
 
-
-class textRender
+namespace render
 {
-private:
-	GLuint VAO;
-	GLuint VBO;
+	class textRender: RenderUnit
+	{
+	private:
+		GLuint VAO;
+		GLuint VBO;
 
-	struct Character {
-	    GLuint     TextureID;  // ID handle of the glyph texture
-	    glm::ivec2 Size;       // Size of glyph
-	    glm::ivec2 Bearing;    // Offset from baseline to left/top of glyph
-	    GLuint     Advance;    // Offset to advance to next glyph
+		struct Character
+		{
+			GLuint TextureID;  // ID handle of the glyph texture
+			glm::ivec2 Size;       // Size of glyph
+			glm::ivec2 Bearing;    // Offset from baseline to left/top of glyph
+			GLuint Advance;    // Offset to advance to next glyph
+		};
+
+		std::map<GLchar, Character> Characters;
+
+		const char* font;
+
+		Shader* shader;
+
+		float width;
+		float height;
+
+		void init(float width, float height);
+
+		void activateContext();
+		void deactivateContext();
+
+	public:
+
+		textRender(float width, float height);
+		textRender(const char* fontPath, float width, float height);
+
+		~textRender();
+
+		void loadFont();
+		void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
+
+		void draw()
+		{
+
+		}
+
 	};
-
-	std::map<GLchar, Character> Characters;
-
-	const char* font;
-
-	Shader* shader;
-
-	float width;
-	float height;
-
-	void init(float width, float height);
-
-
-public:
-
-	textRender(float width, float height);
-	textRender(const char* fontPath, float width, float height);
-
-	~textRender();
-
-	void loadFont();
-	void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
-
-	void activateContext();
-	void deactivateContext();
-};
+}
 
 #endif

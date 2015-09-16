@@ -11,30 +11,17 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
-
-class Camera
+namespace camera
 {
-private:
-	glm::vec3 vec3CamPos;
-	glm::vec3 vec3ViewDirection;
-
-	bool bCanMov;
-
-	glm::mat4 CameraMatrix;
-	glm::mat4 projectionMatrix;
-
-
-public:
-	Camera(float, float);
-
-	inline void setMovment(bool bCanMove)
+	class Camera
 	{
-		this->bCanMov = bCanMove;
-	}
+	private:
 
-	glm::mat4 getMatrix();
 
-	void rotateCam(float pitch, float yaw, float roll);
-};
+	public:
 
+
+		virtual glm::mat4 getMatrix() = 0;
+	};
+}
 #endif /* CAMERA_H_ */
