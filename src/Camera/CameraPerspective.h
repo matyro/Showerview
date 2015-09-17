@@ -13,8 +13,9 @@
 namespace camera
 {
 
-	class CameraPerspective: public Camera
+	class CameraPerspective : public Camera
 	{
+
 	private:
 		glm::vec3 vec3CamPos;
 		glm::vec3 vec3ViewDirection;
@@ -26,7 +27,7 @@ namespace camera
 
 	public:
 
-		Camera(float, float);
+		CameraPerspective();
 
 		inline void setMovment(bool bCanMove)
 		{

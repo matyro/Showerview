@@ -18,8 +18,9 @@ namespace camera
 	private:
 
 
-	public:
 
+	public:
+		virtual ~Camera();
 
 		virtual glm::mat4 getMatrix() = 0;
 	};

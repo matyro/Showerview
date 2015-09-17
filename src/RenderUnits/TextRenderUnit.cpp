@@ -4,10 +4,10 @@
  *  Created on: 01.09.2015
  *      Author: dominik
  */
+/*
+#include "TextRenderUnit.h"
 
-#include "TextRender.h"
-
-#include "Shader.h"
+#include "../OGLWrapper/Shader.h"
 
 namespace render
 {
@@ -162,3 +162,4 @@ namespace render
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
+*/

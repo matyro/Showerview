@@ -1,5 +1,6 @@
 #include<iostream>
 #include<thread>
+#include<memory>
 #include<sstream>
 
 #include <functional>
@@ -15,9 +16,13 @@
 
 
 
-#include "Shader/Shader.h"
-#include "RenderUnits/TextRender.h"
-#include "RenderUnits/LineRender.h"
+#include "OGLWrapper/Shader.h"
+
+#include "RenderUnits/SingleLineRenderUnit.h"
+
+#include "Camera/Camera.h"
+#include "Camera/CameraPerspective.h"
+
 #include "Callback.h"
 
 
@@ -73,17 +78,14 @@ int main(int argc, const char* argv[])
 
 	// Inits
 
-	camera::Camera* cam = new camera::CameraPerspective();
+	std::unique_ptr<camera::Camera> cam ( new camera::CameraPerspective );
 
-
-    render::textRender rndmText;
-    rndmText.loadFont();
 
 
     double timeCache = glfwGetTime();
     unsigned long long counter = 0;
 
-    LineRender line[3000];
+    render::LineRender line[3000];
     for (int i=0; i<3000; i++)
     {
     	line[i].init();
@@ -119,16 +121,16 @@ int main(int argc, const char* argv[])
 
 
 		// Rendertext
-		rndmText.activateContext();
+		/*
 		rndmText.RenderText( "Corsika Viewer", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
 		rndmText.RenderText( "-!*", 200.0f, 70.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
-		rndmText.deactivateContext();
+		*/
 
 		// Render lines
 
 		for(int i=0; i<3000; i++)
 		{
-			line[i].draw( cam.getMatrix() );
+			line[i].draw( cam->getMatrix() );
 		}
 
 		//Buffer switch
@@ -136,7 +138,7 @@ int main(int argc, const char* argv[])
 	}
 
 	//Terminate everything
-    delete cam;
+
 
 	//Close window
 	glfwDestroyWindow(window);

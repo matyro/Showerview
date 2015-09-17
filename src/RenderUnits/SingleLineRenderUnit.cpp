@@ -5,7 +5,7 @@
  *      Author: dominik
  */
 
-#include "LineRender.h"
+#include "SingleLineRenderUnit.h"
 
 #include <GL/glew.h>
 

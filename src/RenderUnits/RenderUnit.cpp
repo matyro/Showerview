@@ -9,6 +9,11 @@
 
 namespace render
 {
+	RenderUnit::~RenderUnit()
+	{
+
+	}
+
 	void RenderUnit::init()
 	{
 

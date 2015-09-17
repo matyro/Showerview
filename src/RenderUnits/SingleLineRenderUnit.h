@@ -8,10 +8,12 @@
 #ifndef LINERENDER_H_
 #define LINERENDER_H_
 
-#include "Shader.h"
+#include "../OGLWrapper/Shader.h"
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
+
+#include <GL/glew.h>
 
 namespace render
 {

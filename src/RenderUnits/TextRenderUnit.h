@@ -1,6 +1,6 @@
 #ifndef _TEXT_RENDER_H_
 #define _TEXT_RENDER_H_
-
+/*
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -11,7 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Shader.h"
+#include "../OGLWrapper/Shader.h"
 
 namespace render
 {
@@ -45,7 +45,7 @@ namespace render
 
 	public:
 
-		textRender(float width, float height);
+		textRender();
 		textRender(const char* fontPath, float width, float height);
 
 		~textRender();
@@ -59,6 +59,6 @@ namespace render
 		}
 
 	};
-}
+}*/
 
 #endif

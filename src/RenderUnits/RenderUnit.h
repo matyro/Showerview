@@ -23,9 +23,11 @@ namespace render
 
 	public:
 
+		virtual ~RenderUnit();
+
 		void init();
 
-		virtual void draw(glm::mat4 camMatrix) = 0;
+		virtual void draw(glm::mat4) = 0;
 
 
 	};

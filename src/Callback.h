@@ -10,7 +10,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Camera.h"
+#include "Camera/Camera.h"
 
 void error_callback(int error, const char* description)
 {

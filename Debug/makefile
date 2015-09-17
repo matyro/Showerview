@@ -8,6 +8,9 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/RenderUnits/subdir.mk
+-include src/OGLWrapper/subdir.mk
+-include src/Camera/subdir.mk
 -include src/subdir.mk
 -include subdir.mk
 -include objects.mk
@@ -44,7 +47,7 @@ all: OpenGL-Viewer
 OpenGL-Viewer: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -L/usr/local/lib -o "OpenGL-Viewer" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++  -o "OpenGL-Viewer" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
