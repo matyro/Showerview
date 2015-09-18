@@ -17,26 +17,21 @@ namespace camera
 	{
 
 	private:
-		glm::vec3 vec3CamPos;
-		glm::vec3 vec3ViewDirection;
 
-		bool bCanMov;
-
+	
 		glm::mat4 CameraMatrix;
 		glm::mat4 projectionMatrix;
 
+		void calcMatrix();
+
 	public:
 
-		CameraPerspective();
+		CameraPerspective();				
 
-		inline void setMovment(bool bCanMove)
-		{
-			this->bCanMov = bCanMove;
-		}
+		const glm::mat4 getMatrix() const;
 
-		glm::mat4 getMatrix();
-
-		void rotateCam(float pitch, float yaw, float roll);
+		void rotateCam(const float pitch, const float yaw, const float roll);
+		void moveCam(const float x, const float y, const float z);
 	};
 
 } /* namespace camera */

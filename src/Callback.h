@@ -26,13 +26,20 @@ static void cursor_position_callback(GLFWwindow* window, double xpos, double ypo
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS){
+	static float xpos;
+	static float ypos;
+
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	{
     	std::cout << "Right press" << std::endl;
     	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		
     }
-    else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE){
+    else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
+	{
     	std::cout << "Right release" << std::endl;
     	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
     }
     else
     {

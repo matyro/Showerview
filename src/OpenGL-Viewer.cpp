@@ -6,7 +6,6 @@
 #include <functional>
 #include <random>
 
-#include <unistd.h>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -85,12 +84,12 @@ int main(int argc, const char* argv[])
     double timeCache = glfwGetTime();
     unsigned long long counter = 0;
 
-    render::LineRender line[3000];
-    for (int i=0; i<3000; i++)
+    render::LineRender line[10];
+    for (int i=0; i<10; i++)
     {
     	line[i].init();
 
-    	line[i].line(-5+((5*i)/3000),-3,0, -5+((5*i)/3000),3,0,  0.1,  i/3000.0,i/3000.0,i/3000.0,  1.0);
+		line[i].line(-5.0f + ((5.0f*i) / 3000.0f), -3.0f, 0.0f, -5.0f + ((5.0f*i) / 3000.0f), 3, 0, 0.1f, i / 3000.0f, i / 3000.0f, i / 3000.0f, 1.0f);
     }
 
     ////////////////////////////////////////////////
@@ -128,7 +127,7 @@ int main(int argc, const char* argv[])
 
 		// Render lines
 
-		for(int i=0; i<3000; i++)
+		for(int i=0; i<10; i++)
 		{
 			line[i].draw( cam->getMatrix() );
 		}

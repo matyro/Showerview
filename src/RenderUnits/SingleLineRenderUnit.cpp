@@ -32,7 +32,7 @@ namespace render
 
 	void LineRender::init()
 	{
-		shader = new Shader("/home/dominik/workspace/OpenGL-Viewer/Shader/line.vs", "/home/dominik/workspace/OpenGL-Viewer/Shader/line.frag");
+		shader = new Shader("../../Shader/line.vs", "../../Shader/line.frag");
 
 		ModelMatrix = glm::mat4(1.0f);
 

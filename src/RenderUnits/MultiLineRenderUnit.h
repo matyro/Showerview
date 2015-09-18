@@ -46,23 +46,23 @@ namespace render
 
 		unsigned int m_uiLineCount;
 
-		void activateContext();
-		void deactivateContext();
+		void activateContext() const;
+		void deactivateContext() const;
 
-
+		
 
 	public:
 
 		void init();
 
-		void draw(glm::mat4);
+		void draw(glm::mat4) const;
 
 		void addLine(LineVertex start, LineVertex end );
 
-		void setBufferSize(unsigned int numberOfLines);
+		void setBufferSize(const unsigned int numberOfLines);
 
-		const Line operator[](int i) const {}
-		Line& operator[](int i) {}
+		const Line operator[](unsigned int i) const;
+		Line& operator[](unsigned int i);
 	};
 
 } /* namespace render */
