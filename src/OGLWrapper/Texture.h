@@ -9,27 +9,24 @@ class Texture
 {
 private:
 
-	int iWidth, iHeight, iBPP; // Texture width, height, and bytes per pixel
-	GLuint uiTexture; // Texture name
-	GLuint uiSampler; // Sampler name
-	bool bMipMapsGenerated;
+	int m_iWidth;	//Texture width
+	int m_iHeight;	//Texture height
+	int m_iBPP;		// bytes per pixel
 
-	int tfMinification, tfMagnification;
+	GLuint m_uiTexture;		// Texture ID
+	GLuint m_uiSampler;		// Sampler ID
 
-	std::string sPath;
+	bool m_bMipMapsGenerated;
+
+	std::string m_sPath;
 
 public:
 
 	Texture();
   
-	bool loadTexture2D(std::string a_sPath, bool bGenerateMipMaps = false);
-	void bindTexture(int iTextureUnit = 0);
-
-	void setFiltering(int a_tfMagnification, int a_tfMinification);
-
-	int getMinificationFilter();
-	int getMagnificationFilter();
-
+	bool loadTexture2D(std::string path, GLint format, bool mipMaps = false);
+	void bindTexture(GLuint texUnit = 0);
+	
 	void releaseTexture();
 };
 
