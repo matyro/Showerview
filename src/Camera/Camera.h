@@ -29,8 +29,8 @@ namespace camera
 
 		virtual const glm::mat4 getMatrix() const = 0;
 
-		virtual void rotateCam(const float, const float, const float) = 0;
-		virtual void moveCam(const float, const float, const float) = 0;
+		virtual void rotateCam(const float, const float, const float) = 0;	//pitch, yaw, roll
+		virtual void moveCam(const float, const float, const float) = 0;	// x, y, z movement in Worldspace
 
 		inline void setMovable(const bool bCanMove){ this->m_bCanMove = bCanMove; };
 		inline const bool isMovable() const { return this->m_bCanMove; }

@@ -44,12 +44,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>E:\Desktop\Showerview\glm;E:\Desktop\Showerview\glfw-3.1.1.bin.WIN64\include;E:\Desktop\Showerview\glew-1.13.0\include;E:\Desktop\Showerview\freetype-2.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Desktop\Showerview\glm;E:\Desktop\Showerview\glfw-3.1.1.bin.WIN64\include;E:\Desktop\Showerview\glew-1.13.0\include;E:\Desktop\Showerview\freetype-2.6\include;E:\Desktop\Showerview\Showerview\src;E:\Desktop\Showerview\FreeImage\Dist\x32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Desktop\Showerview\freetype-2.6\objs\vc2010\Win32;E:\Desktop\Showerview\glfw-3.1.1.bin.WIN32\lib-vc2013;E:\Desktop\Showerview\glew-1.13.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3dll.lib;freetype26d.lib;glew32.lib;glu32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\Desktop\Showerview\freetype-2.6\objs\vc2010\Win32;E:\Desktop\Showerview\glfw-3.1.1.bin.WIN32\lib-vc2013;E:\Desktop\Showerview\glew-1.13.0\lib\Release\Win32;E:\Desktop\Showerview\FreeImage\Dist\x32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3dll.lib;freetype26d.lib;glew32.lib;glu32.lib;opengl32.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -76,10 +76,13 @@
     <ClInclude Include="..\..\src\Camera\Camera2D.h" />
     <ClInclude Include="..\..\src\Camera\CameraOrthographic.h" />
     <ClInclude Include="..\..\src\Camera\CameraPerspective.h" />
+    <ClInclude Include="..\..\src\Helper\CameraControll.h" />
     <ClInclude Include="..\..\src\OGLWrapper\Shader.h" />
+    <ClInclude Include="..\..\src\OGLWrapper\Texture.h" />
     <ClInclude Include="..\..\src\RenderUnits\MultiLineRenderUnit.h" />
     <ClInclude Include="..\..\src\RenderUnits\RenderUnit.h" />
     <ClInclude Include="..\..\src\RenderUnits\SingleLineRenderUnit.h" />
+    <ClInclude Include="..\..\src\RenderUnits\Skybox.h" />
     <ClInclude Include="..\..\src\RenderUnits\TextRenderUnit.h" />
   </ItemGroup>
   <ItemGroup>
@@ -87,11 +90,14 @@
     <ClCompile Include="..\..\src\Camera\Camera2D.cpp" />
     <ClCompile Include="..\..\src\Camera\CameraOrthographic.cpp" />
     <ClCompile Include="..\..\src\Camera\CameraPerspective.cpp" />
+    <ClCompile Include="..\..\src\Helper\CameraControll.cpp" />
     <ClCompile Include="..\..\src\OGLWrapper\Shader.cpp" />
+    <ClCompile Include="..\..\src\OGLWrapper\Texture.cpp" />
     <ClCompile Include="..\..\src\OpenGL-Viewer.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\MultiLineRenderUnit.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\RenderUnit.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\SingleLineRenderUnit.cpp" />
+    <ClCompile Include="..\..\src\RenderUnits\Skybox.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\TextRenderUnit.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -24,6 +24,8 @@
 
 #include "Callback.h"
 
+#include "Helper/CameraControll.h"
+
 
 
 int main(int argc, const char* argv[])
@@ -74,10 +76,14 @@ int main(int argc, const char* argv[])
 
 	glfwSetCursorPosCallback(window, cursor_position_callback);
 
+	glfwSetKeyCallback(window, key_callback);
+
 
 	// Inits
 
-	std::unique_ptr<camera::Camera> cam ( new camera::CameraPerspective );
+	std::shared_ptr<camera::Camera> cam ( new camera::CameraPerspective );
+
+	SCamControll().setCamera(cam);
 
 
 
@@ -92,13 +98,18 @@ int main(int argc, const char* argv[])
 		line[i].line(-5.0f + ((5.0f*i) / 3000.0f), -3.0f, 0.0f, -5.0f + ((5.0f*i) / 3000.0f), 3, 0, 0.1f, i / 3000.0f, i / 3000.0f, i / 3000.0f, 1.0f);
     }
 
+	double time = glfwGetTime();
     ////////////////////////////////////////////////
 	//Mainloop
 	while (!glfwWindowShouldClose(window))
 	{
+		time = glfwGetTime(); //time since init
+
+		SCamControll().setTime(time);
+
 		// Check and call events
 		glfwPollEvents();
-		double time = glfwGetTime(); //time since init
+		
 
 		//FPS Calculation
 		if(time > timeCache+1)

@@ -11,6 +11,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Camera/Camera.h"
+#include "Helper/CameraControll.h"
 
 void error_callback(int error, const char* description)
 {
@@ -20,19 +21,28 @@ void error_callback(int error, const char* description)
 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	std::cout << "Mousemove " << xpos << " - " << ypos << std::endl;
+	static double oldX = xpos;
+	static double oldY = ypos;
+
+	double dx = xpos - oldX;
+	double dy = ypos - oldY;
+
+	SCamControll().rotate(dx, dy);
+	std::cout << "Mousemove " << dx << " - " << dy << std::endl;
+
+	oldX = xpos;
+	oldY = ypos;
 }
 
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	static float xpos;
-	static float ypos;
-
-    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
 	{
     	std::cout << "Right press" << std::endl;
     	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+		SCamControll().activateMovment();
 		
     }
     else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
@@ -40,11 +50,55 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     	std::cout << "Right release" << std::endl;
     	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
+		SCamControll().deactivateMovment();
+
     }
     else
     {
 
     }
 }
+
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (action == GLFW_PRESS)
+	{
+		switch (key)
+		{
+		case GLFW_KEY_A:
+			break;
+		case GLFW_KEY_W:
+			break;
+		case GLFW_KEY_S:
+			break;
+		case GLFW_KEY_D:
+			break;
+		default:
+			break;
+		}
+	}
+	else if (action == GLFW_RELEASE)
+	{
+		switch (key)
+		{
+		case GLFW_KEY_A:
+			break;
+		case GLFW_KEY_W:
+			break;
+		case GLFW_KEY_S:
+			break;
+		case GLFW_KEY_D:
+			break;
+		default:
+			break;
+		}
+	}
+	else
+	{
+
+	}
+}
+
 
 #endif /* CALLBACK_H_ */

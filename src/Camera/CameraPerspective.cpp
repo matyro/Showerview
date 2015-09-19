@@ -51,6 +51,7 @@ namespace camera
 			m_vec3ViewDirection = glm::vec3(1, 0, 0);
 			m_vec3ViewDirection = glm::rotateY(m_vec3ViewDirection, pitch);
 			m_vec3ViewDirection = glm::rotateZ(m_vec3ViewDirection, yaw);
+			m_vec3ViewDirection = glm::normalize(m_vec3ViewDirection);
 		}
 
 	}

@@ -10,6 +10,8 @@
 
 #include "../OGLWrapper/Shader.h"
 
+#include "RenderUnit.h"
+
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
@@ -17,7 +19,7 @@
 
 namespace render
 {
-	class LineRender
+	class LineRender : public RenderUnit
 	{
 	private:
 
