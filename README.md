@@ -10,4 +10,5 @@ Necessary libraries:
 - [GLEW](https://github.com/nigels-com/glew)  (OpenGL loader)         [license](http://glew.sourceforge.net/credits.html)
 - [GLFW](https://github.com/glfw/glfw)  (Window/Input Manager)  [license](http://www.glfw.org/license.html)
 - [GLM](https://github.com/g-truc/glm)   (Vector/Matrix)         [license](http://glm.g-truc.net/0.9.7/glm-0.9.7.pdf)
-- freetype2
+- freetype2 (font loading)
+- [FreeImage](http://freeimage.sourceforge.net/) (Texture loading)
