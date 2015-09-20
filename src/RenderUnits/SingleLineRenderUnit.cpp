@@ -69,11 +69,9 @@ namespace render
 	}
 
 	void LineRender::activateContext()
-	{
-		// Enable depth test
+	{		
 		glEnable(GL_DEPTH_TEST);
-		// Accept fragment if it closer to the camera than the former one
-		glDepthFunc(GL_LESS);
+		glDepthFunc(GL_EQUAL);// Accept fragment if it closer to the camera than the former one
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -84,8 +82,7 @@ namespace render
 	void LineRender::deactivateContext()
 	{
 		//other drawing code...
-		glDisable(GL_BLEND); //restore blending options
-
+		glDisable(GL_BLEND); //restore blending options		
 		glDisable(GL_DEPTH_TEST);
 	}
 
@@ -153,7 +150,7 @@ namespace render
 		glm::mat4 MVP = camMatrix * ModelMatrix; // Remember, matrix multiplication is the other way around
 
 		shader->Use();
-		glUniformMatrix4fv(glGetUniformLocation(shader->Program, "projection"), 1, GL_FALSE, &MVP[0][0]);
+		glUniformMatrix4fv(shader->addUniform("projection"), 1, GL_FALSE, &MVP[0][0]);
 
 		glBindVertexArray(this->vertexArrayObject);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);

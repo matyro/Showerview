@@ -13,11 +13,13 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
+#include <FreeImage.h>
 
 
 #include "OGLWrapper/Shader.h"
 
 #include "RenderUnits/SingleLineRenderUnit.h"
+#include "RenderUnits/Skybox.h"
 
 #include "Camera/Camera.h"
 #include "Camera/CameraPerspective.h"
@@ -30,6 +32,8 @@
 
 int main(int argc, const char* argv[])
 {
+	FreeImage_Initialise(true);
+
 	if(!glfwInit())
     {
                 std::cerr << "GLFW Init error" << std::endl;
@@ -99,6 +103,11 @@ int main(int argc, const char* argv[])
     }
 
 	double time = glfwGetTime();
+
+	//OpenGL Settings
+
+	
+
     ////////////////////////////////////////////////
 	//Mainloop
 	while (!glfwWindowShouldClose(window))
@@ -153,5 +162,7 @@ int main(int argc, const char* argv[])
 	//Close window
 	glfwDestroyWindow(window);
 	glfwTerminate();
+
+	FreeImage_DeInitialise();
 	return 0;
 }

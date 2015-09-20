@@ -10,6 +10,8 @@
 
 
 #include "RenderUnit.h"
+#include "OGLWrapper/Texture.h"
+#include "OGLWrapper/Shader.h"
 
 namespace render
 {
@@ -18,11 +20,20 @@ namespace render
 	{
 	private:
 
+		Texture m_o_Texture;
+		std::unique_ptr<Sampler> m_o_Sampler;
+
+		GLuint m_uiSkyboxVAO;
+		GLuint m_uiSkyboxVBO;
+
+		Shader* m_o_Shader;
+
 		void activateContext();
 		void deactivateContext();
 
 	public:
 
+		Skybox();
 		~Skybox();
 
 		void init();

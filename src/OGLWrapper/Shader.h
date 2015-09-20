@@ -15,13 +15,15 @@ class Shader
 private:
 
 	// Map of attributes and their binding locations
-			std::map<std::string,int> attributeLocList;
+	std::map<std::string,int> m_std_attributeLocationList;
 
-			// Map of uniforms and their binding locations
-			std::map<std::string,int> uniformLocList;
+	// Map of uniforms and their binding locations
+	std::map<std::string,int> m_std_uniformLocationList;
+
+	GLuint Program;
 
 public:
-    GLuint Program;
+    
     // Constructor generates the shader on the fly
     Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
     {
@@ -108,7 +110,7 @@ public:
     }
 
 	// Returns the bound location of a named attribute
-	GLuint attribute(const std::string &attribute)
+	GLint attribute(const std::string &attribute)
 	{
 		// You could do this function with the single line:
 		//
@@ -121,12 +123,12 @@ public:
 		// for exists, and if it doesn't we can alert the user and stop rather than bombing out later.
 
 		// Create an iterator to look through our attribute map and try to find the named attribute
-		std::map<std::string, int>::iterator it = attributeLocList.find(attribute);
+		std::map<std::string, int>::iterator it = m_std_attributeLocationList.find(attribute);
 
 		// Found it? Great -return the bound location! Didn't find it? Alert user and halt.
-		if ( it != attributeLocList.end() )
+		if ( it != m_std_attributeLocationList.end() )
 		{
-			return attributeLocList[attribute];
+			return m_std_attributeLocationList[attribute];
 		}
 		else
 		{
@@ -137,7 +139,7 @@ public:
 
 
 	// Method to returns the bound location of a named uniform
-	GLuint uniform(const std::string &uniform)
+	GLint uniform(const std::string &uniform)
 	{
 		// Note: You could do this method with the single line:
 		//
@@ -146,12 +148,12 @@ public:
 		// But we're not doing that. Explanation in the attribute() method above.
 
 		// Create an iterator to look through our uniform map and try to find the named uniform
-		std::map<std::string, int>::iterator it = uniformLocList.find(uniform);
+		std::map<std::string, int>::iterator it = m_std_uniformLocationList.find(uniform);
 
 		// Found it? Great - pass it back! Didn't find it? Alert user and halt.
-		if ( it != uniformLocList.end() )
+		if ( it != m_std_uniformLocationList.end() )
 		{
-			return uniformLocList[uniform];
+			return m_std_uniformLocationList[uniform];
 		}
 		else
 		{
@@ -162,42 +164,42 @@ public:
 
 
 	// Method to add an attrbute to the shader and return the bound location
-	int addAttribute(const std::string &attributeName)
+	GLint addAttribute(const std::string &attributeName)
 	{
-		attributeLocList[attributeName] = glGetAttribLocation( this->Program, attributeName.c_str() );
+		m_std_attributeLocationList[attributeName] = glGetAttribLocation( this->Program, attributeName.c_str() );
 
 		// Check to ensure that the shader contains an attribute with this name
-		if (attributeLocList[attributeName] == -1)
+		if (m_std_attributeLocationList[attributeName] == -1)
 		{
 			std::cout << "Could not add attribute: " << attributeName << " - location returned -1!" << std::endl;
 			exit(-1);
 		}
 		else
 		{
-			std::cout << "Attribute " << attributeName << " bound to location: " << attributeLocList[attributeName] << std::endl;
+			std::cout << "Attribute " << attributeName << " bound to location: " << m_std_attributeLocationList[attributeName] << std::endl;
 		}
 
-		return attributeLocList[attributeName];
+		return m_std_attributeLocationList[attributeName];
 	}
 
 
 	// Method to add a uniform to the shader and return the bound location
-	int addUniform(const std::string &uniformName)
+	GLint addUniform(const std::string &uniformName)
 	{
-		uniformLocList[uniformName] = glGetUniformLocation( this->Program, uniformName.c_str() );
+		m_std_uniformLocationList[uniformName] = glGetUniformLocation( this->Program, uniformName.c_str() );
 
 		// Check to ensure that the shader contains a uniform with this name
-		if (uniformLocList[uniformName] == -1)
+		if (m_std_uniformLocationList[uniformName] == -1)
 		{
 			std::cout << "Could not add uniform: " << uniformName << " - location returned -1!" << std::endl;
 			exit(-1);
 		}
 		else
 		{
-			std::cout << "Uniform " << uniformName << " bound to location: " << uniformLocList[uniformName] << std::endl;
+			std::cout << "Uniform " << uniformName << " bound to location: " << m_std_uniformLocationList[uniformName] << std::endl;
 		}
 
-		return uniformLocList[uniformName];
+		return m_std_uniformLocationList[uniformName];
 	}
 };
 
