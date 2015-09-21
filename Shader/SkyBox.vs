@@ -4,8 +4,6 @@ out vec3 TexCoords;
 
 uniform mat4 camera;
 
-
-
 void main()
 {
     gl_Position =   camera * vec4(position, 1.0);  

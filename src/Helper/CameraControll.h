@@ -24,7 +24,7 @@ namespace helper
 		CameraControll& operator=(CameraControll const &){};	// No assignment opertor
 
 
-		static enum direction
+		enum direction
 		{
 			forward,
 			backward,

@@ -8,6 +8,7 @@
 #include "Texture.h"
 
 #include <iostream>
+#include <cstring>
 
 #include <FreeImage.h>
 

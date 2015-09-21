@@ -49,12 +49,16 @@ namespace render
 		}
 	}
 
-	Line& MultiLineRenderUnit::operator[](unsigned int i)
+	/*ine& MultiLineRenderUnit::operator[](unsigned int i)
 	{
 		if (i >= this->m_uiLineCount)
 		{
-			return Line(LineVertex(), LineVertex());
+
 		}
-	}
+		else
+		{
+			return
+		}
+	}*/
 
 } /* namespace render */

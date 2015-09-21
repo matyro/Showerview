@@ -28,13 +28,13 @@ namespace render
 		const LineVertex start;
 		const LineVertex end;
 
-		Line(LineVertex start_, LineVertex end_) :
+		Line(const LineVertex start_, const LineVertex end_) :
 						start(start_), end(end_)
 		{
 
 		}
 
-		static const Line makeLine(LineVertex start, LineVertex end)
+		static const Line makeLine(const LineVertex start, const LineVertex end)
 		{
 			return Line(start,end);
 		}
@@ -62,7 +62,7 @@ namespace render
 		void setBufferSize(const unsigned int numberOfLines);
 
 		const Line operator[](unsigned int i) const;
-		Line& operator[](unsigned int i);
+		//Line& operator[](unsigned int i);
 	};
 
 } /* namespace render */

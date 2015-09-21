@@ -29,26 +29,28 @@ namespace render
 
 	Skybox::Skybox()
 	{
+		m_uiSkyboxVAO = 0;
+		m_uiSkyboxVBO = 0;
 		m_o_Shader = nullptr;
 	}
 
 	Skybox::~Skybox()
 	{
-		if (m_o_Shader != nullptr)
-			delete m_o_Shader;
+
 	}
 
 	void Skybox::init()
 	{
-		if (m_o_Shader != nullptr)
-			delete m_o_Shader;
-
-		m_o_Shader = new Shader("../../Shader/SkyBox.vs", "../../Shader/SkyBox.frag");
-		
+		std::cout << "Skybox init .."<< std::endl;
 
 
-		this->m_o_Sampler = std::unique_ptr<Sampler>( new Sampler() );
+		m_o_Shader = std::unique_ptr<Shader>(new Shader("Shader/SkyBox.vs", "Shader/SkyBox.frag") );
+		m_o_Shader->addUniform("camera");
+		m_o_Shader->addUniform("skybox");
 
+
+
+		m_o_Sampler = std::unique_ptr<Sampler>( new Sampler() );
 		m_o_Sampler->setSetting(GL_TEXTURE_MAG_FILTER,	GL_LINEAR);
 		m_o_Sampler->setSetting(GL_TEXTURE_MIN_FILTER,	 GL_LINEAR);
 		m_o_Sampler->setSetting(GL_TEXTURE_WRAP_S,		GL_CLAMP_TO_EDGE);
@@ -65,7 +67,9 @@ namespace render
 		// -Y (bottom)
 		// +Z (front)
 		// -Z (back)
-		m_o_Texture.loadTexture<6>({ "a1.png", "a2.png", "a3.png", "a4.png", "a5.png", "a6.png" },
+		m_o_Texture.loadTexture<6>({ "Material/Skybox2/positivX.jpg", "Material/Skybox2/negativX.jpg",
+			"Material/Skybox2/positivY.jpg", "Material/Skybox2/negativY.jpg", "Material/Skybox2/positivZ.jpg",
+			"Material/Skybox2/negativZ.jpg" },
 			GL_TEXTURE_CUBE_MAP,
 			{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z},
 			{ GL_RGB, GL_RGB, GL_RGB, GL_RGB, GL_RGB, GL_RGB },
@@ -118,7 +122,7 @@ namespace render
 			1.0f, -1.0f, 1.0f
 		};	
 
-		for (int i = 0; i < sizeof(skyboxVertices); i++)
+		for (unsigned int i = 0; i < sizeof(skyboxVertices)/sizeof(float); i++)
 		{
 			skyboxVertices[i] = skyboxVertices[i] * 20;
 		}
@@ -129,11 +133,11 @@ namespace render
 		glBindBuffer(GL_ARRAY_BUFFER, m_uiSkyboxVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-		glBindVertexArray(0);
+		//glEnableVertexAttribArray(0);
+		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+		//glBindVertexArray(0);
 
-
+		std::cout << "Skybox finished"<< std::endl;
 	}
 
 	void Skybox::draw(glm::mat4 camMatrix)
@@ -142,11 +146,11 @@ namespace render
 		
 		
 		
-		glUniformMatrix4fv(m_o_Shader->addUniform("camera"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(m_o_Shader->uniform("camera"), 1, GL_FALSE, glm::value_ptr(view));
 		// skybox cube
 		glBindVertexArray(m_uiSkyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
-		glUniform1i(m_o_Shader->addUniform("skybox"), 0);
+		glUniform1i(m_o_Shader->uniform("skybox"), 0);
 
 		m_o_Texture.bindTexture(0);
 

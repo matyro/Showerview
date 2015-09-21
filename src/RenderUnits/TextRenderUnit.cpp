@@ -35,7 +35,7 @@ namespace render
 
 	void textRender::init(float width, float height)
 	{
-		shader = new Shader("/home/dominik/workspace/OpenGL-Viewer/Shader/text.vs", "/home/dominik/workspace/OpenGL-Viewer/Shader/text.frag");
+		shader = new Shader("/Shader/text.vs", "/Shader/text.frag");
 		glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f, static_cast<GLfloat>(height));
 		shader->Use();
 		glUniformMatrix4fv(glGetUniformLocation(shader->Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));

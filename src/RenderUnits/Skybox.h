@@ -26,10 +26,13 @@ namespace render
 		GLuint m_uiSkyboxVAO;
 		GLuint m_uiSkyboxVBO;
 
-		Shader* m_o_Shader;
+		std::unique_ptr<Shader> m_o_Shader;
 
 		void activateContext();
 		void deactivateContext();
+
+		Skybox(const Skybox& cpy){}
+		Skybox(Skybox&& mv){}
 
 	public:
 

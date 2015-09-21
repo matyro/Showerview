@@ -86,21 +86,22 @@ int main(int argc, const char* argv[])
 	// Inits
 
 	std::shared_ptr<camera::Camera> cam ( new camera::CameraPerspective );
-
 	SCamControll().setCamera(cam);
 
+	render::Skybox sky;
+	sky.init();
 
-
+	std::cout << "Init timer" << std::endl;
     double timeCache = glfwGetTime();
     unsigned long long counter = 0;
 
-    render::LineRender line[10];
+    /*render::LineRender line[10];
     for (int i=0; i<10; i++)
     {
     	line[i].init();
 
 		line[i].line(-5.0f + ((5.0f*i) / 3000.0f), -3.0f, 0.0f, -5.0f + ((5.0f*i) / 3000.0f), 3, 0, 0.1f, i / 3000.0f, i / 3000.0f, i / 3000.0f, 1.0f);
-    }
+    }*/
 
 	double time = glfwGetTime();
 
@@ -110,6 +111,7 @@ int main(int argc, const char* argv[])
 
     ////////////////////////////////////////////////
 	//Mainloop
+	std::cout << "Enter mainloop" << std::endl;
 	while (!glfwWindowShouldClose(window))
 	{
 		time = glfwGetTime(); //time since init
@@ -147,10 +149,8 @@ int main(int argc, const char* argv[])
 
 		// Render lines
 
-		for(int i=0; i<10; i++)
-		{
-			line[i].draw( cam->getMatrix() );
-		}
+
+		sky.draw( cam->getMatrix() );
 
 		//Buffer switch
 		glfwSwapBuffers(window);
