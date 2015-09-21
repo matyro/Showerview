@@ -33,6 +33,7 @@
 int main(int argc, const char* argv[])
 {
 	FreeImage_Initialise(true);
+	FreeImage_SetOutputMessage(FreeImageErrorHandler);
 
 	if(!glfwInit())
     {
@@ -164,5 +165,15 @@ int main(int argc, const char* argv[])
 	glfwTerminate();
 
 	FreeImage_DeInitialise();
+
+	std::cout << "Press enter to terminate" << std::endl;
+	std::cin.get();
+	std::cin.get();
+
+#ifdef _WIN32
+	system("pause");
+#endif
+
+
 	return 0;
 }

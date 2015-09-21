@@ -19,6 +19,8 @@ private:
 
 	GLuint m_uiSampler;		// Sampler ID
 
+	Sampler(const Sampler& cpy) {}
+	Sampler(Sampler&& mv) {}
 
 public:
 	Sampler()
@@ -98,12 +100,7 @@ public:
 	Texture();
 	~Texture();
   
-	//template<unsigned int texCount>	
-	//bool loadTexture(const std::string path[texCount], const GLuint bindTarget, const GLuint loadTarget[texCount], const GLint format[texCount], const bool mipMaps = false);
 	
-	
-
-
 	void bindTexture(GLuint texUnit = 0);
 	
 	void releaseTexture();
@@ -115,6 +112,8 @@ public:
 	template<unsigned int texCount>	//										GL_TEXTURE_2D
 	bool loadTexture(const std::array<const std::string, texCount> path, const GLuint bindTarget, const std::array<const GLuint, texCount> loadTarget, const std::array<const GLint, texCount> format, const bool mipMaps = false)
 	{
+		std::cout << "Load " << texCount << " textures: " << std::endl;
+
 		m_uitextureCount = texCount;
 
 		generateTexture(texCount, bindTarget);	//GL_TEXTURE_CUBE_MAP
@@ -124,8 +123,11 @@ public:
 			const unsigned char* data = this->loadImage(path[i].c_str());
 			if (data == nullptr)
 			{
+				std::cerr << "Texture " << path[i] << " could not be loaded" << std::endl;
 				return false;
 			}
+
+			std::cout << "Image: " << this->m_std_vTextureData[i].std_sPath << " (" << this->m_std_vTextureData[i].iWidth << "," << this->m_std_vTextureData[i].iHeight << std::endl;
 
 
 			glTexImage2D(loadTarget[i], 0, GL_RGB, m_std_vTextureData[i].iWidth, m_std_vTextureData[i].iHeight, 0, format[i], GL_UNSIGNED_BYTE, data);
@@ -135,7 +137,7 @@ public:
 			{
 				//glSamplerParameteri(m_uiSampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);		Move to sampler
 				//glSamplerParameteri(m_uiSampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-				glGenerateMipmap(GL_TEXTURE_2D);
+				glGenerateMipmap(bindTarget);
 			}
 			else
 			{

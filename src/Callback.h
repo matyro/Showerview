@@ -28,7 +28,7 @@ static void cursor_position_callback(GLFWwindow* window, double xpos, double ypo
 	double dy = ypos - oldY;
 
 	SCamControll().rotate(dx, dy);
-	std::cout << "Mousemove " << dx << " - " << dy << std::endl;
+	//std::cout << "Mousemove " << dx << " - " << dy << std::endl;
 
 	oldX = xpos;
 	oldY = ypos;
@@ -100,5 +100,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 }
 
+
+void FreeImageErrorHandler(FREE_IMAGE_FORMAT fif, const char *message) 
+{
+	printf("\n*** ");
+	if (fif != FIF_UNKNOWN) {
+		printf("%s Format\n", FreeImage_GetFormatFromFIF(fif));
+	}
+	printf(message);
+	printf(" ***\n");
+}
 
 #endif /* CALLBACK_H_ */
