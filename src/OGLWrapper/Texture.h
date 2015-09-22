@@ -91,7 +91,7 @@ private:
 
 	
 
-	const unsigned char* loadImage(const char* path);
+	const bool loadImage(const char* path);
 
 	void generateTexture(GLuint count, GLuint target);
 
@@ -120,8 +120,8 @@ public:
 
 		for (int i = 0; i < texCount; i++)
 		{
-			const unsigned char* data = this->loadImage(path[i].c_str());
-			if (data == nullptr)
+			bool data = this->loadImage(path[i].c_str());
+			if (!data)
 			{
 				std::cerr << "Texture " << path[i] << " could not be loaded" << std::endl;
 				return false;
@@ -130,7 +130,7 @@ public:
 			std::cout << "Image: " << this->m_std_vTextureData[i].std_sPath << " (" << this->m_std_vTextureData[i].iWidth << "," << this->m_std_vTextureData[i].iHeight << std::endl;
 
 
-			glTexImage2D(loadTarget[i], 0, GL_RGB, m_std_vTextureData[i].iWidth, m_std_vTextureData[i].iHeight, 0, format[i], GL_UNSIGNED_BYTE, data);
+			glTexImage2D(loadTarget[i], 0, GL_RGB, m_std_vTextureData[i].iWidth, m_std_vTextureData[i].iHeight, 0, format[i], GL_UNSIGNED_BYTE, m_std_vTextureData[i].ucImageData.get() );
 
 
 			if (mipMaps)
@@ -147,14 +147,12 @@ public:
 			}
 
 
-
-			GLenum glError = glGetError();
-			if (glError)
+			GLenum glError = GL_NO_ERROR;
+			while ((glError = glGetError()) != GL_NO_ERROR)
 			{
-				std::cerr << "Texture load error" << std::endl;
+				std::cerr << "OpenGL texture error: " << gluErrorString(glError) << std::endl;
 				return false;
 			}
-
 
 
 			m_bMipMapsGenerated = mipMaps;

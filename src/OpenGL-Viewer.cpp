@@ -170,10 +170,6 @@ int main(int argc, const char* argv[])
 	std::cin.get();
 	std::cin.get();
 
-#ifdef _WIN32
-	system("pause");
-#endif
-
 
 	return 0;
 }

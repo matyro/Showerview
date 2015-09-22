@@ -57,7 +57,12 @@ namespace render
 		m_o_Sampler->setSetting(GL_TEXTURE_WRAP_T,		GL_CLAMP_TO_EDGE);
 		m_o_Sampler->setSetting(GL_TEXTURE_WRAP_R,		GL_CLAMP_TO_EDGE);
 		
-		
+		GLenum glError = GL_NO_ERROR;
+		while ((glError = glGetError()) != GL_NO_ERROR)
+		{
+			std::cerr << "OpenGL Skybox error: " << gluErrorString(glError) << std::endl;
+			//return false;
+		}
 
 		// Loads a cubemap texture from 6 individual texture faces
 		// Order should be:
@@ -67,9 +72,9 @@ namespace render
 		// -Y (bottom)
 		// +Z (front)
 		// -Z (back)
-		m_o_Texture.loadTexture<6>({ "Material/Skybox2/positivX.jpg", "Material/Skybox2/negativX.jpg",
-			"Material/Skybox2/positivY.jpg", "Material/Skybox2/negativY.jpg", "Material/Skybox2/positivZ.jpg",
-			"Material/Skybox2/negativZ.jpg" },
+		m_o_Texture.loadTexture<6>({ "Material/Skybox1/positivX.jpg", "Material/Skybox1/negativX.jpg",
+			"Material/Skybox1/positivY.jpg", "Material/Skybox1/negativY.jpg", "Material/Skybox1/positivZ.jpg",
+			"Material/Skybox1/negativZ.jpg" },
 			GL_TEXTURE_CUBE_MAP,
 			{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z},
 			{ GL_RGB, GL_RGB, GL_RGB, GL_RGB, GL_RGB, GL_RGB },

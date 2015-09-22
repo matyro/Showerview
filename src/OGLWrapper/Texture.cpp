@@ -14,7 +14,7 @@
 
 
 
-const BYTE* Texture::loadImage(const char* path)
+const bool Texture::loadImage(const char* path)
 {
 	texInfo tmpInfo;
 
@@ -25,19 +25,19 @@ const BYTE* Texture::loadImage(const char* path)
 		imageFormat = FreeImage_GetFIFFromFilename(path);
 
 		if (imageFormat == FIF_UNKNOWN)								//still unknown?
-			return nullptr;
+			return false;
 	}
 
 
 	if (!FreeImage_FIFSupportsReading(imageFormat))
-		return nullptr;
+		return false;
 
 
 	FIBITMAP* imageBitmap = FreeImage_Load(imageFormat, path);
 
 
 	if (!imageBitmap)
-		return nullptr;
+		return false;
 
 	BYTE* data = FreeImage_GetBits(imageBitmap); // Retrieve the image data
 
@@ -47,15 +47,13 @@ const BYTE* Texture::loadImage(const char* path)
 	tmpInfo.std_sPath = path;
 
 	if (data == NULL || tmpInfo.iWidth == 0 || tmpInfo.iHeight == 0)
-		return nullptr;
+		return false;
+
+	
+	tmpInfo.ucImageData = std::unique_ptr<BYTE[]>(new BYTE[ tmpInfo.iHeight * tmpInfo.iWidth * (tmpInfo.iBPP/8) ]);
 
 
-	std::unique_ptr<BYTE[]> imageData(new BYTE[tmpInfo.iHeight * tmpInfo.iWidth * tmpInfo.iBPP]);
-
-	tmpInfo.ucImageData = std::move(imageData);
-
-
-	memcpy(tmpInfo.ucImageData.get(), data, tmpInfo.iHeight * tmpInfo.iWidth *  tmpInfo.iBPP);
+	memcpy(tmpInfo.ucImageData.get(), data, tmpInfo.iHeight * tmpInfo.iWidth * (tmpInfo.iBPP / 8));
 
 
 
@@ -63,7 +61,7 @@ const BYTE* Texture::loadImage(const char* path)
 
 	m_std_vTextureData.push_back( std::move(tmpInfo) );
 
-	return tmpInfo.ucImageData.get();
+	return true;
 }
 
 
