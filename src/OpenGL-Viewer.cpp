@@ -64,7 +64,6 @@ int main(int argc, const char* argv[])
     {
                 std::cerr << "Glew Init error" << std::endl;
                 std::cerr<<"Error: " << glewGetErrorString(err) << std::endl;
-
 	}
 
 	int width, height;
@@ -72,6 +71,8 @@ int main(int argc, const char* argv[])
 	glViewport(0, 0, width, height);
 
 	glfwSwapInterval(1);
+
+	ErrorLog<5>::OpenGLError("in Main");
 
 	////////////////////////////////////////////////
 	/// Init things before the main loop
@@ -88,9 +89,11 @@ int main(int argc, const char* argv[])
 
 	std::shared_ptr<camera::Camera> cam ( new camera::CameraPerspective );
 	SCamControll().setCamera(cam);
+	ErrorLog<1>::OpenGLError("in Camera");
 
 	render::Skybox sky;
 	sky.init();
+	ErrorLog<1>::OpenGLError("in Skybox");
 
 	std::cout << "Init timer" << std::endl;
     double timeCache = glfwGetTime();
@@ -152,6 +155,7 @@ int main(int argc, const char* argv[])
 
 
 		sky.draw( cam->getMatrix() );
+		ErrorLog<2>::OpenGLError("Skybox draw");
 
 		//Buffer switch
 		glfwSwapBuffers(window);

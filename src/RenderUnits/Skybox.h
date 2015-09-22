@@ -21,7 +21,7 @@ namespace render
 	private:
 
 		Texture m_o_Texture;
-		std::unique_ptr<Sampler> m_o_Sampler;
+		std::shared_ptr<Sampler> m_o_Sampler;
 
 		GLuint m_uiSkyboxVAO;
 		GLuint m_uiSkyboxVBO;

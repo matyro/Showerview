@@ -1,9 +1,3 @@
-/*
- * shader.cpp
- *
- *  Created on: 01.09.2015
- *      Author: dominik
- */
 
 #include "Texture.h"
 
@@ -95,7 +89,10 @@ void Texture::bindTexture(GLuint texUnit)
 	glBindTexture(m_uiTextureType, m_uiTexture);
 
 	if (m_o_sSampler != nullptr)
+	{
 		glBindSampler(texUnit, m_o_sSampler->getSampler());
+	}
+
 
 }
 

@@ -12,6 +12,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+
+
 namespace render
 {
 
@@ -19,11 +21,17 @@ namespace render
 	{		
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);// Accept fragment if it closer to the camera than the former one
+
+		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		glDepthMask(GL_FALSE);
 	}
 
 	void Skybox::deactivateContext()
 	{
 		glDisable(GL_DEPTH_TEST);
+
+		glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		glDepthMask(GL_TRUE);
 	}
 
 
@@ -50,19 +58,14 @@ namespace render
 
 
 
-		m_o_Sampler = std::unique_ptr<Sampler>( new Sampler() );
+		m_o_Sampler = std::shared_ptr<Sampler>( new Sampler() );
 		m_o_Sampler->setSetting(GL_TEXTURE_MAG_FILTER,	GL_LINEAR);
 		m_o_Sampler->setSetting(GL_TEXTURE_MIN_FILTER,	 GL_LINEAR);
 		m_o_Sampler->setSetting(GL_TEXTURE_WRAP_S,		GL_CLAMP_TO_EDGE);
 		m_o_Sampler->setSetting(GL_TEXTURE_WRAP_T,		GL_CLAMP_TO_EDGE);
 		m_o_Sampler->setSetting(GL_TEXTURE_WRAP_R,		GL_CLAMP_TO_EDGE);
 		
-		GLenum glError = GL_NO_ERROR;
-		while ((glError = glGetError()) != GL_NO_ERROR)
-		{
-			std::cerr << "OpenGL Skybox error: " << gluErrorString(glError) << std::endl;
-			//return false;
-		}
+		m_o_Texture.setSampler(m_o_Sampler);
 
 		// Loads a cubemap texture from 6 individual texture faces
 		// Order should be:
@@ -138,15 +141,18 @@ namespace render
 		glBindBuffer(GL_ARRAY_BUFFER, m_uiSkyboxVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 
-		//glEnableVertexAttribArray(0);
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-		//glBindVertexArray(0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+		glBindVertexArray(0);
 
 		std::cout << "Skybox finished"<< std::endl;
 	}
 
 	void Skybox::draw(glm::mat4 camMatrix)
 	{
+
+		this->activateContext();
+
 		glm::mat4 view = glm::mat4( glm::mat3( camMatrix ) );	//Remove translation
 		
 		
@@ -154,12 +160,13 @@ namespace render
 		glUniformMatrix4fv(m_o_Shader->uniform("camera"), 1, GL_FALSE, glm::value_ptr(view));
 		// skybox cube
 		glBindVertexArray(m_uiSkyboxVAO);
-		glActiveTexture(GL_TEXTURE0);
 		glUniform1i(m_o_Shader->uniform("skybox"), 0);
 
 		m_o_Texture.bindTexture(0);
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
+
+		this->deactivateContext();
 	}
 }

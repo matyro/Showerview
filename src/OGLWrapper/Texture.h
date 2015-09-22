@@ -13,6 +13,9 @@
 #include <GL/glew.h>
 
 
+#include "Helper\ErrorLog.h"
+
+
 class Sampler
 {
 private:
@@ -79,7 +82,7 @@ private:
 	std::vector<texInfo> m_std_vTextureData;
 
 
-	Sampler* m_o_sSampler;
+	std::shared_ptr<Sampler> m_o_sSampler;
 
 
 	GLuint m_uiTexture;		// Texture ID
@@ -105,7 +108,7 @@ public:
 	
 	void releaseTexture();
 
-	void setSampler(Sampler* const samp){ this->m_o_sSampler = samp; };
+	void setSampler(std::shared_ptr<Sampler> samp){ this->m_o_sSampler = samp; };
 
 
 
@@ -116,7 +119,7 @@ public:
 
 		m_uitextureCount = texCount;
 
-		generateTexture(texCount, bindTarget);	//GL_TEXTURE_CUBE_MAP
+		generateTexture(1, bindTarget);	//GL_TEXTURE_CUBE_MAP
 
 		for (int i = 0; i < texCount; i++)
 		{
@@ -132,35 +135,24 @@ public:
 
 			glTexImage2D(loadTarget[i], 0, GL_RGB, m_std_vTextureData[i].iWidth, m_std_vTextureData[i].iHeight, 0, format[i], GL_UNSIGNED_BYTE, m_std_vTextureData[i].ucImageData.get() );
 
-
-			if (mipMaps)
-			{
-				//glSamplerParameteri(m_uiSampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);		Move to sampler
-				//glSamplerParameteri(m_uiSampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-				glGenerateMipmap(bindTarget);
-			}
-			else
-			{
-
-				//glSamplerParameteri(m_uiSampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				//glSamplerParameteri(m_uiSampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			}
-
-
-			GLenum glError = GL_NO_ERROR;
-			while ((glError = glGetError()) != GL_NO_ERROR)
-			{
-				std::cerr << "OpenGL texture error: " << gluErrorString(glError) << std::endl;
-				return false;
-			}
-
-
 			m_bMipMapsGenerated = mipMaps;
 
+			if (mipMaps && !(bindTarget == GL_TEXTURE_CUBE_MAP))
+			{
+				glGenerateMipmap(bindTarget);
+			}
 		}
 
+		if (mipMaps && (bindTarget== GL_TEXTURE_CUBE_MAP))
+		{
+			glGenerateMipmap(bindTarget);
+		}
+		
+
 		m_std_vTextureData.resize(m_std_vTextureData.size() - 1);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+		glBindTexture(bindTarget, 0);
+
+		ErrorLog<5>::OpenGLError(" textureLoad");
 
 		return true; // Success
 	}

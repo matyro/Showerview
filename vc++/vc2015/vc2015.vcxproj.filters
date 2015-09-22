@@ -78,6 +78,9 @@
     <ClInclude Include="..\..\src\OGLWrapper\Texture.h">
       <Filter>Headerdateien\OGLWrapper</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Helper\ErrorLog.h">
+      <Filter>Headerdateien\Helper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Camera\Camera.cpp">
