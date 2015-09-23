@@ -7,6 +7,7 @@
 
 #include "CameraControll.h"
 
+#include <iostream>
 
 
 namespace helper
@@ -14,9 +15,10 @@ namespace helper
 
 	CameraControll::CameraControll()
 	{
-		m_fPitch = 0;
-		m_fYaw = 0;
+		m_fDeltaXAcc = 0;
+		m_fDeltaYAcc = 0;
 		m_dDeltaTime = 0;
+
 	}
 
 
@@ -28,10 +30,7 @@ namespace helper
 	{
 		if (m_camOpenGLCam != nullptr)
 		{
-			m_fYaw += deltaX*m_fRotationSpeed;
-			m_fPitch += deltaY*m_fRotationSpeed;
-
-			m_camOpenGLCam->rotateCam(m_fPitch,m_fYaw,0);
+			m_camOpenGLCam->rotateCam(deltaY*m_fRotationSpeed, -deltaX*m_fRotationSpeed, 0);
 		}
 	}
 

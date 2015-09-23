@@ -12,6 +12,7 @@
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 #include <FreeImage.h>
 
@@ -153,9 +154,8 @@ int main(int argc, const char* argv[])
 
 		// Render lines
 
-
 		sky.draw( cam->getMatrix() );
-		ErrorLog<2>::OpenGLError("Skybox draw");
+		ErrorLog<0>::OpenGLError("Skybox draw");
 
 		//Buffer switch
 		glfwSwapBuffers(window);

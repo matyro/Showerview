@@ -19,8 +19,10 @@ namespace camera
 	private:
 
 	
-		glm::mat4 CameraMatrix;
-		glm::mat4 projectionMatrix;
+		glm::mat4 m_glm_viewMatrix;
+		glm::mat4 m_glm_projectionMatrix;
+
+		glm::vec3 m_glm_up;
 
 		void calcMatrix();
 

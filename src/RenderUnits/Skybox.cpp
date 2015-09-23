@@ -9,8 +9,9 @@
 
 
 #include <FreeImage.h>
-#include <glm/gtc/type_ptr.hpp>
 
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/ext.hpp>
 
 
 
@@ -19,18 +20,19 @@ namespace render
 
 	void Skybox::activateContext()
 	{		
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);// Accept fragment if it closer to the camera than the former one
+		//lEnable(GL_DEPTH_TEST);
+		//glDepthFunc(GL_LEQUAL);// Accept fragment if it closer to the camera than the former one
 
-		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		//glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		glDepthMask(GL_FALSE);
+
 	}
 
 	void Skybox::deactivateContext()
 	{
-		glDisable(GL_DEPTH_TEST);
+		//glDisable(GL_DEPTH_TEST);
 
-		glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		//glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		glDepthMask(GL_TRUE);
 	}
 
@@ -86,63 +88,65 @@ namespace render
 
 
 
-		GLfloat skyboxVertices[] = {			        
-			-1.0f, 1.0f, -1.0f,
-			-1.0f, -1.0f, -1.0f,
-			1.0f, -1.0f, -1.0f,
-			1.0f, -1.0f, -1.0f,
-			1.0f, 1.0f, -1.0f,
-			-1.0f, 1.0f, -1.0f,
+		GLfloat skyboxVertices[] = {
+				  -10.0f,  10.0f, -10.0f,
+				  -10.0f, -10.0f, -10.0f,
+				   10.0f, -10.0f, -10.0f,
+				   10.0f, -10.0f, -10.0f,
+				   10.0f,  10.0f, -10.0f,
+				  -10.0f,  10.0f, -10.0f,
 
-			-1.0f, -1.0f, 1.0f,
-			-1.0f, -1.0f, -1.0f,
-			-1.0f, 1.0f, -1.0f,
-			-1.0f, 1.0f, -1.0f,
-			-1.0f, 1.0f, 1.0f,
-			-1.0f, -1.0f, 1.0f,
+				  -10.0f, -10.0f,  10.0f,
+				  -10.0f, -10.0f, -10.0f,
+				  -10.0f,  10.0f, -10.0f,
+				  -10.0f,  10.0f, -10.0f,
+				  -10.0f,  10.0f,  10.0f,
+				  -10.0f, -10.0f,  10.0f,
 
-			1.0f, -1.0f, -1.0f,
-			1.0f, -1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, -1.0f,
-			1.0f, -1.0f, -1.0f,
+				   10.0f, -10.0f, -10.0f,
+				   10.0f, -10.0f,  10.0f,
+				   10.0f,  10.0f,  10.0f,
+				   10.0f,  10.0f,  10.0f,
+				   10.0f,  10.0f, -10.0f,
+				   10.0f, -10.0f, -10.0f,
 
-			-1.0f, -1.0f, 1.0f,
-			-1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f,
-			1.0f, -1.0f, 1.0f,
-			-1.0f, -1.0f, 1.0f,
+				  -10.0f, -10.0f,  10.0f,
+				  -10.0f,  10.0f,  10.0f,
+				   10.0f,  10.0f,  10.0f,
+				   10.0f,  10.0f,  10.0f,
+				   10.0f, -10.0f,  10.0f,
+				  -10.0f, -10.0f,  10.0f,
 
-			-1.0f, 1.0f, -1.0f,
-			1.0f, 1.0f, -1.0f,
-			1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f,
-			-1.0f, 1.0f, 1.0f,
-			-1.0f, 1.0f, -1.0f,
+				  -10.0f,  10.0f, -10.0f,
+				   10.0f,  10.0f, -10.0f,
+				   10.0f,  10.0f,  10.0f,
+				   10.0f,  10.0f,  10.0f,
+				  -10.0f,  10.0f,  10.0f,
+				  -10.0f,  10.0f, -10.0f,
 
-			-1.0f, -1.0f, -1.0f,
-			-1.0f, -1.0f, 1.0f,
-			1.0f, -1.0f, -1.0f,
-			1.0f, -1.0f, -1.0f,
-			-1.0f, -1.0f, 1.0f,
-			1.0f, -1.0f, 1.0f
-		};	
+				  -10.0f, -10.0f, -10.0f,
+				  -10.0f, -10.0f,  10.0f,
+				   10.0f, -10.0f, -10.0f,
+				   10.0f, -10.0f, -10.0f,
+				  -10.0f, -10.0f,  10.0f,
+				   10.0f, -10.0f,  10.0f
+				};
 
 		for (unsigned int i = 0; i < sizeof(skyboxVertices)/sizeof(float); i++)
 		{
-			skyboxVertices[i] = skyboxVertices[i] * 20;
+			skyboxVertices[i] = skyboxVertices[i] * 2.0;
 		}
 		
-		glGenVertexArrays(1, &m_uiSkyboxVAO);
-		glGenBuffers(1, &m_uiSkyboxVBO);
-		glBindVertexArray(m_uiSkyboxVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, m_uiSkyboxVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 
+		glGenBuffers(1, &m_uiSkyboxVBO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_uiSkyboxVBO);
+		glBufferData(GL_ARRAY_BUFFER, 3*36*sizeof(float), &skyboxVertices, GL_STATIC_DRAW);
+
+		glGenVertexArrays(1, &m_uiSkyboxVAO);
+		glBindVertexArray(m_uiSkyboxVAO);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+		glBindBuffer(GL_ARRAY_BUFFER, m_uiSkyboxVBO);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 		glBindVertexArray(0);
 
 		std::cout << "Skybox finished"<< std::endl;
@@ -150,20 +154,24 @@ namespace render
 
 	void Skybox::draw(glm::mat4 camMatrix)
 	{
-
 		this->activateContext();
 
-		glm::mat4 view = glm::mat4( glm::mat3( camMatrix ) );	//Remove translation
-		
-		
+		//glm::mat4 view = glm::mat4( glm::mat3( camMatrix ) );	//Remove translation
+		glm::mat4 view = camMatrix;
+
+
+		m_o_Texture.bindTexture(0);
 		
 		glUniformMatrix4fv(m_o_Shader->uniform("camera"), 1, GL_FALSE, glm::value_ptr(view));
 		// skybox cube
-		glBindVertexArray(m_uiSkyboxVAO);
 		glUniform1i(m_o_Shader->uniform("skybox"), 0);
 
-		m_o_Texture.bindTexture(0);
+		m_o_Shader->Use();
 
+
+
+
+		glBindVertexArray(m_uiSkyboxVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 

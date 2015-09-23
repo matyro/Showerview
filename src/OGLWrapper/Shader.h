@@ -11,7 +11,7 @@
 #include <GL/glew.h>
 
 
-#include "Helper\ErrorLog.h"
+#include "Helper/ErrorLog.h"
 
 class Shader
 {

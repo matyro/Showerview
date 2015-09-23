@@ -15,7 +15,7 @@ class ErrorLog
 {
 private:
 
-	std::ostream m_std_output;
+	static std::ostream m_std_output;
 
 	static constexpr bool verboseCheck()
 	{
@@ -30,7 +30,7 @@ public:
 	
 	static void setOutput(const std::ostream output = std::cerr)
 	{
-		this->m_std_output = output;
+		m_std_output = output;
 	}
 	   
 	static inline void OpenGLError(const char* const message) 

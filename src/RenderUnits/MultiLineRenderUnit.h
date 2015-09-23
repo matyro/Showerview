@@ -10,23 +10,31 @@
 
 #include "RenderUnit.h"
 
+#include "OGLWrapper/Shader.h"
+
+
+#include <vector>
+#include <memory>
+
 namespace render
 {
 	struct LineVertex
 	{
-		float x;
-		float y;
-		float z;
+		float pos[3];
 		float width;
-		float r;
-		float g;
-		float b;
+		float color[4];
 	};
 	
 	struct Line
 	{
 		const LineVertex start;
 		const LineVertex end;
+
+		Line() :
+			start({{0,0,0},0,{0,0,0}}), end({{0,0,0},0,{0,0,0}})
+		{
+
+		}
 
 		Line(const LineVertex start_, const LineVertex end_) :
 						start(start_), end(end_)
@@ -44,7 +52,13 @@ namespace render
 	{
 	private:
 
-		unsigned int m_uiLineCount;
+		std::vector<Line> m_std_lines;
+
+
+		GLuint m_uiVAO;
+		GLuint m_uiVBO;
+
+		std::unique_ptr<Shader> m_o_Shader;
 
 		void activateContext() const;
 		void deactivateContext() const;
@@ -57,12 +71,14 @@ namespace render
 
 		void draw(glm::mat4) const;
 
-		void addLine(LineVertex start, LineVertex end );
+		void updateLines();
+
+		void addLine(const LineVertex start, const LineVertex end );
 
 		void setBufferSize(const unsigned int numberOfLines);
 
 		const Line operator[](unsigned int i) const;
-		//Line& operator[](unsigned int i);
+		Line& operator[](unsigned int i);
 	};
 
 } /* namespace render */

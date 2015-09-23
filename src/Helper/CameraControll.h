@@ -37,8 +37,8 @@ namespace helper
 
 		double m_dDeltaTime;
 
-		float m_fPitch, m_fYaw;
-		const float m_fRotationSpeed = 0.1; // Degree/Pixel
+		float m_fDeltaXAcc, m_fDeltaYAcc;
+		const float m_fRotationSpeed = 0.005; // Degree/Pixel
 
 	protected:
 		
@@ -53,7 +53,12 @@ namespace helper
 			return singelton; 
 		}
 
-		inline void setCamera(std::shared_ptr<camera::Camera> cam){ this->m_camOpenGLCam = cam; }
+		inline void setCamera(std::shared_ptr<camera::Camera> cam)
+		{
+			this->m_camOpenGLCam = cam;
+
+			this->m_camOpenGLCam->rotateCam(0,0,0);
+		}
 		
 		inline void activateMovment() const { if(m_camOpenGLCam != nullptr) m_camOpenGLCam->setMovable(true); }
 		inline void deactivateMovment() const { if (m_camOpenGLCam != nullptr) m_camOpenGLCam->setMovable(false); }

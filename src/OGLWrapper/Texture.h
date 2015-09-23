@@ -13,7 +13,7 @@
 #include <GL/glew.h>
 
 
-#include "Helper\ErrorLog.h"
+#include "Helper/ErrorLog.h"
 
 
 class Sampler
@@ -121,8 +121,10 @@ public:
 
 		generateTexture(1, bindTarget);	//GL_TEXTURE_CUBE_MAP
 
-		for (int i = 0; i < texCount; i++)
+		for (unsigned int i = 0; i < texCount; i++)
 		{
+			glBindTexture(bindTarget, this->m_uiTexture);
+
 			bool data = this->loadImage(path[i].c_str());
 			if (!data)
 			{
@@ -148,6 +150,11 @@ public:
 			glGenerateMipmap(bindTarget);
 		}
 		
+		glTexParameteri (GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri (GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri (GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glTexParameteri (GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri (GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 		m_std_vTextureData.resize(m_std_vTextureData.size() - 1);
 		glBindTexture(bindTarget, 0);
