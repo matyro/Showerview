@@ -56,7 +56,13 @@ const GLuint Shader::createShader(GLenum type, const char* source)
 		glGetShaderInfoLog(shader, messageLength, NULL, &errorLog[0]);
 
 		glDeleteShader(shader);
-		std::cout << "Shader Error (" << type << "): " << &errorLog[0] << std::endl;
+
+		if(type==GL_VERTEX_SHADER)
+			std::cout << "Shader Error (Vertex): " << &errorLog[0] << std::endl;
+		else if(type==GL_FRAGMENT_SHADER)
+			std::cout << "Shader Error (Fragment): " << &errorLog[0] << std::endl;
+		else if(type==GL_GEOMETRY_SHADER)
+			std::cout << "Shader Error (Geometry): " << &errorLog[0] << std::endl;
 		return -1;
 	}
 	return shader;
@@ -105,6 +111,8 @@ Shader::Shader(const GLchar* const vertexPath, const GLchar* const fragmentPath)
 	// Delete the shaders as they're linked into our program now and no longer necessary
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+
+
 }
 
 Shader::Shader(const GLchar* const vertexPath, const GLchar* const fragmentPath, const GLchar* const geometryPath)
@@ -155,6 +163,8 @@ Shader::Shader(const GLchar* const vertexPath, const GLchar* const fragmentPath,
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 	glDeleteShader(geometryShader);
+
+	ErrorLog<0>::OpenGLError("Shader load failed somehow!");
 }
 
 
@@ -192,7 +202,7 @@ GLint Shader::uniform(const std::string &uniform)
 	}
 }
 
-GLint Shader::addAttribute(const std::string &attributeName)
+GLint Shader::addAttribute(const std::string& attributeName)
 {
 	m_std_attributeLocationList[attributeName] = glGetAttribLocation(this->m_uiProgram, attributeName.c_str());
 

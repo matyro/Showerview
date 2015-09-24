@@ -18,8 +18,8 @@ namespace render
 	{
 	private:
 
-		virtual void activateContext() = 0;
-		virtual void deactivateContext() = 0;
+		virtual void activateContext() const = 0;
+		virtual void deactivateContext() const = 0;
 
 	public:
 
@@ -27,7 +27,7 @@ namespace render
 
 		void init();
 
-		virtual void draw(glm::mat4) = 0;
+		virtual void draw(glm::mat4) const = 0;
 
 
 	};

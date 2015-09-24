@@ -33,12 +33,13 @@ namespace render
 
 	void MultiLineRenderUnit::init()
 	{
-		m_o_Shader = std::unique_ptr<Shader>(new Shader("Shader/MultiLine.vert", "Shader/MultiLine.frak", "Shader/MultiLine.geo"));
+		m_o_Shader = std::unique_ptr<Shader>(new Shader("Shader/MultiLine.vs", "Shader/MultiLine.frag", "Shader/MultiLine.geo"));
+		m_o_Shader->Use();
 		m_o_Shader->addUniform("projection");
-		m_o_Shader->addUniform("cameraPos");
+		//m_o_Shader->addUniform("cameraPos");
 
-		GLint inPosLocation = m_o_Shader->addAttribute("inPos");
-		GLint inDirLocation = m_o_Shader->addAttribute("dir");
+		GLint inPosLocation = m_o_Shader->addAttribute("start");
+		GLint inDirLocation = m_o_Shader->addAttribute("line");
 		GLint inColLocation = m_o_Shader->addAttribute("color");
 		GLint inWidthLocation = m_o_Shader->addAttribute("width");
 
@@ -93,7 +94,7 @@ namespace render
 		m_o_Shader->Use();
 
 		glm::vec3 camPos = glm::vec3(camMatrix[3]);
-		glUniformMatrix4fv(m_o_Shader->uniform("camPos"), 1, GL_FALSE, glm::value_ptr(camPos));
+		//glUniformMatrix4fv(m_o_Shader->uniform("camPos"), 1, GL_FALSE, glm::value_ptr(camPos));
 		glUniformMatrix4fv(m_o_Shader->uniform("projection"), 1, GL_FALSE, glm::value_ptr(camMatrix));
 
 

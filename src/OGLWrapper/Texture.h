@@ -104,7 +104,7 @@ public:
 	~Texture();
   
 	
-	void bindTexture(GLuint texUnit = 0);
+	void bindTexture(GLuint texUnit = 0) const;
 	
 	void releaseTexture();
 

@@ -21,6 +21,7 @@
 
 #include "RenderUnits/SingleLineRenderUnit.h"
 #include "RenderUnits/Skybox.h"
+#include "RenderUnits/MultiLineRenderUnit.h"
 
 #include "Camera/Camera.h"
 #include "Camera/CameraPerspective.h"
@@ -99,13 +100,11 @@ int main(int argc, const char* argv[])
     double timeCache = glfwGetTime();
     unsigned long long counter = 0;
 
-    /*render::LineRender line[10];
-    for (int i=0; i<10; i++)
-    {
-    	line[i].init();
+    render::MultiLineRenderUnit LineRender;
+    LineRender.init();
 
-		line[i].line(-5.0f + ((5.0f*i) / 3000.0f), -3.0f, 0.0f, -5.0f + ((5.0f*i) / 3000.0f), 3, 0, 0.1f, i / 3000.0f, i / 3000.0f, i / 3000.0f, 1.0f);
-    }*/
+    LineRender.addLine(render::LineVertex({{0,-5,0},0,{0,1,0,1}}), render::LineVertex({{0,5,0},0,{0,1,0,1}}));
+    LineRender.updateLines();
 
 	double time = glfwGetTime();
 
@@ -145,6 +144,7 @@ int main(int argc, const char* argv[])
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		LineRender.draw( cam->getMatrix() );
 
 		// Rendertext
 		/*

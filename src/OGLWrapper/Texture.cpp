@@ -83,7 +83,7 @@ Texture::~Texture()
 
 
 
-void Texture::bindTexture(GLuint texUnit)
+void Texture::bindTexture(GLuint texUnit) const
 {
 	glActiveTexture(GL_TEXTURE0 + texUnit);
 	glBindTexture(m_uiTextureType, m_uiTexture);

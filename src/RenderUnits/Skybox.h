@@ -28,8 +28,8 @@ namespace render
 
 		std::unique_ptr<Shader> m_o_Shader;
 
-		void activateContext();
-		void deactivateContext();
+		void activateContext() const;
+		void deactivateContext() const;
 
 		Skybox(const Skybox& cpy){}
 		Skybox(Skybox&& mv){}
@@ -41,7 +41,7 @@ namespace render
 
 		void init();
 
-		void draw(glm::mat4);
+		void draw(glm::mat4) const;
 
 
 	};

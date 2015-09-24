@@ -77,9 +77,6 @@ namespace camera
 				m_vec3ViewDirection = glm::rotate(m_vec3ViewDirection, pitch, cameraRight);
 				this->calcMatrix();
 			}
-
-
-
 		}
 
 
