@@ -29,6 +29,8 @@ namespace camera
 			0.1f, // Near clipping plane. Keep as big as possible, or you'll get precision issues.
 			1000.0f // Far clipping plane. Keep as little as possible.
 			);
+
+		std::cout << "CamPos: " << glm::to_string(m_vec3CamPos) << std::endl;
 	}
 
 	CameraPerspective::CameraPerspective()		
@@ -83,13 +85,19 @@ namespace camera
 
 	}
 
-	void CameraPerspective::moveCam(const float x, const float y, const float z)
+	void CameraPerspective::moveCam(const float forward_backward, const float right_left, const float up_down)
 	{
-		if (m_bCanMove)
+		//if (m_bCanMove)
 		{
-			m_vec3CamPos += glm::vec3(x, y, z);
+			const glm::vec3 cameraForward = -glm::normalize(m_vec3ViewDirection);
+			const glm::vec3 cameraRight = glm::normalize(glm::cross(m_glm_up, m_vec3ViewDirection));
+			const glm::vec3 cameraUp =  -glm::normalize(glm::cross(m_vec3ViewDirection, cameraRight));
+
+			this->m_vec3CamPos += cameraForward*forward_backward + cameraRight*right_left + cameraUp*up_down;
+
+			this->calcMatrix();
 		}
-		this->calcMatrix();
+
 	}
 
 } /* namespace camera */

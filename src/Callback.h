@@ -15,9 +15,8 @@
 
 void error_callback(int error, const char* description)
 {
-    std::cerr << description << std::endl;
+	std::cerr << description << std::endl;
 }
-
 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -34,65 +33,23 @@ static void cursor_position_callback(GLFWwindow* window, double xpos, double ypo
 	oldY = ypos;
 }
 
-
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
 	{
-    	std::cout << "Right press" << std::endl;
-    	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		std::cout << "Right press" << std::endl;
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		SCamControll().activateMovment();
 		
-    }
-    else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
+	}
+	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
 	{
-    	std::cout << "Right release" << std::endl;
-    	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		std::cout << "Right release" << std::endl;
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 		SCamControll().deactivateMovment();
 
-    }
-    else
-    {
-
-    }
-}
-
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (action == GLFW_PRESS)
-	{
-		switch (key)
-		{
-		case GLFW_KEY_A:
-			break;
-		case GLFW_KEY_W:
-			break;
-		case GLFW_KEY_S:
-			break;
-		case GLFW_KEY_D:
-			break;
-		default:
-			break;
-		}
-	}
-	else if (action == GLFW_RELEASE)
-	{
-		switch (key)
-		{
-		case GLFW_KEY_A:
-			break;
-		case GLFW_KEY_W:
-			break;
-		case GLFW_KEY_S:
-			break;
-		case GLFW_KEY_D:
-			break;
-		default:
-			break;
-		}
 	}
 	else
 	{
@@ -100,11 +57,64 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 }
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (mods != 0 && action != GLFW_RELEASE)
+	{
 
-void FreeImageErrorHandler(FREE_IMAGE_FORMAT fif, const char *message) 
+		return;
+	}
+	else
+	{
+		helper::CameraControll::direction mov = helper::CameraControll::noMovment;
+
+		switch (key)
+		{
+		case GLFW_KEY_A:
+			mov = helper::CameraControll::left;
+			break;
+		case GLFW_KEY_W:
+			mov = helper::CameraControll::forward;
+			break;
+		case GLFW_KEY_S:
+			mov = helper::CameraControll::backward;
+			break;
+		case GLFW_KEY_D:
+			mov = helper::CameraControll::right;
+			break;
+		case GLFW_KEY_SPACE:
+			mov = helper::CameraControll::up;
+			break;
+		case GLFW_KEY_LEFT_SHIFT:
+			mov = helper::CameraControll::down;
+			break;
+		default:
+			break;
+		}
+
+		if (action == GLFW_PRESS)
+		{
+			SCamControll().move(mov, false);
+		}
+		else if (action == GLFW_RELEASE)
+		{
+			SCamControll().move(mov, true);
+		}
+		else
+		{
+
+		}
+
+
+	}
+
+}
+
+void FreeImageErrorHandler(FREE_IMAGE_FORMAT fif, const char *message)
 {
 	printf("\n*** ");
-	if (fif != FIF_UNKNOWN) {
+	if (fif != FIF_UNKNOWN)
+	{
 		printf("%s Format\n", FreeImage_GetFormatFromFIF(fif));
 	}
 	printf(message);

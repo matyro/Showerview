@@ -11,6 +11,8 @@
 
 #include <GL/glew.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 namespace render
 {
 
@@ -42,7 +44,7 @@ namespace render
 
 		glGenBuffers(1, &m_uiVBO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_uiVBO);
-		glBufferData(GL_ARRAY_BUFFER, 3*36*sizeof(float), &skyboxVertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 0*sizeof(float), m_vertexData.get(), GL_STATIC_DRAW);
 
 		glGenVertexArrays(1, &m_uiVAO);
 		glBindVertexArray(m_uiVAO);
@@ -96,7 +98,7 @@ namespace render
 
 
 		glBindVertexArray(this->m_uiVAO);
-		glDrawArrays(GL_LINES, 0, m_std_lines.size()*2 );
+		glDrawArrays(GL_POINTS, 0, m_std_lines.size());
 
 		this->deactivateContext();
 	}
@@ -107,25 +109,25 @@ namespace render
 		// 3,4,5:		direction
 		// 6,7,8,9:	Color
 		// 10:			width
-		float data[m_std_lines.size() * 11 * 2];
+		m_vertexData = std::unique_ptr<float[]>( new float[m_std_lines.size() * 11] );
 
 		int counter = 0;
 		for(const Line itr : m_std_lines)
 		{
-			std::memcpy(&data[counter*11 + 0], itr.start.pos, 3*sizeof(float) );
-			data[counter*11 + 3] = itr.end.pos[0] - itr.start.pos[0];
-			data[counter*11 + 4] = itr.end.pos[1] - itr.start.pos[1];
-			data[counter*11 + 5] = itr.end.pos[2] - itr.start.pos[1];
-			std::memcpy(&data[counter*11 + 6], itr.start.color, 4*sizeof(float) );
-			data[counter*11 + 10] = itr.start.width;
+			std::memcpy(&m_vertexData[counter*11 + 0], itr.start.pos, 3*sizeof(float) );
+			m_vertexData[counter*11 + 3] = itr.end.pos[0] - itr.start.pos[0];
+			m_vertexData[counter*11 + 4] = itr.end.pos[1] - itr.start.pos[1];
+			m_vertexData[counter*11 + 5] = itr.end.pos[2] - itr.start.pos[1];
+			std::memcpy(&m_vertexData[counter*11 + 6], itr.start.color, 4*sizeof(float) );
+			m_vertexData[counter*11 + 10] = itr.start.width;
 
-			counter++;
+			/*counter++;
 			std::memcpy(&data[counter*11 + 0], itr.end.pos, 3*sizeof(float) );
 			data[counter*11 + 3] = itr.end.pos[0] - itr.start.pos[0];
 			data[counter*11 + 4] = itr.end.pos[1] - itr.start.pos[1];
 			data[counter*11 + 5] = itr.end.pos[2] - itr.start.pos[2];
 			std::memcpy(&data[counter*11 + 6], itr.end.color, 4*sizeof(float) );
-			data[counter*11 + 10] = itr.end.width;
+			data[counter*11 + 10] = itr.end.width;*/
 		}
 
 

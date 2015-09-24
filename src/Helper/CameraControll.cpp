@@ -28,10 +28,16 @@ namespace helper
 
 	void CameraControll::rotate(const float deltaX, const float deltaY)
 	{
-		if (m_camOpenGLCam != nullptr)
+		if (m_o_OpenGLCam != nullptr)
 		{
-			m_camOpenGLCam->rotateCam(deltaY*m_fRotationSpeed, -deltaX*m_fRotationSpeed, 0);
+			m_o_OpenGLCam->rotateCam(deltaY*m_fRotationSpeed, -deltaX*m_fRotationSpeed, 0);
 		}
+	}
+
+	void CameraControll::move(direction dir, bool stop)
+	{
+		if(dir != noMovment)
+			this->m_uiMovmentDir[dir] = stop ? 0 : 1;
 	}
 
 	void CameraControll::setTime(const double time)
@@ -39,6 +45,18 @@ namespace helper
 		static double oldTime = time;
 		m_dDeltaTime = oldTime - time;
 		oldTime = time;
+	}
+
+	void CameraControll::update()
+	{
+		float mov[3];
+
+		mov[0] = m_dDeltaTime * m_fMovementSpeed * (this->m_uiMovmentDir[forward] - this->m_uiMovmentDir[backward]);
+		mov[1] = m_dDeltaTime * m_fMovementSpeed * (this->m_uiMovmentDir[right] - this->m_uiMovmentDir[left]);
+		mov[2] = m_dDeltaTime * m_fMovementSpeed * (this->m_uiMovmentDir[up] - this->m_uiMovmentDir[down]);
+
+		if( mov[0] || mov[1] || mov[2])
+			this->m_o_OpenGLCam->moveCam(mov[0], mov[1], mov[2]);
 	}
 }
 

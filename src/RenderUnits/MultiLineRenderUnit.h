@@ -60,6 +60,8 @@ namespace render
 
 		std::unique_ptr<Shader> m_o_Shader;
 
+		std::unique_ptr<float[]> m_vertexData;
+
 		void activateContext() const;
 		void deactivateContext() const;
 

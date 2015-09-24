@@ -30,7 +30,6 @@
 #include "Helper/CameraControll.h"
 
 
-
 int main(int argc, const char* argv[])
 {
 	FreeImage_Initialise(true);
@@ -122,6 +121,7 @@ int main(int argc, const char* argv[])
 		time = glfwGetTime(); //time since init
 
 		SCamControll().setTime(time);
+		SCamControll().update();
 
 		// Check and call events
 		glfwPollEvents();
