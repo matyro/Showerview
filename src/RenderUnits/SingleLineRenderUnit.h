@@ -35,8 +35,8 @@ namespace render
 			return x > 0 ? x : -x;
 		}
 
-		void activateContext();
-		void deactivateContext();
+		void activateContext() const ;
+		void deactivateContext() const ;
 	public:
 
 		LineRender();
@@ -51,7 +51,7 @@ namespace render
 				float alpha    					// alpha channel
 				);
 
-		void draw(glm::mat4 camMatrix);
+		void draw(glm::mat4 camMatrix) const;
 
 	};
 }

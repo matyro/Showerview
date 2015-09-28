@@ -23,6 +23,8 @@ namespace render
 		float pos[3];
 		float width;
 		float color[4];
+
+		static const unsigned int vertexElements = 8;
 	};
 	
 	struct Line

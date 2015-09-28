@@ -102,6 +102,7 @@ Shader::Shader(const GLchar* const vertexPath, const GLchar* const fragmentPath)
 
 		glDeleteProgram(this->m_uiProgram);
 		std::cout << "Shader Error (Linking failed): " << &errorLog[0] << std::endl;
+		exit(-2);
 	}
 	else
 	{
@@ -139,19 +140,20 @@ Shader::Shader(const GLchar* const vertexPath, const GLchar* const fragmentPath,
 	glLinkProgram(this->m_uiProgram);
 
 	// Print linking errors if any
-	GLint success;
+	GLint success = -1;
 	glGetProgramiv(this->m_uiProgram, GL_LINK_STATUS, &success);
 	if (success == GL_FALSE)
 	{
 		GLint messageLength = 0;
 
-		glGetShaderiv(this->m_uiProgram, GL_INFO_LOG_LENGTH, &messageLength);
+		glGetProgramiv(this->m_uiProgram, GL_INFO_LOG_LENGTH, &messageLength);
 		std::vector<GLchar> errorLog(messageLength);
 
-		glGetShaderInfoLog(this->m_uiProgram, messageLength, NULL, &errorLog[0]);
+		glGetProgramInfoLog(this->m_uiProgram, messageLength, NULL, errorLog.data());
 
 		glDeleteProgram(this->m_uiProgram);
-		std::cout << "Shader Error (Linking failed): " << &errorLog[0] << std::endl;
+		std::cout << "Shader Error (Linking failed): " << errorLog.data() << std::endl;
+		exit(-3);
 	}
 	else
 	{
@@ -165,6 +167,14 @@ Shader::Shader(const GLchar* const vertexPath, const GLchar* const fragmentPath,
 	glDeleteShader(geometryShader);
 
 	ErrorLog<0>::OpenGLError("Shader load failed somehow!");
+}
+
+Shader::~Shader()
+{
+	if (this->m_uiProgram != 0)
+	{
+		glDeleteProgram(this->m_uiProgram);
+	}
 }
 
 
@@ -181,7 +191,7 @@ GLint Shader::attribute(const std::string &attribute)
 	else
 	{
 		std::cout << "Could not find attribute in shader program: " << attribute << std::endl;
-		exit(-1);
+		exit(-14);
 	}
 }
 
@@ -198,19 +208,20 @@ GLint Shader::uniform(const std::string &uniform)
 	else
 	{
 		std::cout << "Could not find uniform in shader program: " << uniform << std::endl;
-		exit(-1);
+		exit(-12);
 	}
 }
 
 GLint Shader::addAttribute(const std::string& attributeName)
 {
 	m_std_attributeLocationList[attributeName] = glGetAttribLocation(this->m_uiProgram, attributeName.c_str());
+	ErrorLog<0>::OpenGLError("Shader load failed somehow!");
 
 	// Check to ensure that the shader contains an attribute with this name
 	if (m_std_attributeLocationList[attributeName] == -1)
 	{
 		std::cout << "Could not add attribute: " << attributeName << " - location returned -1!" << std::endl;
-		exit(-1);
+		exit(-13);
 	}
 	else
 	{
@@ -228,7 +239,7 @@ GLint Shader::addUniform(const std::string &uniformName)
 	if (m_std_uniformLocationList[uniformName] == -1)
 	{
 		std::cout << "Could not add uniform: " << uniformName << " - location returned -1!" << std::endl;
-		exit(-1);
+		exit(-11);
 	}
 	else
 	{

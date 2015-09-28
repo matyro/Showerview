@@ -31,8 +31,11 @@
 #include "Helper/CameraControll.h"
 
 
+
+
 int main(int argc, const char* argv[])
 {
+		
 	FreeImage_Initialise(true);
 	FreeImage_SetOutputMessage(FreeImageErrorHandler);
 
@@ -51,7 +54,7 @@ int main(int argc, const char* argv[])
 	//Early error Callback
 	glfwSetErrorCallback(error_callback);
 
-	GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(800, 600, "Showerview", NULL, NULL);
 	if (!window)
 	{
 		std::cerr << "Window creation failed" << std::endl;
@@ -103,15 +106,15 @@ int main(int argc, const char* argv[])
     render::MultiLineRenderUnit LineRender;
     LineRender.init();
 
-    LineRender.addLine(render::LineVertex({{0,-5,0},0,{0,1,0,1}}), render::LineVertex({{0,5,0},0,{0,1,0,1}}));
-    LineRender.updateLines();
+	render::LineRender line;
+	line.init();
+	line.line(1, 1, 0, 3, 3, 0, 1, 1, 1, 0, 0.5);
 
 	double time = glfwGetTime();
 
 	//OpenGL Settings
 
 	
-
     ////////////////////////////////////////////////
 	//Mainloop
 	std::cout << "Enter mainloop" << std::endl;
@@ -144,17 +147,19 @@ int main(int argc, const char* argv[])
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		LineRender.draw( cam->getMatrix() );
+		//LineRender.draw( cam->getProjectionViewMatrix() );
+
+		//line.draw(glm::ortho(0.0f, 5.0f, 0.0f, 4.0f ));
 
 		// Rendertext
-		/*
-		rndmText.RenderText( "Corsika Viewer", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-		rndmText.RenderText( "-!*", 200.0f, 70.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
-		*/
+		
+		//rndmText.RenderText( "Corsika Viewer", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+		//rndmText.RenderText( "-!*", 200.0f, 70.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+		
 
 		// Render lines
 
-		sky.draw( cam->getMatrix() );
+		sky.draw( cam->getProjectionViewMatrix() );
 		ErrorLog<0>::OpenGLError("Skybox draw");
 
 		//Buffer switch
@@ -173,7 +178,7 @@ int main(int argc, const char* argv[])
 	std::cout << "Press enter to terminate" << std::endl;
 	std::cin.get();
 	std::cin.get();
-
+	
 
 	return 0;
 }

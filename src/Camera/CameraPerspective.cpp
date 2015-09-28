@@ -30,13 +30,13 @@ namespace camera
 			1000.0f // Far clipping plane. Keep as little as possible.
 			);
 
-		std::cout << "CamPos: " << glm::to_string(m_vec3CamPos) << std::endl;
+		//std::cout << "CamPos: " << glm::to_string(m_vec3CamPos) << std::endl;
 	}
 
 	CameraPerspective::CameraPerspective()		
 	{
 		m_vec3CamPos = glm::vec3(0.0f, 0.0f, 0.0f);
-		m_vec3ViewDirection = glm::vec3(-1.0f, 0.0f, 0.0f);
+		m_vec3ViewDirection = glm::vec3(0.0f, 0.0f, -1.0f);
 
 		m_glm_up = glm::vec3(0, 1, 0);
 		m_bCanMove = false;
@@ -46,7 +46,7 @@ namespace camera
 
 
 
-	const glm::mat4 CameraPerspective::getMatrix() const
+	const glm::mat4 CameraPerspective::getProjectionViewMatrix() const
 	{
 		return m_glm_projectionMatrix * m_glm_viewMatrix;
 	}

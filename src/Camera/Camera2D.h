@@ -24,7 +24,7 @@ namespace camera {
 
 
 	public:
-		glm::mat4 getMatrix(){ return glm::ortho(0.0f, static_cast<float>(800), 0.0f, static_cast<float>(600)); }
+		glm::mat4 getProjectionViewMatrix(){ return glm::ortho(0.0f, static_cast<float>(800), 0.0f, static_cast<float>(600)); }
 
 		void rotateCam(const float, const float, const float){}
 		void moveCam(const float, const float, const float){}

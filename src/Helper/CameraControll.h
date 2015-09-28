@@ -28,7 +28,7 @@ namespace helper
 		float m_fDeltaXAcc, m_fDeltaYAcc;
 
 		const float m_fRotationSpeed = 0.005; 	// Degree/Pixel
-		const float m_fMovementSpeed = 0.5;		// OpenGL Units / sec
+		const float m_fMovementSpeed = 2.5;		// OpenGL Units / sec
 
 		bool m_uiMovmentDir[6] = {0,0,0,0,0,0};
 

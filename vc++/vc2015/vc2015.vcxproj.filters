@@ -81,6 +81,9 @@
     <ClInclude Include="..\..\src\Helper\ErrorLog.h">
       <Filter>Headerdateien\Helper</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\OGLWrapper\Vertex.h">
+      <Filter>Headerdateien\OGLWrapper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Camera\Camera.cpp">
@@ -120,6 +123,9 @@
       <Filter>Quelldateien\RenderUnits</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\OGLWrapper\Texture.cpp">
+      <Filter>Quelldateien\OGLWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OGLWrapper\Vertex.cpp">
       <Filter>Quelldateien\OGLWrapper</Filter>
     </ClCompile>
   </ItemGroup>

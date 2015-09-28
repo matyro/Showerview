@@ -27,7 +27,7 @@ namespace camera
 	public:
 		virtual ~Camera();
 
-		virtual const glm::mat4 getMatrix() const = 0;
+		virtual const glm::mat4 getProjectionViewMatrix() const = 0;
 
 		virtual void rotateCam(const float, const float, const float) = 0;	//pitch, yaw, roll
 		virtual void moveCam(const float, const float, const float) = 0;	// x, y, z movement in Worldspace

@@ -35,7 +35,7 @@ public:
 	   
 	static inline void OpenGLError(const char* const message) 
 	{
-		if (verboseCheck())
+		if (verboseCheck() ||true)
 		{
 			GLenum glError = GL_NO_ERROR;
 			while ((glError = glGetError()) != GL_NO_ERROR)

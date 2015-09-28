@@ -19,72 +19,72 @@ namespace render
 	void MultiLineRenderUnit::activateContext() const
 	{
 		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_EQUAL);// Accept fragment if it closer to the camera than the former one
+		glDepthFunc(GL_LESS);
 
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glEnable(GL_BLEND);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	void MultiLineRenderUnit::deactivateContext() const
 	{ 
-		glDisable(GL_BLEND); //restore blending options
+		glDisable(GL_BLEND); 
 		glDisable(GL_DEPTH_TEST);
 	}
 
 	void MultiLineRenderUnit::init()
 	{
-		m_o_Shader = std::unique_ptr<Shader>(new Shader("Shader/MultiLine.vs", "Shader/MultiLine.frag", "Shader/MultiLine.geo"));
+		m_vertexData = std::unique_ptr<float[]>(new float[21]);
+		
+		float arr[] = { 
+			-1.0f, -1.0f, -3.0f,
+			1.0f, 0.0f, 0.0f, 0.5f,
+
+			1.0f, -1.0f, -3.0f,
+			0.0f, 1.0f, 0.0f, 0.5f,
+
+			0.0f, 1.0f, -3.0f,
+			0.0f, 0.0f, 1.0f, 0.5f 
+		};
+	
+		memcpy(m_vertexData.get(), arr, sizeof(float) * 21);
+
+		m_o_Shader = std::unique_ptr<Shader>(new Shader("Shader/MultiLine.vs", "Shader/MultiLine.frag"));//
 		m_o_Shader->Use();
-		m_o_Shader->addUniform("projection");
-		//m_o_Shader->addUniform("cameraPos");
-
-		GLint inPosLocation = m_o_Shader->addAttribute("start");
-		GLint inDirLocation = m_o_Shader->addAttribute("line");
+		
+		GLint inPosLocation = m_o_Shader->addAttribute("position");
 		GLint inColLocation = m_o_Shader->addAttribute("color");
-		GLint inWidthLocation = m_o_Shader->addAttribute("width");
-
-		glGenBuffers(1, &m_uiVBO);
-		glBindBuffer(GL_ARRAY_BUFFER, m_uiVBO);
-		glBufferData(GL_ARRAY_BUFFER, 0*sizeof(float), m_vertexData.get(), GL_STATIC_DRAW);
-
+		
+		//m_o_Shader->addUniform("projection");
+		
 		glGenVertexArrays(1, &m_uiVAO);
 		glBindVertexArray(m_uiVAO);
 
-		glEnableVertexAttribArray(inPosLocation);	// Set up the vertex attribute pointer for the Vertex attribute
-		glVertexAttribPointer(inPosLocation,  		// Attribute location
+
+		glGenBuffers(1, &m_uiVBO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_uiVBO);
+		glBufferData(GL_ARRAY_BUFFER, 21 * sizeof(float), m_vertexData.get(), GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);	// Set up the vertex attribute pointer for the Vertex attribute
+		glVertexAttribPointer(0,  		// Attribute location
 						3,                    	// Number of elements per vertex, here (x,y,z)
 						GL_FLOAT,               // Data type of each element
 						GL_FALSE,               // Normalised?
-						11 * sizeof(float),     // Stride
+						0,     // Stride
 						0                       // Offset
-						);
-		glEnableVertexAttribArray(inDirLocation);
-		glVertexAttribPointer(inDirLocation,
-						3,
-						GL_FLOAT,
-						GL_FALSE,
-						11 * sizeof(float),
-						(void*) (3 * sizeof(float))
-						);
-		glEnableVertexAttribArray(inColLocation);
-		glVertexAttribPointer(inColLocation,
+						);		
+
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1,
 						4,
 						GL_FLOAT,
 						GL_FALSE,
-						11 * sizeof(float),
-						(void*) (6 * sizeof(float))
-						);
-		glEnableVertexAttribArray(inWidthLocation);
-		glVertexAttribPointer(inWidthLocation,
-						1,
-						GL_FLOAT,
-						GL_FALSE,
-						11 * sizeof(float),
-						(void*) (10 * sizeof(float))
-						);
+						0,
+						(void*) (3 * sizeof(float))
+						);		
 
 		glBindVertexArray(0);
 
+		//glDeleteBuffers(1, &m_uiVBO);
 	}
 
 	void MultiLineRenderUnit::draw(glm::mat4 camMatrix) const
@@ -95,11 +95,14 @@ namespace render
 
 		glm::vec3 camPos = glm::vec3(camMatrix[3]);
 		//glUniformMatrix4fv(m_o_Shader->uniform("camPos"), 1, GL_FALSE, glm::value_ptr(camPos));
-		glUniformMatrix4fv(m_o_Shader->uniform("projection"), 1, GL_FALSE, glm::value_ptr(camMatrix));
+		//glUniformMatrix4fv(m_o_Shader->uniform("projection"), 1, GL_FALSE, glm::value_ptr(camMatrix));
 
-
+		
 		glBindVertexArray(this->m_uiVAO);
-		glDrawArrays(GL_POINTS, 0, m_std_lines.size());
+		glDrawArrays(GL_TRIANGLES, 0, m_std_lines.size()*2);
+
+		glDisableVertexAttribArray(0); 
+		glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
 		this->deactivateContext();
 	}
@@ -110,28 +113,28 @@ namespace render
 		// 3,4,5:		direction
 		// 6,7,8,9:	Color
 		// 10:			width
-		m_vertexData = std::unique_ptr<float[]>( new float[m_std_lines.size() * 11] );
+		m_vertexData = std::unique_ptr<float[]>( new float[m_std_lines.size() * 7 * 3] );
 
 		int counter = 0;
 		for(const Line itr : m_std_lines)
 		{
-			std::memcpy(&m_vertexData[counter*11 + 0], itr.start.pos, 3*sizeof(float) );
-			m_vertexData[counter*11 + 3] = itr.end.pos[0] - itr.start.pos[0];
-			m_vertexData[counter*11 + 4] = itr.end.pos[1] - itr.start.pos[1];
-			m_vertexData[counter*11 + 5] = itr.end.pos[2] - itr.start.pos[1];
-			std::memcpy(&m_vertexData[counter*11 + 6], itr.start.color, 4*sizeof(float) );
-			m_vertexData[counter*11 + 10] = itr.start.width;
+			std::memcpy(&m_vertexData[counter*7 + 0], itr.start.pos, 3*sizeof(float) );
+			std::memcpy(&m_vertexData[counter*7 + 3], itr.start.color, 4*sizeof(float) );
+			counter++;
 
-			/*counter++;
-			std::memcpy(&data[counter*11 + 0], itr.end.pos, 3*sizeof(float) );
-			data[counter*11 + 3] = itr.end.pos[0] - itr.start.pos[0];
-			data[counter*11 + 4] = itr.end.pos[1] - itr.start.pos[1];
-			data[counter*11 + 5] = itr.end.pos[2] - itr.start.pos[2];
-			std::memcpy(&data[counter*11 + 6], itr.end.color, 4*sizeof(float) );
-			data[counter*11 + 10] = itr.end.width;*/
+			std::memcpy(&m_vertexData[counter * 7 + 0], itr.end.pos, 3 * sizeof(float));
+			std::memcpy(&m_vertexData[counter * 7 + 3], itr.end.color, 4 * sizeof(float));
+			counter++;
+
+			std::memcpy(&m_vertexData[counter * 7 + 0], itr.end.pos, 3 * sizeof(float));
+			std::memcpy(&m_vertexData[counter * 7 + 3], itr.end.color, 4 * sizeof(float));
+
+			m_vertexData[counter * 7 + 1] += 2.0;
+			counter++;
 		}
 
-
+		glBindBuffer(GL_ARRAY_BUFFER, m_uiVBO);
+		glBufferData(GL_ARRAY_BUFFER, m_std_lines.size() * 7 * 2 * sizeof(float), m_vertexData.get(), GL_STATIC_DRAW);
 	}
 
 	void MultiLineRenderUnit::addLine(const LineVertex start, const LineVertex end)

@@ -35,6 +35,8 @@ public:
 	Shader(const GLchar* const vertexPath, const GLchar* const fragmentPath);
 	Shader(const GLchar* const vertexPath, const GLchar* const fragmentPath, const GLchar* const geometryPath);
 
+	~Shader();
+
     // Uses the current shader
     inline void Use() const
     {

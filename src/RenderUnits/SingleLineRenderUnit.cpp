@@ -68,7 +68,7 @@ namespace render
 		glBindVertexArray(0);
 	}
 
-	void LineRender::activateContext()
+	void LineRender::activateContext() const
 	{		
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_EQUAL);// Accept fragment if it closer to the camera than the former one
@@ -79,7 +79,7 @@ namespace render
 		shader->Use();
 	}
 
-	void LineRender::deactivateContext()
+	void LineRender::deactivateContext() const
 	{
 		//other drawing code...
 		glDisable(GL_BLEND); //restore blending options		
@@ -143,7 +143,7 @@ namespace render
 		glBufferData(GL_ARRAY_BUFFER, 3 * 8 * sizeof(float) + 8 * 4 * sizeof(float), para_vertex, GL_STATIC_DRAW);
 	}
 
-	void LineRender::draw(glm::mat4 camMatrix)
+	void LineRender::draw(glm::mat4 camMatrix) const
 	{
 		activateContext();
 

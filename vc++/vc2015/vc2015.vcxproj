@@ -60,15 +60,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>E:\Desktop\Showerview\glfw-3.1.1.bin.WIN64\include;E:\Desktop\Showerview\glew-1.13.0\include;E:\Desktop\Showerview\freetype-2.6\include;E:\Desktop\Showerview\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\glm;..\..\..\glfw-3.1.1.bin.WIN32\include;..\..\..\glew-1.13.0\include;..\..\..\freetype-2.6\include;..\..\..\Showerview\src;..\..\..\FreeImage\Dist\x32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;freetype26d.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\freetype-2.6\objs\vc2010\Win32;..\..\..\glfw-3.1.1.bin.WIN32\lib-vc2013;..\..\..\glew-1.13.0\lib\Release\Win32;..\..\..\FreeImage\Dist\x32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3dll.lib;freetype26.lib;glew32.lib;glu32.lib;opengl32.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -81,6 +80,7 @@
     <ClInclude Include="..\..\src\Helper\ErrorLog.h" />
     <ClInclude Include="..\..\src\OGLWrapper\Shader.h" />
     <ClInclude Include="..\..\src\OGLWrapper\Texture.h" />
+    <ClInclude Include="..\..\src\OGLWrapper\Vertex.h" />
     <ClInclude Include="..\..\src\RenderUnits\MultiLineRenderUnit.h" />
     <ClInclude Include="..\..\src\RenderUnits\RenderUnit.h" />
     <ClInclude Include="..\..\src\RenderUnits\SingleLineRenderUnit.h" />
@@ -95,6 +95,7 @@
     <ClCompile Include="..\..\src\Helper\CameraControll.cpp" />
     <ClCompile Include="..\..\src\OGLWrapper\Shader.cpp" />
     <ClCompile Include="..\..\src\OGLWrapper\Texture.cpp" />
+    <ClCompile Include="..\..\src\OGLWrapper\Vertex.cpp" />
     <ClCompile Include="..\..\src\OpenGL-Viewer.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\MultiLineRenderUnit.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\RenderUnit.cpp" />
