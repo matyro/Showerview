@@ -25,7 +25,7 @@ namespace render
 
 		virtual ~RenderUnit();
 
-		void init();
+		virtual void init();
 
 		virtual void draw(glm::mat4) const = 0;
 
