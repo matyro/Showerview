@@ -81,10 +81,13 @@
     <ClInclude Include="..\..\src\OGLWrapper\Shader.h" />
     <ClInclude Include="..\..\src\OGLWrapper\Texture.h" />
     <ClInclude Include="..\..\src\OGLWrapper\Vertex.h" />
+    <ClInclude Include="..\..\src\OGLWrapper\VertexAttribute.h" />
+    <ClInclude Include="..\..\src\RenderUnits\Ball.h" />
     <ClInclude Include="..\..\src\RenderUnits\MultiLineRenderUnit.h" />
     <ClInclude Include="..\..\src\RenderUnits\RenderUnit.h" />
     <ClInclude Include="..\..\src\RenderUnits\SingleLineRenderUnit.h" />
     <ClInclude Include="..\..\src\RenderUnits\Skybox.h" />
+    <ClInclude Include="..\..\src\RenderUnits\Square.h" />
     <ClInclude Include="..\..\src\RenderUnits\TextRenderUnit.h" />
   </ItemGroup>
   <ItemGroup>
@@ -96,11 +99,14 @@
     <ClCompile Include="..\..\src\OGLWrapper\Shader.cpp" />
     <ClCompile Include="..\..\src\OGLWrapper\Texture.cpp" />
     <ClCompile Include="..\..\src\OGLWrapper\Vertex.cpp" />
+    <ClCompile Include="..\..\src\OGLWrapper\VertexAttribute.cpp" />
     <ClCompile Include="..\..\src\OpenGL-Viewer.cpp" />
+    <ClCompile Include="..\..\src\RenderUnits\Ball.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\MultiLineRenderUnit.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\RenderUnit.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\SingleLineRenderUnit.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\Skybox.cpp" />
+    <ClCompile Include="..\..\src\RenderUnits\Square.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\TextRenderUnit.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

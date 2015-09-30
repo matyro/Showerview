@@ -84,6 +84,15 @@
     <ClInclude Include="..\..\src\OGLWrapper\Vertex.h">
       <Filter>Headerdateien\OGLWrapper</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\OGLWrapper\VertexAttribute.h">
+      <Filter>Headerdateien\OGLWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RenderUnits\Ball.h">
+      <Filter>Headerdateien\RenderUnits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\RenderUnits\Square.h">
+      <Filter>Headerdateien\RenderUnits</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Camera\Camera.cpp">
@@ -127,6 +136,15 @@
     </ClCompile>
     <ClCompile Include="..\..\src\OGLWrapper\Vertex.cpp">
       <Filter>Quelldateien\OGLWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OGLWrapper\VertexAttribute.cpp">
+      <Filter>Quelldateien\OGLWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RenderUnits\Ball.cpp">
+      <Filter>Quelldateien\RenderUnits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\RenderUnits\Square.cpp">
+      <Filter>Quelldateien\RenderUnits</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
