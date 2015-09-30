@@ -15,6 +15,19 @@
 
 #include "VertexAttribute.h"
 
+struct VertexData2
+{
+  GLfloat position[3];
+  GLubyte color[4];
+};
+
+struct VertexData3
+{
+  GLfloat position[3];
+  GLfloat normal[3];
+  GLubyte color[4];
+};
+
 template<std::size_t tNumberOfAttributes>
 class Vertex
 {
@@ -23,7 +36,7 @@ private:
 	GLuint m_uiVAO;
 	GLuint m_uiIBO;	//Index Buffer Object
 
-	std::array<const AttributeSetting, tNumberOfAttributes> m_std_AttribList;
+	AttributeSetting m_std_AttribList[tNumberOfAttributes];
 
 	std::shared_ptr<void> m_vData;
 	std::shared_ptr<GLuint> m_uiIndexList;
@@ -42,12 +55,11 @@ public:
 		glGenBuffers(1, &m_uiVBO);
 	}
 
-	void setSettings(std::array<const AttributeSetting, tNumberOfAttributes>& attribute)
+	template<unsigned int id>
+	void setSettings(const AttributeSetting& attribute)
 	{
-		for(int i=0; i<tNumberOfAttributes; i++)
-		{
-			m_std_AttribList.data()[i].set(attribute[i]);
-		}
+		static_assert(id >= 0 || id < tNumberOfAttributes, "ID out of bounds!");
+		m_std_AttribList[id].set( attribute );
 	}
 
 	~Vertex()
@@ -63,17 +75,16 @@ public:
 
 	}
 	
-	void applySettings(const std::array<GLuint, tNumberOfAttributes>&& index) const
+	void applySettings(const unsigned int stride)
 	{
 		glBindVertexArray(m_uiVAO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_uiVBO);
 
 		int counter = 0;
 		int offset = 0;
-		int stride = 0;
 		for (auto itr : m_std_AttribList)
 		{
-			itr.applySetting(index[counter], stride, offset);
+			itr.applySetting(stride, offset);
 			counter++;
 
 			offset = itr.getSize();
@@ -82,20 +93,21 @@ public:
 		m_uiBlockSize = offset;
 
 		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	}
 
 	void transmitData(GLenum usage = GL_STATIC_DRAW) const
 	{
 		glBindVertexArray(this->m_uiVAO);
+
 		glBindBuffer(GL_ARRAY_BUFFER, this->m_uiVBO);
-
 		glBufferData(GL_ARRAY_BUFFER, this->m_uiDataSize, this->m_vData.get(), usage);
-
-		glBindVertexArray(0);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_uiIBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->m_uiIndexSize * sizeof(GLuint), this->m_uiIndexList.get(), GL_STATIC_DRAW);
+
+		glBindVertexArray(0);
 	}
 
 	//end, start = start and stop index to draw
@@ -109,7 +121,7 @@ public:
 		glBindVertexArray(this->m_uiVAO);
 
 		// Index buffer
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_uiIBO);
+	//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_uiIBO);
 
 		// Draw the triangles !
 		glDrawElements(drawMode,      // mode

@@ -7,37 +7,27 @@
 
 #include "VertexAttribute.h"
 
-constexpr unsigned int AttributeSetting::getSize() const
+void AttributeSetting::applySetting() const
 {
-	return m_eAttributeSize
-	* ((m_eAttributeType == eType::Byte || m_eAttributeType == eType::uByte || m_eAttributeType == eType::Int || m_eAttributeType == eType::uInt
-					|| m_eAttributeType == eType::Float || m_eAttributeType == eType::Compressed || m_eAttributeType == eType::uCompressed) ?
-			4 :
-			((m_eAttributeType == eType::Short || m_eAttributeType == eType::uShort || m_eAttributeType == eType::hFloat) ? 2 :
-					(m_eAttributeType == eType::Double) ? 4 : 0));
-}
-
-void AttributeSetting::applySetting(const GLuint index) const
-{
-	glVertexAttribPointer(index,  		// Attribute location
+	glVertexAttribPointer(m_uiIndex,  		// Attribute location
 			this->m_eAttributeSize, // Number of elements per vertex, here (x,y,z)
 			m_eAttributeType,       // Data type of each element
 			GL_FALSE,               // Normalised?
 			m_uiStride,     			// Stride
-			&m_uiOffset                  // Offset
+			reinterpret_cast<void*>(m_uiOffset)                  // Offset
 			);
-	glEnableVertexAttribArray(index);	// Set up the vertex attribute pointer for the Vertex attribute
+	glEnableVertexAttribArray(m_uiIndex);	// Set up the vertex attribute pointer for the Vertex attribute
 
 }
 
-void AttributeSetting::applySetting(const GLuint index, const unsigned int stride, const unsigned int offset) const
+void AttributeSetting::applySetting(const GLsizei stride, const int offset) const
 {
-	glVertexAttribPointer(index,  		// Attribute location
+	glVertexAttribPointer(m_uiIndex,  		// Attribute location
 			this->m_eAttributeSize, // Number of elements per vertex, here (x,y,z)
 			m_eAttributeType,       // Data type of each element
 			GL_FALSE,               // Normalised?
 			stride,     			// Stride
-			&offset                  // Offset
+			reinterpret_cast<void*>(offset)   // Offset
 			);
-	glEnableVertexAttribArray(index);	// Set up the vertex attribute pointer for the Vertex attribute
+	glEnableVertexAttribArray(m_uiIndex);	// Set up the vertex attribute pointer for the Vertex attribute
 }

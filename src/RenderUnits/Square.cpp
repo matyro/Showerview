@@ -9,6 +9,8 @@
 
 #include "OGLWrapper/VertexAttribute.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 namespace render
 {
 
@@ -24,7 +26,7 @@ namespace render
 
 	Square::Square()
 	{
-
+		memset(m_fCenter,0,3*sizeof(float));
 	}
 
 	Square::~Square()
@@ -34,8 +36,12 @@ namespace render
 
 	void Square::init()
 	{
-		m_o_Shader = std::make_unique<Shader>("Shader/GenericShader.vs","Shader/GenericShader.frag");
+		m_o_Shader = std::unique_ptr<Shader>(new Shader("Shader/line.vs", "Shader/line.frag"));//std::make_unique<Shader>("Shader/line.vs","Shader/line.frag");
+		m_o_Shader->Use();
 		m_o_Shader->addUniform("projection");
+
+		m_o_Shader->addAttribute("in_Pos");
+		//m_o_Shader->addAttribute("in_Col");
 
 		const float vertex[3*8] =
 		{
@@ -49,16 +55,16 @@ namespace render
 				-2.0f,  2.0f, -2.0f
 		};
 
-		const float color[3*8] =
+		const float color[4*8] =
 		{
-				1.0f, 0.0f, 0.0f,
-				1.0f, 1.0f, 0.0f,
-				1.0f, 1.0f, 1.0f,
-				0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f,
-				0.0f, 0.0f, 0.0f,
-				1.0f, 0.0f, 1.0f,
-				0.5f, 0.5f, 0.5f
+				1.0f, 0.0f, 0.0f, 0.5f,
+				1.0f, 1.0f, 0.0f, 0.5f,
+				1.0f, 1.0f, 1.0f, 0.5f,
+				0.0f, 1.0f, 1.0f, 0.5f,
+				0.0f, 0.0f, 1.0f, 0.5f,
+				0.0f, 0.0f, 0.0f, 0.5f,
+				1.0f, 0.0f, 1.0f, 0.5f,
+				0.5f, 0.5f, 0.5f, 0.5f
 		};
 
 		// Element Indicies for the Cube
@@ -78,30 +84,32 @@ namespace render
 			indices.get()[i] = indicesTmp[i];
 		}
 
-		std::shared_ptr<float> data(new float[6*8], std::default_delete<float[]>());
+		std::shared_ptr<float> data(new float[7*8], std::default_delete<float[]>());
 		float* dataPtr = data.get();
 		for(int i=0; i<8; i++)
 		{
-			dataPtr[i*6 + 0] = vertex[i*3 +0];
-			dataPtr[i*6 + 1] = vertex[i*3 +1];
-			dataPtr[i*6 + 2] = vertex[i*3 +2];
+			dataPtr[i*3 + 0] = vertex[i*3 +0] + this->m_fCenter[0];
+			dataPtr[i*3 + 1] = vertex[i*3 +1] + this->m_fCenter[1];
+			dataPtr[i*3 + 2] = vertex[i*3 +2] + this->m_fCenter[2];
 
-			dataPtr[i*6 + 3] = color[i*3 +1];
-			dataPtr[i*6 + 4] = color[i*3 +1];
-			dataPtr[i*6 + 5] = color[i*3 +1];
+			//dataPtr[i*7 + 3] = color[i*4 +0];
+			//dataPtr[i*7 + 4] = color[i*4 +1];
+			//dataPtr[i*7 + 5] = color[i*4 +2];
+			//dataPtr[i*7 + 6] = color[i*4 +3];
 		}
 
 
 		m_o_Vertices.setData( std::static_pointer_cast<void>(data) );
 		m_o_Vertices.setIndices(indices, 36);
 
-		constexpr AttributeSetting vertSetting(AttributeSetting::vec3, AttributeSetting::Float);
-		constexpr AttributeSetting colSetting(AttributeSetting::vec3, AttributeSetting::Float);
+		AttributeSetting vertSetting(AttributeSetting::vec3, AttributeSetting::Float, m_o_Shader->attribute("in_Pos"));
+		//AttributeSetting colSetting(AttributeSetting::vec4, AttributeSetting::Float, m_o_Shader->attribute("in_Col"));
 
-		std::array<const AttributeSetting, 2> test({vertSetting, colSetting});
-		m_o_Vertices.setSettings(test);
+		m_o_Vertices.setSettings<0>(vertSetting);
+		//m_o_Vertices.setSettings<1>(colSetting);
 
 		m_o_Vertices.transmitData();
+		m_o_Vertices.applySettings(0);
 	}
 
 	void Square::draw(glm::mat4 viewProjection) const
