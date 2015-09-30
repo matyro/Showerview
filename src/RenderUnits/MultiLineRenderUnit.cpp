@@ -48,7 +48,7 @@ namespace render
 	
 		memcpy(m_vertexData.get(), arr, sizeof(float) * 21);
 
-		m_o_Shader = std::unique_ptr<Shader>(new Shader("Shader/MultiLine.vs", "Shader/MultiLine.frag"));//
+		m_o_Shader = std::unique_ptr<Shader>(new Shader("Shader/MultiLine.vs", "Shader/MultiLine.frag") );//
 		m_o_Shader->Use();
 		
 		GLint inPosLocation = m_o_Shader->addAttribute("position");

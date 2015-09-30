@@ -22,6 +22,7 @@
 #include "RenderUnits/SingleLineRenderUnit.h"
 #include "RenderUnits/Skybox.h"
 #include "RenderUnits/MultiLineRenderUnit.h"
+#include "RenderUnits/Square.h"
 
 #include "Camera/Camera.h"
 #include "Camera/CameraPerspective.h"
@@ -99,19 +100,15 @@ int main(int argc, const char* argv[])
 	sky.init();
 	ErrorLog<1>::OpenGLError("in Skybox");
 
+
+	render::Square square;
+	square.init();
+
+
+
 	std::cout << "Init timer" << std::endl;
-    double timeCache = glfwGetTime();
+    double time, timeCache = glfwGetTime();
     unsigned long long counter = 0;
-
-    render::MultiLineRenderUnit LineRender;
-    LineRender.init();
-
-	render::LineRender line;
-	line.init();
-	line.line(1, 1, 0, 3, 3, 0, 1, 1, 1, 0, 0.5);
-
-	double time = glfwGetTime();
-
 	//OpenGL Settings
 
 	
@@ -144,21 +141,16 @@ int main(int argc, const char* argv[])
 
 
 		// Clear the colorbuffer
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		std::cout << "ClearColor" << std::endl;
+		glClearColor(0.2f, 0.3f, 0.3f, 0.5f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//LineRender.draw( cam->getProjectionViewMatrix() );
-
-		//line.draw(glm::ortho(0.0f, 5.0f, 0.0f, 4.0f ));
-
-		// Rendertext
 		
-		//rndmText.RenderText( "Corsika Viewer", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-		//rndmText.RenderText( "-!*", 200.0f, 70.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+		std::cout << "SquareDraw" << std::endl;
+		square.draw(cam->getProjectionViewMatrix());
+
 		
-
-		// Render lines
-
+		std::cout << "SkyDraw" << std::endl;
 		sky.draw( cam->getProjectionViewMatrix() );
 		ErrorLog<0>::OpenGLError("Skybox draw");
 

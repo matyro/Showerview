@@ -40,48 +40,48 @@ private:
 
 	GLuint m_uiOffset;
 	GLuint m_uiStride;
+
+	GLuint m_uiIndex;
 public:
 
-	//Returns the size in Byte for the block
-	constexpr unsigned int getSize() const;
-
 	constexpr AttributeSetting() :
-			m_eAttributeSize(_vecUnknown), m_eAttributeType(_typeUnknown), m_uiOffset(0), m_uiStride(0)
+			m_eAttributeSize(_vecUnknown), m_eAttributeType(_typeUnknown), m_uiOffset(0), m_uiStride(0), m_uiIndex(0)
 	{
 	}
 
-	constexpr AttributeSetting(const eSize size, const eType type, const GLuint offset = 0, const GLuint stride = 0) :
-			m_eAttributeSize(size), m_eAttributeType(type), m_uiOffset(offset), m_uiStride(stride)
+	constexpr AttributeSetting(const eSize size, const eType type, const GLuint index, const GLuint offset = 0, const GLuint stride = 0) :
+			m_eAttributeSize(size), m_eAttributeType(type), m_uiOffset(offset), m_uiStride(stride), m_uiIndex(index)
 	{
 	}
 
 	constexpr AttributeSetting(const AttributeSetting& cpy) :
-			m_eAttributeSize(cpy.m_eAttributeSize), m_eAttributeType(cpy.m_eAttributeType), m_uiOffset(cpy.m_uiOffset), m_uiStride(cpy.m_uiStride)
+			m_eAttributeSize(cpy.m_eAttributeSize), m_eAttributeType(cpy.m_eAttributeType), m_uiIndex(cpy.m_uiIndex), m_uiOffset(cpy.m_uiOffset), m_uiStride(
+					cpy.m_uiStride)
 	{
 	}
 
-	const AttributeSetting& operator=(const AttributeSetting& rhs)
+	void set(const AttributeSetting& rhs)
 	{
 		this->m_eAttributeSize = rhs.m_eAttributeSize;
 		this->m_eAttributeType = rhs.m_eAttributeType;
 		this->m_uiOffset = rhs.m_uiOffset;
 		this->m_uiStride = rhs.m_uiStride;
-
-		return *this;
+		this->m_uiIndex = rhs.m_uiIndex;
 	}
 
+	void applySetting() const;
+	void applySetting(const GLsizei stride, const int offset) const;
 
-	void set(const AttributeSetting& rhs)
-		{
-			this->m_eAttributeSize = rhs.m_eAttributeSize;
-			this->m_eAttributeType = rhs.m_eAttributeType;
-			this->m_uiOffset = rhs.m_uiOffset;
-			this->m_uiStride = rhs.m_uiStride;
-		}
-
-
-	void applySetting(const GLuint index) const;
-	void applySetting(const GLuint index, const unsigned int stride, const unsigned int offset) const;
+	//Returns the size in Byte for the block
+	constexpr unsigned int getSize() const
+	{
+		return m_eAttributeSize
+				* ((m_eAttributeType == eType::Byte || m_eAttributeType == eType::uByte || m_eAttributeType == eType::Int || m_eAttributeType == eType::uInt
+						|| m_eAttributeType == eType::Float || m_eAttributeType == eType::Compressed || m_eAttributeType == eType::uCompressed) ?
+						4 :
+						((m_eAttributeType == eType::Short || m_eAttributeType == eType::uShort || m_eAttributeType == eType::hFloat) ? 2 :
+							(m_eAttributeType == eType::Double) ? 4 : 0));
+	}
 
 };
 
