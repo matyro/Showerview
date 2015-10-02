@@ -12,21 +12,9 @@
 
 #include <array>
 #include <memory>
+#include <vector>
 
 #include "VertexAttribute.h"
-
-struct VertexData2
-{
-  GLfloat position[3];
-  GLubyte color[4];
-};
-
-struct VertexData3
-{
-  GLfloat position[3];
-  GLfloat normal[3];
-  GLubyte color[4];
-};
 
 template<std::size_t tNumberOfAttributes>
 class Vertex
@@ -38,28 +26,28 @@ private:
 
 	AttributeSetting m_std_AttribList[tNumberOfAttributes];
 
-	std::shared_ptr<void> m_vData;
-	std::shared_ptr<GLuint> m_uiIndexList;
-
-	unsigned int m_uiDataSize;	//Size in byte
-	unsigned int m_uiBlockSize;
-
-	unsigned int m_uiIndexSize;	//Size in Vertices
+	std::vector<float> m_std_fData;
+	std::vector<GLuint> m_std_uiIndexList;
 
 public:
 
 	Vertex() :
-			m_uiVAO(0), m_uiVBO(0), m_uiDataSize(0), m_uiBlockSize(0)
+			m_uiVBO(0), m_uiVAO(0), m_uiIBO(0)
 	{
 		glGenVertexArrays(1, &m_uiVAO);
+		glBindVertexArray(m_uiVAO);
+
 		glGenBuffers(1, &m_uiVBO);
+		glGenBuffers(1, &m_uiIBO);
+
+		glBindVertexArray(0);
 	}
 
 	template<unsigned int id>
 	void setSettings(const AttributeSetting& attribute)
 	{
 		static_assert(id >= 0 || id < tNumberOfAttributes, "ID out of bounds!");
-		m_std_AttribList[id].set( attribute );
+		m_std_AttribList[id].set(attribute);
 	}
 
 	~Vertex()
@@ -75,90 +63,71 @@ public:
 
 	}
 	
-	void applySettings(const unsigned int stride)
+	void transmitData(const unsigned int stride, GLenum usage = GL_STATIC_DRAW)
 	{
 		glBindVertexArray(m_uiVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, m_uiVBO);
-
-		int counter = 0;
-		int offset = 0;
-		for (auto itr : m_std_AttribList)
-		{
-			itr.applySetting(stride, offset);
-			counter++;
-
-			offset = itr.getSize();
-		}
-
-		m_uiBlockSize = offset;
-
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	}
-
-	void transmitData(GLenum usage = GL_STATIC_DRAW) const
-	{
-		glBindVertexArray(this->m_uiVAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, this->m_uiVBO);
-		glBufferData(GL_ARRAY_BUFFER, this->m_uiDataSize, this->m_vData.get(), usage);
+		glBufferData(GL_ARRAY_BUFFER, this->m_std_fData.size() * sizeof(this->m_std_fData[0]), this->m_std_fData.data(), usage);
+
+		for (auto itr : m_std_AttribList)
+		{
+			itr.applySetting(stride);
+		}
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_uiIBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->m_uiIndexSize * sizeof(GLuint), this->m_uiIndexList.get(), GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->m_std_uiIndexList.size() * sizeof(this->m_std_uiIndexList[0]), this->m_std_uiIndexList.data(), GL_STATIC_DRAW);
 
 		glBindVertexArray(0);
 	}
 
 	//end, start = start and stop index to draw
-	void draw(const GLenum drawMode = GL_POINTS, const unsigned int start = 0) const
+	/*void draw(const GLenum drawMode = GL_POINTS, const unsigned int start = 0) const
 	{
 		this->draw(drawMode, this->m_uiDataSize / this->m_uiBlockSize, start);
-	}
+	}*/
 
-	void draw(const GLenum drawMode, const unsigned int end, const unsigned int start = 0) const
+	void draw(const GLenum drawMode, const GLsizei end, const unsigned int start = 0) const
 	{
 		glBindVertexArray(this->m_uiVAO);
 
 		// Index buffer
-	//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_uiIBO);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_uiIBO);
 
-		// Draw the triangles !
-		glDrawElements(drawMode,      // mode
-				end,    // count
-				GL_UNSIGNED_INT,   // type (optimization potential)
-				(void*) start           // element array buffer offset
-				);
+		if(m_std_uiIndexList.size() == 0)
+		{
+			glDrawArrays(GL_TRIANGLES, 0, end);
+		}
+		else
+		{
+			glDrawElements(drawMode,     // mode
+							end-start,    		// count
+							GL_UNSIGNED_INT,   	// type (optimization potential)
+							(void*) 0       // element array buffer offset
+							);
+		}
+
 
 		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	//pointer to head of data, length in byte
-	inline void copyData(const void* const data, const unsigned int length)
+	/*inline void copyData(const float* const data, const unsigned int length)
 	{
-		this->m_vData = std::static_pointer_cast<void>(std::shared_ptr<char>(new char[length], std::default_delete<char[]>()));
-		memcpy(this->m_vData.get(), data, length);
-	}
+		this->m_std_fData.resize(length);
+		memcpy(this->m_std_fData.data(), data, length);
+	}*/
 
 	//
-	inline void setData(std::shared_ptr<void> data)
+	inline void moveData(std::vector<float>&& data)
 	{
-		this->m_vData = data;
+		this->m_std_fData = std::move(data);
 	}
 
 	//length in Vertices
-	inline void setIndices(std::shared_ptr<GLuint> indices, const int length)
+	inline void moveIndices(std::vector<unsigned int>&& indices)
 	{
-		this->m_uiIndexList = indices;
-		m_uiIndexSize = length;
-
-		if (m_uiIBO != 0)
-		{
-			glDeleteBuffers(1, &m_uiIBO);
-		}
-		// Generate a buffer for the indices
-		glGenBuffers(1, &m_uiIBO);
+		this->m_std_uiIndexList = std::move(indices);
 	}
 
 };

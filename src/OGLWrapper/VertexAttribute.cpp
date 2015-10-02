@@ -7,27 +7,18 @@
 
 #include "VertexAttribute.h"
 
-void AttributeSetting::applySetting() const
-{
-	glVertexAttribPointer(m_uiIndex,  		// Attribute location
-			this->m_eAttributeSize, // Number of elements per vertex, here (x,y,z)
-			m_eAttributeType,       // Data type of each element
-			GL_FALSE,               // Normalised?
-			m_uiStride,     			// Stride
-			reinterpret_cast<void*>(m_uiOffset)                  // Offset
-			);
-	glEnableVertexAttribArray(m_uiIndex);	// Set up the vertex attribute pointer for the Vertex attribute
 
-}
 
-void AttributeSetting::applySetting(const GLsizei stride, const int offset) const
+void AttributeSetting::applySetting(const GLsizei stride) const
 {
 	glVertexAttribPointer(m_uiIndex,  		// Attribute location
 			this->m_eAttributeSize, // Number of elements per vertex, here (x,y,z)
 			m_eAttributeType,       // Data type of each element
 			GL_FALSE,               // Normalised?
 			stride,     			// Stride
-			reinterpret_cast<void*>(offset)   // Offset
+			reinterpret_cast<void*>(m_uiOffset)   // Offset
 			);
+
 	glEnableVertexAttribArray(m_uiIndex);	// Set up the vertex attribute pointer for the Vertex attribute
+
 }

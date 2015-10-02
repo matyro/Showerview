@@ -25,7 +25,7 @@ namespace render
 	{
 	private:
 
-		Vertex<1> m_o_Vertices;
+		Vertex<2> m_o_Vertices;
 		std::unique_ptr<Shader> m_o_Shader;
 
 		float m_fCenter[3];

@@ -1,8 +1,10 @@
 #version 330 core
 
-out vec4 out_Col;
+
+in vec4 vColor;
+layout(location = 0)out vec4 color;
  
 void main(void)
 {
-	out_Col = vec4(1,0,0,0.5);
+	color =vColor;
 }  
