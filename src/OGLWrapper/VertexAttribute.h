@@ -55,8 +55,8 @@ public:
 	}
 
 	constexpr AttributeSetting(const AttributeSetting& cpy) :
-			m_eAttributeSize(cpy.m_eAttributeSize), m_eAttributeType(cpy.m_eAttributeType), m_uiIndex(cpy.m_uiIndex), m_uiOffset(cpy.m_uiOffset), m_uiStride(
-					cpy.m_uiStride)
+			m_eAttributeSize(cpy.m_eAttributeSize), m_eAttributeType(cpy.m_eAttributeType), m_uiOffset(cpy.m_uiOffset), m_uiStride(cpy.m_uiStride), m_uiIndex(
+					cpy.m_uiIndex)
 	{
 	}
 
@@ -69,8 +69,8 @@ public:
 		this->m_uiIndex = rhs.m_uiIndex;
 	}
 
-	void applySetting() const;
-	void applySetting(const GLsizei stride, const int offset) const;
+
+	void applySetting(const GLsizei stride) const;
 
 	//Returns the size in Byte for the block
 	constexpr unsigned int getSize() const

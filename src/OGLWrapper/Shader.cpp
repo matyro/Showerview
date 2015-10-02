@@ -221,6 +221,8 @@ GLint Shader::addAttribute(const std::string& attributeName)
 	if (m_std_attributeLocationList[attributeName] == -1)
 	{
 		std::cout << "Could not add attribute: " << attributeName << " - location returned -1!" << std::endl;
+		std::cout << "Press any key to continue:";
+		std::cin.get();
 		exit(-13);
 	}
 	else
