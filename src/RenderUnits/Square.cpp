@@ -26,7 +26,9 @@ namespace render
 
 	Square::Square()
 	{
-		memset(m_fCenter, 0, 3 * sizeof(float));
+		m_fCenter[0] = 0;
+		m_fCenter[1] = 0;
+		m_fCenter[2] = 0;
 	}
 
 	Square::~Square()
@@ -66,7 +68,20 @@ namespace render
 		indices.resize(6 * 6);
 
 		const GLuint indicesTmp[] =
-		{ 0, 1, 2, 2, 3, 0, 3, 2, 6, 6, 7, 3, 7, 6, 5, 5, 4, 7, 4, 0, 3, 3, 7, 4, 0, 1, 5, 5, 4, 0, 1, 5, 6, 6, 2, 1 };
+		{
+				0, 1, 2,
+				2, 3, 0,
+				3, 2, 6,
+				6, 7, 3,
+				7, 6, 5,
+				5, 4, 7,
+				4, 0, 3,
+				3, 7, 4,
+				0, 1, 5,
+				5, 4, 0,
+				1, 5, 6,
+				6, 2, 1
+		};
 
 		for (int i = 0; i < 36; i++)
 		{
