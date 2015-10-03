@@ -11,6 +11,7 @@
 
 void AttributeSetting::applySetting(const GLsizei stride) const
 {
+	glEnableVertexAttribArray(m_uiIndex);	// Set up the vertex attribute pointer for the Vertex attribute
 	glVertexAttribPointer(m_uiIndex,  		// Attribute location
 			this->m_eAttributeSize, // Number of elements per vertex, here (x,y,z)
 			m_eAttributeType,       // Data type of each element
@@ -18,7 +19,4 @@ void AttributeSetting::applySetting(const GLsizei stride) const
 			stride,     			// Stride
 			reinterpret_cast<void*>(m_uiOffset)   // Offset
 			);
-
-	glEnableVertexAttribArray(m_uiIndex);	// Set up the vertex attribute pointer for the Vertex attribute
-
 }

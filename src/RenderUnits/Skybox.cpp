@@ -19,19 +19,14 @@ namespace render
 {
 
 	void Skybox::activateContext() const
-	{		
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);// Accept fragment if it closer to the camera than the former one
-
+	{			
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		glDepthMask(GL_FALSE);
 
 	}
 
 	void Skybox::deactivateContext() const
-	{
-		glDisable(GL_DEPTH_TEST);
-
+	{		
 		glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		glDepthMask(GL_TRUE);
 	}
@@ -41,7 +36,7 @@ namespace render
 	{
 		m_uiSkyboxVAO = 0;
 		m_uiSkyboxVBO = 0;
-		m_o_Shader = nullptr;
+		m_o_Shader = nullptr;		
 	}
 
 	Skybox::~Skybox()
@@ -152,19 +147,21 @@ namespace render
 		std::cout << "Skybox finished"<< std::endl;
 	}
 
-	void Skybox::draw(glm::mat4 camMatrix) const
+	void Skybox::draw(glm::mat4 projection, glm::mat4 view) const
 	{
+		glm::mat4 projectionView = projection * view;
+
 		this->activateContext();
 
-		//glm::mat4 view = glm::mat4( glm::mat3( camMatrix ) );	//Remove translation
-		glm::mat4 view = camMatrix;
+		//glm::mat4 projectionView = glm::mat4( glm::mat3( projectionView ) );	//Remove translation
+		
 
 		m_o_Shader->Use();
 
 
 		m_o_Texture.bindTexture(0);
 		
-		glUniformMatrix4fv(m_o_Shader->uniform("camera"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(m_o_Shader->uniform("camera"), 1, GL_FALSE, glm::value_ptr(projectionView));
 		// skybox cube
 		glUniform1i(m_o_Shader->uniform("skybox"), 0);
 

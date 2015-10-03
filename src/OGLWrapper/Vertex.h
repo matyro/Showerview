@@ -16,7 +16,7 @@
 
 #include "VertexAttribute.h"
 
-template<std::size_t tNumberOfAttributes>
+template<std::size_t tNumberOfAttributes, typename TDataType = float>
 class Vertex
 {
 private:
@@ -26,7 +26,7 @@ private:
 
 	AttributeSetting m_std_AttribList[tNumberOfAttributes];
 
-	std::vector<float> m_std_fData;
+	std::vector<TDataType> m_std_Data;
 	std::vector<GLuint> m_std_uiIndexList;
 
 public:
@@ -35,8 +35,6 @@ public:
 			m_uiVBO(0), m_uiVAO(0), m_uiIBO(0)
 	{
 		glGenVertexArrays(1, &m_uiVAO);
-		glBindVertexArray(m_uiVAO);
-
 		glGenBuffers(1, &m_uiVBO);
 		glGenBuffers(1, &m_uiIBO);
 
@@ -60,33 +58,36 @@ public:
 		{
 			glDeleteBuffers(1, &m_uiVBO);
 		}
+		if (m_uiIBO != 0)
+		{
+			glDeleteBuffers(1, &m_uiIBO);
+		}
 
 	}
 	
 	void transmitData(const unsigned int stride, GLenum usage = GL_STATIC_DRAW)
-	{
+	{		
 		glBindVertexArray(m_uiVAO);
 
+		if (this->m_std_uiIndexList.size() > 0)
+		{			
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_uiIBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->m_std_uiIndexList.size() * sizeof(this->m_std_uiIndexList[0]), this->m_std_uiIndexList.data(), GL_STATIC_DRAW);
+		}
+		
 		glBindBuffer(GL_ARRAY_BUFFER, this->m_uiVBO);
-		glBufferData(GL_ARRAY_BUFFER, this->m_std_fData.size() * sizeof(this->m_std_fData[0]), this->m_std_fData.data(), usage);
+		glBufferData(GL_ARRAY_BUFFER, this->m_std_Data.size() * sizeof(TDataType), &(this->m_std_Data[0]), usage);
 
 		for (auto itr : m_std_AttribList)
 		{
 			itr.applySetting(stride);
-		}
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_uiIBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->m_std_uiIndexList.size() * sizeof(this->m_std_uiIndexList[0]), this->m_std_uiIndexList.data(), GL_STATIC_DRAW);
-
+		}	
+		
 		glBindVertexArray(0);
 	}
 
-	//end, start = start and stop index to draw
-	/*void draw(const GLenum drawMode = GL_POINTS, const unsigned int start = 0) const
-	{
-		this->draw(drawMode, this->m_uiDataSize / this->m_uiBlockSize, start);
-	}*/
 
+	//End = number of incices
 	void draw(const GLenum drawMode, const GLsizei end, const unsigned int start = 0) const
 	{
 		glBindVertexArray(this->m_uiVAO);
@@ -96,14 +97,14 @@ public:
 
 		if(m_std_uiIndexList.size() == 0)
 		{
-			glDrawArrays(GL_TRIANGLES, 0, end);
+			glDrawArrays(drawMode, start, end);
 		}
 		else
 		{
-			glDrawElements(drawMode,     // mode
-							end-start,    		// count
+			glDrawElements(drawMode,			// mode
+							end,    		// count
 							GL_UNSIGNED_INT,   	// type (optimization potential)
-							(void*) 0       // element array buffer offset
+							(void*)start			// element array buffer offset
 							);
 		}
 
@@ -111,17 +112,17 @@ public:
 		glBindVertexArray(0);
 	}
 
-	//pointer to head of data, length in byte
-	/*inline void copyData(const float* const data, const unsigned int length)
+	//pointer to head of data, length in elements
+	inline void copyData(const std::vector<TDataType> data)
 	{
-		this->m_std_fData.resize(length);
-		memcpy(this->m_std_fData.data(), data, length);
-	}*/
+		this->m_std_Data.resize(data.size());
+		this->m_std_Data.assign(data.begin(), data.end());		
+	}
 
 	//
-	inline void moveData(std::vector<float>&& data)
+	inline void moveData(std::vector<TDataType>&& data)
 	{
-		this->m_std_fData = std::move(data);
+		this->m_std_Data = std::move(data);
 	}
 
 	//length in Vertices

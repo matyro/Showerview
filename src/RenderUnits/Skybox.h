@@ -41,7 +41,7 @@ namespace render
 
 		void init();
 
-		void draw(glm::mat4) const;
+		void draw(glm::mat4 projection, glm::mat4 view) const;
 
 
 	};

@@ -121,4 +121,29 @@ void FreeImageErrorHandler(FREE_IMAGE_FORMAT fif, const char *message)
 	printf(" ***\n");
 }
 
+
+void window_size_callback(GLFWwindow* window, int width, int height)
+{
+
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+}
+
+void window_focus_callback(GLFWwindow* window, int focused)
+{
+	if (focused)
+	{
+		// The window gained input focus
+	}
+	else
+	{
+		// The window lost input focus
+	}
+}
+
+
+
 #endif /* CALLBACK_H_ */

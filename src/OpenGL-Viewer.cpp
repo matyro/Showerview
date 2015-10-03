@@ -38,13 +38,19 @@ int main(int argc, const char* argv[])
 	if (!glfwInit())
 	{
 		std::cerr << "GLFW Init error" << std::endl;
+		std::cerr << "Press any key to continue";
+		std::cin.get();
+		return -1;
 	}
+
+	std::cout << "GLFW Version: " << glfwGetVersionString() << std::endl;
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_DEPTH_BITS, 24);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	//Early error Callback
 	glfwSetErrorCallback(error_callback);
@@ -83,6 +89,12 @@ int main(int argc, const char* argv[])
 
 	glfwSetKeyCallback(window, key_callback);
 
+	glfwSetWindowSizeCallback(window, window_size_callback);
+
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+	glfwSetWindowFocusCallback(window, window_focus_callback);
+
 	// Inits
 
 	std::shared_ptr<camera::Camera> cam(new camera::CameraPerspective);
@@ -93,22 +105,38 @@ int main(int argc, const char* argv[])
 	sky.init();
 	ErrorLog<1>::OpenGLError("in Skybox");
 
-	render::Square square;
-	square.init();
+	render::Square square;	
+	
+
+	render::MultiLineRenderUnit lines;	
+	lines.addLine( render::LineVertex({ {3,1,5},0.5f,{1.0f,1.0f,0.0f,0.5f} }),
+		render::LineVertex({ { -5,-1,-1 },0.2f,{ 1.0f,0.0f,0.0f,1.0f } }));	
+
+	lines.addLine(render::LineVertex({ { 3,1,5 },0.5f,{ 0.0f,1.0f,1.0f,0.5f } }),
+		render::LineVertex({ { 5,1,1 },0.7f,{ 0.0f,0.0f,1.0f,1.0f } }));
+
+	for (float i = 0.0f; i < 10000.0f; i = i + 1.0f)
+	{
+		lines.addLine(render::LineVertex({ { -8,0,0 },0.1f,{ 1.0f,0.0f,0.0f,1.0f } }),
+			render::LineVertex({ { 8.0f*sin(i/10.0f), 8.0f*cos(i / 10.0f), -8 + (16.0f*i / 10000.0f) },0.1f,{ 1.0f,0.0f,1.0f,0.5f } }));
+	}
+
+	lines.updateLines();
 
 	std::cout << "Init timer" << std::endl;
 	double time, timeCache = glfwGetTime();
 	unsigned long long counter = 0;
+
+	/////////////////////////////////////
 	//OpenGL Settings
-	
-
-
+	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_CULL_FACE);
 	////////////////////////////////////////////////
 	//Mainloop
 	std::cout << "Enter mainloop" << std::endl;
 	while (!glfwWindowShouldClose(window))
 	{
-		time = glfwGetTime(); //time since init
+		time = glfwGetTime(); //time in seconds since init
 
 		SCamControll().setTime(time);
 		SCamControll().update();
@@ -128,18 +156,27 @@ int main(int argc, const char* argv[])
 		}
 		counter++;
 
-		// Clear the colorbuffer
-		std::cout << "ClearColor" << std::endl;
-		glClearColor(0.2f, 0.3f, 0.3f, 0.5f);
+		// Animations:
+		square.setPosition(6 * sin(time), 10 * cos(time), 0);
+		square.setScale(1 + 0.8*sin(time / 0.25f), 1.2 + 0.8*cos(time / 0.4), 1 + 0.5*(sin(time) * cos(time)) );
+		square.setAngel(time*0.7, time*0.5, 0.0f);
+		square.update();
+
+		// Clear the colorbuffer		
+		//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		std::cout << "SquareDraw" << std::endl;
-		square.draw(cam->getProjectionViewMatrix());
-		ErrorLog<0>::OpenGLError("Square draw");
+		sky.draw(cam->getProjectionMatrix(), cam->getViewMatrix());		
+
+		square.draw(cam->getProjectionMatrix(),cam->getViewMatrix());
+
+		lines.draw(cam->getProjectionMatrix(), cam->getViewMatrix());
+
+
+
+		ErrorLog<0>::OpenGLError("Draw error");
 		
-		std::cout << "SkyDraw" << std::endl;
-		sky.draw(cam->getProjectionViewMatrix());
-		ErrorLog<0>::OpenGLError("Skybox draw");
+		
 
 		//Buffer switch
 		glfwSwapBuffers(window);

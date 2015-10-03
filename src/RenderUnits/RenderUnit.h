@@ -27,7 +27,7 @@ namespace render
 
 		virtual void init();
 
-		virtual void draw(glm::mat4) const = 0;
+		virtual void draw(glm::mat4 projection, glm::mat4 view) const = 0;
 
 
 	};

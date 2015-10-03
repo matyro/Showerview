@@ -16,73 +16,44 @@
 #include <vector>
 #include <memory>
 
+#include "OGLWrapper\Vertex.h"
+
 namespace render
 {
 	struct LineVertex
 	{
 		float pos[3];
 		float width;
-		float color[4];
-
-		static const unsigned int vertexElements = 8;
+		float color[4];		
 	};
 	
-	struct Line
-	{
-		const LineVertex start;
-		const LineVertex end;
-
-		Line() :
-			start({{0,0,0},0,{0,0,0}}), end({{0,0,0},0,{0,0,0}})
-		{
-
-		}
-
-		Line(const LineVertex start_, const LineVertex end_) :
-						start(start_), end(end_)
-		{
-
-		}
-
-		static const Line makeLine(const LineVertex start, const LineVertex end)
-		{
-			return Line(start,end);
-		}
-	};
-
+	
 	class MultiLineRenderUnit: public RenderUnit
 	{
 	private:
 
-		std::vector<Line> m_std_lines;
-
-
-		GLuint m_uiVAO;
-		GLuint m_uiVBO;
+		std::vector<LineVertex> m_std_lines;	
 
 		std::unique_ptr<Shader> m_o_Shader;
 
-		std::unique_ptr<float[]> m_vertexData;
+		Vertex<3,LineVertex> m_o_Vertex;		
 
 		void activateContext() const;
 		void deactivateContext() const;
 
-		
+		void init();
 
 	public:
 
-		void init();
+		MultiLineRenderUnit();
 
-		void draw(glm::mat4) const;
+		void draw(glm::mat4 projection, glm::mat4 view) const;
 
 		void updateLines();
 
 		void addLine(const LineVertex start, const LineVertex end );
 
-		void setBufferSize(const unsigned int numberOfLines);
-
-		const Line operator[](unsigned int i) const;
-		Line& operator[](unsigned int i);
+		void setBufferSize(const unsigned int numberOfLines);		
 	};
 
 } /* namespace render */

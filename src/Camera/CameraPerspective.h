@@ -31,6 +31,8 @@ namespace camera
 		CameraPerspective();				
 
 		const glm::mat4 getProjectionViewMatrix() const;
+		const glm::mat4 getProjectionMatrix() const;
+		const glm::mat4 getViewMatrix() const;
 
 		void rotateCam(const float pitch, const float yaw, const float roll);
 		void moveCam(const float forward_backward, const float right_left, const float up_down);
