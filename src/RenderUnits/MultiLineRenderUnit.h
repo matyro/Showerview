@@ -16,7 +16,7 @@
 #include <vector>
 #include <memory>
 
-#include "OGLWrapper\Vertex.h"
+#include "OGLWrapper/Vertex.h"
 
 namespace render
 {

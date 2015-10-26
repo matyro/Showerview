@@ -112,13 +112,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void FreeImageErrorHandler(FREE_IMAGE_FORMAT fif, const char *message)
 {
-	printf("\n*** ");
+	std::cout << "\n*** ";
 	if (fif != FIF_UNKNOWN)
 	{
 		printf("%s Format\n", FreeImage_GetFormatFromFIF(fif));
 	}
-	printf(message);
-	printf(" ***\n");
+	std::cout << message << "\n***\n";
+
 }
 
 

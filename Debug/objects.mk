@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lfreetype -lfreeimage -lGL -lGLU -lGLEW -lglfw
+LIBS := -lfreetype -lpthread -lfreeimage -lGL -lGLU -lGLEW -lglfw
 

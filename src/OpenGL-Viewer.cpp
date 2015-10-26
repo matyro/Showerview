@@ -1,9 +1,8 @@
 #include<iostream>
-#include<thread>
 #include<memory>
 #include<sstream>
 
-#include <functional>
+//#include <functional>
 #include <random>
 
 #include <GL/glew.h>
@@ -29,8 +28,16 @@
 
 #include "Helper/CameraControll.h"
 
+#include "Network/TCP.h"
+
 int main(int argc, const char* argv[])
 {
+
+	char* var[] = {"", "www.boost.org", "/LICENSE_1_0.txt"};
+	testTCP(3,var);
+
+	std::cin.get();
+	exit(0);
 
 	FreeImage_Initialise(true);
 	FreeImage_SetOutputMessage(FreeImageErrorHandler);
@@ -49,7 +56,7 @@ int main(int argc, const char* argv[])
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_DEPTH_BITS, 24);
+	glfwWindowHint(GLFW_DEPTH_BITS, 32);
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	//Early error Callback
@@ -115,10 +122,10 @@ int main(int argc, const char* argv[])
 	lines.addLine(render::LineVertex({ { 3,1,5 },0.5f,{ 0.0f,1.0f,1.0f,0.5f } }),
 		render::LineVertex({ { 5,1,1 },0.7f,{ 0.0f,0.0f,1.0f,1.0f } }));
 
-	for (float i = 0.0f; i < 10000.0f; i = i + 1.0f)
+	for (float i = 0.0f; i < 2000.0f; i = i + 1.0f)
 	{
-		lines.addLine(render::LineVertex({ { -8,0,0 },0.1f,{ 1.0f,0.0f,0.0f,1.0f } }),
-			render::LineVertex({ { 8.0f*sin(i/10.0f), 8.0f*cos(i / 10.0f), -8 + (16.0f*i / 10000.0f) },0.1f,{ 1.0f,0.0f,1.0f,0.5f } }));
+		lines.addLine(render::LineVertex({ { 7.0f*(float)sin(i/3.1f),9 - (18.0f*i / 2000.0f),0 },0.1f,{ 1.0f,0.0f,0.0f,1.0f } }),
+			render::LineVertex({ { 9.0f*(float)sin(i/3.0f), 9 - (18.0f*i / 2000.0f), -9 },0.1f,{ (float)sin(i/2.76f),(float)cos(i / 4.9f),(float)sin(i / 2.1f)*(float)cos(i / 1.4f),0.5f } }));
 	}
 
 	lines.updateLines();

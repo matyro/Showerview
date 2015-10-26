@@ -9,6 +9,8 @@
 
 #include "OGLWrapper/VertexAttribute.h"
 
+#include <glm/common.hpp>
+#include <glm/vec3.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
@@ -137,12 +139,12 @@ namespace render
 	{
 		if (m_bModifiedMatrix)
 		{
-			glm::mat4 rotateX = glm::rotate(m_fAngle[0], glm::tvec3<float>(1.0f, 0.0f, 0.0f));		// Second parameter = axis
-			glm::mat4 rotateY = glm::rotate(m_fAngle[1], glm::tvec3<float>(0.0f, 1.0f, 0.0f));
-			glm::mat4 rotateZ = glm::rotate(m_fAngle[2], glm::tvec3<float>(0.0f, 0.0f, 1.0f));
+			glm::mat4 rotateX = glm::rotate(m_fAngle[0], glm::vec3(1.0f, 0.0f, 0.0f));		// Second parameter = axis
+			glm::mat4 rotateY = glm::rotate(m_fAngle[1], glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::mat4 rotateZ = glm::rotate(m_fAngle[2], glm::vec3(0.0f, 0.0f, 1.0f));
 
-			glm::mat4 translate = glm::translate(glm::tvec3<float>(this->m_fCenter[0], this->m_fCenter[1], this->m_fCenter[2]));
-			glm::mat4 scale = glm::scale(glm::tvec3<float>(this->m_fScale[0], this->m_fScale[1], this->m_fScale[2]));
+			glm::mat4 translate = glm::translate(glm::vec3(this->m_fCenter[0], this->m_fCenter[1], this->m_fCenter[2]));
+			glm::mat4 scale = glm::scale(glm::vec3(this->m_fScale[0], this->m_fScale[1], this->m_fScale[2]));
 
 			//First scale, then rotate, then translate
 			m_o_ModelMatrix = translate * (rotateZ*rotateY*rotateX) * scale;
