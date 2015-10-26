@@ -28,7 +28,7 @@
 
 #include "Helper/CameraControll.h"
 
-#include "Network/TCP.h"
+#include "Network/Client.h"
 
 int main(int argc, const char* argv[])
 {
