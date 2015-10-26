@@ -53,7 +53,7 @@ void Client::handle_connect(const asio::error_code& err, tcp::resolver::iterator
 	if (!err)
 	{
 		// The connection was successful. Send the request.
-		asio::async_write(socket_, request_, std::bind(&Client::handle_write_request, this, std::placeholders::_1));	      //asio::placeholders::error));
+		asio::async_write(socket_, request_, std::bind(&Client::handle_write, this, std::placeholders::_1));	      //asio::placeholders::error));
 	}
 	else if (endpoint_iterator != tcp::resolver::iterator())
 	{
@@ -69,12 +69,12 @@ void Client::handle_connect(const asio::error_code& err, tcp::resolver::iterator
 	}
 }
 
-void Client::handle_write_request(const asio::error_code& err)
+void Client::handle_write(const asio::error_code& err)
 {
 	if (!err)
 	{
 		// Read the response status line.
-		asio::async_read_until(socket_, response_, "\r\n", std::bind(&Client::handle_read_status_line, this, std::placeholders::_1));//asio::placeholders::error));
+		asio::async_read_until(socket_, response_, "\r\n", std::bind(&Client::handle_read, this, std::placeholders::_1));//asio::placeholders::error));
 	}
 	else
 	{
@@ -82,7 +82,7 @@ void Client::handle_write_request(const asio::error_code& err)
 	}
 }
 
-void Client::handle_read_status_line(const asio::error_code& err)
+void Client::handle_read(const asio::error_code& err)
 {
 	if (!err)
 	{
@@ -107,7 +107,7 @@ void Client::handle_read_status_line(const asio::error_code& err)
 		}
 
 		// Read the response headers, which are terminated by a blank line.
-		asio::async_read_until(socket_, response_, "\r\n\r\n", std::bind(&Client::handle_read_headers, this, std::placeholders::_1));//asio::placeholders::error));
+		//asio::async_read_until(socket_, response_, "\r\n\r\n", std::bind(&Client::handle_read_headers, this, std::placeholders::_1));//asio::placeholders::error));
 	}
 	else
 	{
@@ -115,42 +115,3 @@ void Client::handle_read_status_line(const asio::error_code& err)
 	}
 }
 
-void Client::handle_read_headers(const asio::error_code& err)
-{
-	if (!err)
-	{
-		// Process the response headers.
-		std::istream response_stream(&response_);
-		std::string header;
-		while (std::getline(response_stream, header) && header != "\r")
-			std::cout << header << "\n";
-		std::cout << "\n";
-
-		// Write whatever content we already have to output.
-		if (response_.size() > 0)
-			std::cout << &response_;
-
-		// Start reading remaining data until EOF.
-		asio::async_read(socket_, response_, asio::transfer_at_least(1), std::bind(&Client::handle_read_content, this, std::placeholders::_1));	//asio::placeholders::error));
-	}
-	else
-	{
-		std::cout << "Error: " << err << "\n";
-	}
-}
-
-void Client::handle_read_content(const asio::error_code& err)
-{
-	if (!err)
-	{
-		// Write all of the data that has been read so far.
-		std::cout << &response_;
-
-		// Continue reading remaining data until EOF.
-		asio::async_read(socket_, response_, asio::transfer_at_least(1), std::bind(&Client::handle_read_content, this, std::placeholders::_1));	//asio::placeholders::error));
-	}
-	else if (err != asio::error::eof)
-	{
-		std::cout << "Error: " << err << "\n";
-	}
-}

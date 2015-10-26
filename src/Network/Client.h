@@ -27,21 +27,14 @@ private:
 	  asio::streambuf request_;
 	  asio::streambuf response_;
 
-	  void handle_resolve(const asio::error_code& err,
-	      tcp::resolver::iterator endpoint_iterator);
+	  void handle_resolve(const asio::error_code& err, tcp::resolver::iterator endpoint_iterator);
 
 
-	  void handle_connect(const asio::error_code& err,
-	      tcp::resolver::iterator endpoint_iterator);
+	  void handle_connect(const asio::error_code& err, tcp::resolver::iterator endpoint_iterator);
 
-	  void handle_write_request(const asio::error_code& err);
+	  void handle_write(const asio::error_code& err);
 
-	  void handle_read_status_line(const asio::error_code& err);
-
-	  void handle_read_headers(const asio::error_code& err);
-
-	  void handle_read_content(const asio::error_code& err);
-
+	  void handle_read(const asio::error_code& err);
 
 public:
 
