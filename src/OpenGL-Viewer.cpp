@@ -29,12 +29,24 @@
 #include "Helper/CameraControll.h"
 
 #include "Network/Client.h"
+#include "Network/Server.h"
+#include "Network/Basic.h"
 
 int main(int argc, const char* argv[])
 {
 
-	char* var[] = {"", "www.boost.org", "/LICENSE_1_0.txt"};
-	testTCP(3,var);
+	Server s(context);
+	Client c(context);
+
+	s.bind(12345);
+	c.connect("tcp://127.0.0.1:12345");
+
+	std::cout << "Client Send:" << std::endl;
+	c.send("HalloWelt\0",5);
+
+
+	std::cout << "Recv: " << std::endl;
+	s.recv();
 
 	std::cin.get();
 	exit(0);

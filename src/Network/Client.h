@@ -1,71 +1,85 @@
-/*
- * TCP.h
- *
- *  Created on: 21.10.2015
- *      Author: dominik
- */
+#ifndef _BAACK_NETWORK_CLIENT_H_
+#define _BAACK_NETWORK_CLIENT_H_
 
-#ifndef SRC_NETWORK_TCP_H_
-#define SRC_NETWORK_TCP_H_
+#include "lib/cppzmq.hpp"
 
-#include <iostream>
-#include <istream>
-#include <ostream>
-#include <string>
-#include <functional>
-#include <asio.hpp>
-
-
-using asio::ip::tcp;
+#include <vector>
 
 class Client
 {
 private:
 
-	  tcp::resolver resolver_;
-	  asio::ip::tcp::socket socket_;
-	  asio::streambuf request_;
-	  asio::streambuf response_;
+	zmq::socket_t* socket;
 
-	  void handle_resolve(const asio::error_code& err, tcp::resolver::iterator endpoint_iterator);
-
-
-	  void handle_connect(const asio::error_code& err, tcp::resolver::iterator endpoint_iterator);
-
-	  void handle_write(const asio::error_code& err);
-
-	  void handle_read(const asio::error_code& err);
+	char id[255];
 
 public:
 
-  Client(asio::io_service& io_service, const std::string& server, const std::string& path);
+	Client(zmq::context_t& context)
+	{
+		memset(id, '\0', 255);
+		socket = new zmq::socket_t(context, zmq::socket_type::stream);
+	}
 
+	~Client()
+	{
+		delete socket;
+	}
+
+	void connect(const char* const ip)
+	{
+		socket->connect(ip);
+
+		size_t size = 255;
+		socket->getsockopt(ZMQ_IDENTITY,id, &size);
+
+		int iID = *reinterpret_cast<int*>(&id[1]);
+		std::cout << iID;
+	}
+
+	void recv()
+	{
+		zmq::message_t message;
+
+		socket->recv(&message);
+
+		std::cout << message.data();
+	}
+
+	bool recv_noblock()
+	{
+
+		zmq::message_t message;
+
+		bool isEmpty = !socket->recv(&message, ZMQ_DONTWAIT);
+
+		std::cout << message.data();
+
+		return isEmpty;
+	}
+
+	void send(const char* const data, const unsigned int len)
+	{
+		if (len > 0)
+		{
+			zmq::message_t message(255 + len);
+
+			memcpy(message.data(), id, 255);
+			memcpy(message.data()+255, data, len);
+
+			socket->send(message, ZMQ_SNDMORE);
+		}
+
+	}
+
+	void close()
+	{
+		zmq::message_t empty(0);
+
+		socket->send(empty, ZMQ_SNDMORE);
+		socket->close();
+	}
 
 };
 
-int testTCP(int argc, char* argv[])
-{
-  try
-  {
-    if (argc != 3)
-    {
-      std::cout << "Usage: async_client <server> <path>\n";
-      std::cout << "Example:\n";
-      std::cout << "  async_client www.boost.org /LICENSE_1_0.txt\n";
-      return 1;
-    }
-
-    asio::io_service io_service;
-    Client c(io_service, argv[1], argv[2]);
-    io_service.run();//std::thread thread([&]{io.run();});
-  }
-  catch (std::exception& e)
-  {
-    std::cout << "Exception: " << e.what() << "\n";
-  }
-}
-
-
-
-
-#endif /* SRC_NETWORK_TCP_H_ */
+#endif
