@@ -30,23 +30,41 @@
 
 #include "Network/Client.h"
 #include "Network/Server.h"
-#include "Network/Basic.h"
+//#include "Network/Basic.h"
+
+
+#include <unistd.h>
 
 int main(int argc, const char* argv[])
 {
 
-	Server s(context);
-	Client c(context);
+	network::Server s(12345);
+	auto recv = [](unsigned int id, std::vector<char>&& data)->void{
+				std::cout << "Message from ID-" << id << " :";
+				for(auto itr : data)
+					std::cout << itr;
+				std::cout << std::endl;
+				};
 
-	s.bind(12345);
-	c.connect("tcp://127.0.0.1:12345");
+	auto newCon = [](unsigned int id, Socket* sock)->bool{
+		std::cout << "New Connection with ID-" << id << " from IP " << sock->getIP() << std::endl;
+		return true;
+		};
+
+	s.setRecvFunc(recv);
+	s.setNewConFunc(newCon);
+
+	sleep(2);
+	network::Client c1("127.0.0.1", 12345);
+	network::Client c2("127.0.0.1", 12345);
+	network::Client c3("127.0.0.1", 12345);
 
 	std::cout << "Client Send:" << std::endl;
-	c.send("HalloWelt\0",5);
+	c1.send("HalloWelt\0",5);
 
 
-	std::cout << "Recv: " << std::endl;
-	s.recv();
+
+
 
 	std::cin.get();
 	exit(0);

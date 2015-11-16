@@ -10,6 +10,7 @@ RM := rm -rf
 -include sources.mk
 -include src/RenderUnits/subdir.mk
 -include src/OGLWrapper/subdir.mk
+-include src/Network/zmq/subdir.mk
 -include src/Network/subdir.mk
 -include src/Helper/subdir.mk
 -include src/Camera/subdir.mk

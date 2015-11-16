@@ -26,6 +26,7 @@ SUBDIRS := \
 src/RenderUnits \
 src \
 src/OGLWrapper \
+src/Network/zmq \
 src/Network \
 src/Helper \
 src/Camera \
