@@ -12,7 +12,7 @@ namespace network
 
 	void Server::handleConnection()
 	{
-		while (m_isRunning)
+		while (m_isRunning == true)
 		{
 			this->m_arb_listenSock.listen();
 
@@ -30,24 +30,37 @@ namespace network
 
 	void Server::handleRecv()
 	{
-		while(m_isRunning)
+		while(m_isRunning == true)
 		{
+			this->m_vectorMutex.lock();
 
+			volatile const unsigned int size = this->m_std_connectionSock.size();
+			for(unsigned int id = 0; id < size; id++)
+			{
+				std::vector<char> data = m_std_connectionSock[id].recv(true);
+				this->m_vectorMutex.unlock();
+
+				if(data.size() > 0)
+				{
+					m_functionMutex.lock();
+					m_func_recv(id, std::move(data) );
+					m_functionMutex.unlock();
+					break;
+				}
+				else
+				{
+					this->m_vectorMutex.lock();
+					if(size != m_std_connectionSock.size())
+						break;
+				}
+
+			}
+
+			this->m_vectorMutex.unlock();
+			std::this_thread::sleep_for( std::chrono::duration<double, std::milli>(1) );
 		}
 	}
 
-	std::vector<char>&& Server::recv(const unsigned int id)
-	{
-		m_vectorMutex.lock();
-
-		auto data = m_std_connectionSock[id].recv(true);
-
-		m_vectorMutex.unlock();
-
-		return std::move(data);
-
-
-	}
 
 	Server::Server(const unsigned short port)
 	{
@@ -55,15 +68,18 @@ namespace network
 		this->m_arb_listenSock.bind(port);
 
 		m_isRunning = true;
-		m_thread = new std::thread(&Server::handleConnection, this);
+		m_threadNewCon = new std::thread(&Server::handleConnection, this);
+		m_threadNewData = new std::thread(&Server::handleRecv, this);
 	}
 
 	Server::~Server()
 	{
 		m_isRunning = false;
-		this->m_thread->join();
+		this->m_threadNewCon->join();
+		this->m_threadNewData->join();
 
-		delete this->m_thread;
+		delete this->m_threadNewCon;
+		delete this->m_threadNewData;
 	}
 
 } /* namespace network */

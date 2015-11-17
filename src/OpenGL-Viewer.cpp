@@ -61,7 +61,7 @@ int main(int argc, const char* argv[])
 
 	std::cout << "Client Send:" << std::endl;
 	c1.send("HalloWelt\0",5);
-
+	c3.send("Test\0",5);
 
 
 

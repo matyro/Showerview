@@ -108,20 +108,29 @@ bool Socket::send(const char* const data, unsigned int length) const
 	}
 }
 
-std::vector<char>&& Socket::recv() const
+std::vector<char> Socket::recv(bool noBlock) const
 {
 	std::vector<char> buf(1024);
 
-	int status = ::recv(m_sock, buf.data(), 1024, 0);
+	int flags = noBlock ? MSG_DONTWAIT : 0;
+	int status = ::recv(m_sock, buf.data(), 1024, flags);
+
+//	if(noBlock)
+//	{
+//		if(errno == EAGAIN || errno == EWOULDBLOCK)
+//			return std::move( std::vector<char>(0) );
+//	}
 
 	if (status == -1)
 	{
-		std::cout << "status == -1   errno == " << errno << "  in Socket::recv\n";
-		return std::move(std::vector<char>(0));
+		if(errno != EAGAIN && errno != EWOULDBLOCK)
+			std::cout << "status == -1   errno == " << errno << "  in Socket::recv\n";
+
+		return std::vector<char>();
 	}
 	else if (status == 0)
 	{
-		return std::move(std::vector<char>(0));
+		return std::vector<char>();
 	}
 	else
 	{

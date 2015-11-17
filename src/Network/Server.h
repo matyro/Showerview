@@ -32,7 +32,8 @@ namespace network
 		std::function<bool (unsigned int, Socket*)> m_func_newConnection;		//If true -> socket gets saved else discarded
 
 
-		std::thread* m_thread;
+		std::thread* m_threadNewCon;
+		std::thread* m_threadNewData;
 		std::atomic<bool> m_isRunning;
 		std::mutex m_vectorMutex;
 		std::mutex m_functionMutex;
@@ -40,8 +41,6 @@ namespace network
 
 		void handleConnection();
 		void handleRecv();
-
-		std::vector<char>&& recv(const unsigned int id);
 
 	public:
 

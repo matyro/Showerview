@@ -37,7 +37,7 @@ public:
 
 	// Data Transimission
 	bool send(const char* const data, const unsigned int length) const;
-	std::vector<char>&& recv(bool) const;	//Parameter (true) = unblocking
+	std::vector<char> recv(bool noBlock = false) const;	//Parameter (true) = unblocking
 
 	bool is_valid() const;
 
