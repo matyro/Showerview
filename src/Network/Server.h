@@ -15,6 +15,8 @@
 #include <atomic>
 #include <mutex>
 
+#include <map>
+
 #include <iostream>
 
 namespace network
@@ -25,7 +27,8 @@ namespace network
 	private:
 		Socket m_arb_listenSock;
 
-		std::vector<Socket> m_std_connectionSock;
+		std::atomic<unsigned int> m_nextID;
+		std::map<unsigned int, Socket> m_std_connectionSock;
 
 		//Callbacks:
 		std::function<void(unsigned int, std::vector<char>&&)> m_func_recv;
@@ -47,6 +50,7 @@ namespace network
 		Server(const unsigned short port);
 		~Server();
 
+		bool send(unsigned int id, std::vector<char>&& data);
 
 		inline void setRecvFunc(std::function<void(unsigned int, std::vector<char>&&)> func){m_functionMutex.lock(); this-> m_func_recv = func; m_functionMutex.unlock();}
 		inline void setNewConFunc(std::function<bool (unsigned int, Socket*)> func){m_functionMutex.lock(); this->m_func_newConnection = func; m_functionMutex.unlock();}
