@@ -21,7 +21,7 @@ namespace network
 		this->m_arb_connection.send(data,len);
 	}
 
-	std::vector<char>&& Client::recv()
+	std::vector<char> Client::recv()
 	{
 		return this->m_arb_connection.recv();
 	}

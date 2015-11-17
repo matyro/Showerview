@@ -19,12 +19,13 @@ namespace network
 			Socket tmp;
 			this->m_arb_listenSock.accept(tmp);
 
-			if (this->m_func_newConnection(m_std_connectionSock.size(), &tmp))
+			if (this->m_func_newConnection(m_nextID.load(), &tmp))
 			{
 				m_vectorMutex.lock();
 				this->m_std_connectionSock.emplace(std::make_pair(m_nextID.load(), std::move(tmp)));
-				m_nextID++;
 				m_vectorMutex.unlock();
+
+				m_nextID++;
 			}
 		}
 	}

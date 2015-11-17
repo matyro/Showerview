@@ -32,24 +32,29 @@
 #include "Network/Server.h"
 //#include "Network/Basic.h"
 
-
 #include <unistd.h>
 
 int main(int argc, const char* argv[])
 {
 
 	network::Server s(12345);
-	auto recv = [](unsigned int id, std::vector<char>&& data)->void{
-				std::cout << "Message from ID-" << id << " :";
-				for(auto itr : data)
-					std::cout << itr;
-				std::cout << std::endl;
-				};
+	auto recv = [&s](unsigned int id, std::vector<char>&& data)->void
+	{
+		std::cout << "Message from ID-" << id << " :";
+		for(auto itr : data)
+		std::cout << itr;
+		std::cout << std::endl;
 
-	auto newCon = [](unsigned int id, Socket* sock)->bool{
+		std::vector<char> tmp
+		{	'A','B','C'};
+		s.send(id, std::move(tmp) );
+	};
+
+	auto newCon = [](unsigned int id, Socket* sock)->bool
+	{
 		std::cout << "New Connection with ID-" << id << " from IP " << sock->getIP() << std::endl;
 		return true;
-		};
+	};
 
 	s.setRecvFunc(recv);
 	s.setNewConFunc(newCon);
@@ -60,11 +65,17 @@ int main(int argc, const char* argv[])
 	network::Client c3("127.0.0.1", 12345);
 
 	std::cout << "Client Send:" << std::endl;
-	c1.send("HalloWelt\0",5);
-	c3.send("Test\0",5);
 
+	c1.send("HalloWelt\0", 5);
+	auto a1 = c1.recv();
+	for (auto itr : a1)
+		std::cout << itr;
+	std::cout << std::endl;
 
-
+	c3.send("Test\0", 5);
+	auto a2 = c3.recv();
+	for (auto itr : a1)
+		std::cout << itr;
 
 	std::cin.get();
 	exit(0);
@@ -141,21 +152,22 @@ int main(int argc, const char* argv[])
 	render::Skybox sky;
 	sky.init();
 	ErrorLog<1>::OpenGLError("in Skybox");
-
-	render::Square square;	
 	
+	render::Square square;
 
-	render::MultiLineRenderUnit lines;	
-	lines.addLine( render::LineVertex({ {3,1,5},0.5f,{1.0f,1.0f,0.0f,0.5f} }),
-		render::LineVertex({ { -5,-1,-1 },0.2f,{ 1.0f,0.0f,0.0f,1.0f } }));	
+	render::MultiLineRenderUnit lines;
+	lines.addLine(render::LineVertex( { { 3, 1, 5 }, 0.5f, { 1.0f, 1.0f, 0.0f, 0.5f } }),
+			render::LineVertex( { { -5, -1, -1 }, 0.2f, { 1.0f, 0.0f, 0.0f, 1.0f } }));
 
-	lines.addLine(render::LineVertex({ { 3,1,5 },0.5f,{ 0.0f,1.0f,1.0f,0.5f } }),
-		render::LineVertex({ { 5,1,1 },0.7f,{ 0.0f,0.0f,1.0f,1.0f } }));
+	lines.addLine(render::LineVertex( { { 3, 1, 5 }, 0.5f, { 0.0f, 1.0f, 1.0f, 0.5f } }),
+			render::LineVertex( { { 5, 1, 1 }, 0.7f, { 0.0f, 0.0f, 1.0f, 1.0f } }));
 
 	for (float i = 0.0f; i < 2000.0f; i = i + 1.0f)
 	{
-		lines.addLine(render::LineVertex({ { 7.0f*(float)sin(i/3.1f),9 - (18.0f*i / 2000.0f),0 },0.1f,{ 1.0f,0.0f,0.0f,1.0f } }),
-			render::LineVertex({ { 9.0f*(float)sin(i/3.0f), 9 - (18.0f*i / 2000.0f), -9 },0.1f,{ (float)sin(i/2.76f),(float)cos(i / 4.9f),(float)sin(i / 2.1f)*(float)cos(i / 1.4f),0.5f } }));
+		lines.addLine(render::LineVertex( { { 7.0f * (float) sin(i / 3.1f), 9 - (18.0f * i / 2000.0f), 0 }, 0.1f, { 1.0f, 0.0f, 0.0f, 1.0f } }),
+				render::LineVertex(
+						{ { 9.0f * (float) sin(i / 3.0f), 9 - (18.0f * i / 2000.0f), -9 }, 0.1f, { (float) sin(i / 2.76f), (float) cos(i / 4.9f), (float) sin(
+								i / 2.1f) * (float) cos(i / 1.4f), 0.5f } }));
 	}
 
 	lines.updateLines();
@@ -195,26 +207,22 @@ int main(int argc, const char* argv[])
 
 		// Animations:
 		square.setPosition(6 * sin(time), 10 * cos(time), 0);
-		square.setScale(1 + 0.8*sin(time / 0.25f), 1.2 + 0.8*cos(time / 0.4), 1 + 0.5*(sin(time) * cos(time)) );
-		square.setAngel(time*0.7, time*0.5, 0.0f);
+		square.setScale(1 + 0.8 * sin(time / 0.25f), 1.2 + 0.8 * cos(time / 0.4), 1 + 0.5 * (sin(time) * cos(time)));
+		square.setAngel(time * 0.7, time * 0.5, 0.0f);
 		square.update();
 
 		// Clear the colorbuffer		
 		//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		sky.draw(cam->getProjectionMatrix(), cam->getViewMatrix());		
+		sky.draw(cam->getProjectionMatrix(), cam->getViewMatrix());
 
-		square.draw(cam->getProjectionMatrix(),cam->getViewMatrix());
+		square.draw(cam->getProjectionMatrix(), cam->getViewMatrix());
 
 		lines.draw(cam->getProjectionMatrix(), cam->getViewMatrix());
 
-
-
 		ErrorLog<0>::OpenGLError("Draw error");
 		
-		
-
 		//Buffer switch
 		glfwSwapBuffers(window);
 	}

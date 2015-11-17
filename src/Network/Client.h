@@ -29,7 +29,7 @@ namespace network
 
 		void send(const char* const data, const unsigned int len);
 
-		std::vector<char>&& recv();
+		std::vector<char> recv();
 
 
 
