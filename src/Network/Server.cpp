@@ -102,4 +102,13 @@ namespace network
 
 	}
 
+	void Server::disconnect(unsigned int id)
+	{
+		this->m_vectorMutex.lock();
+
+		this->m_std_connectionSock.erase(id);
+
+		this->m_vectorMutex.unlock();
+	}
+
 } /* namespace network */

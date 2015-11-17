@@ -51,6 +51,7 @@ namespace network
 		~Server();
 
 		bool send(unsigned int id, std::vector<char>&& data);
+		void disconnect(unsigned int id);
 
 		inline void setRecvFunc(std::function<void(unsigned int, std::vector<char>&&)> func){m_functionMutex.lock(); this-> m_func_recv = func; m_functionMutex.unlock();}
 		inline void setNewConFunc(std::function<bool (unsigned int, Socket*)> func){m_functionMutex.lock(); this->m_func_newConnection = func; m_functionMutex.unlock();}
