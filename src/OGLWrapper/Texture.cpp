@@ -4,100 +4,57 @@
 #include <iostream>
 #include <cstring>
 
-#include <FreeImage.h>
 
 
-
-const bool Texture::loadImage(const char* path)
+void Texture::generateTexture(GLuint target = GL_TEXTURE_2D)
 {
-	texInfo tmpInfo;
+	glActiveTexture(GL_TEXTURE0);
+	// Generate an OpenGL texture ID for this texture
+	glGenTextures(1, &m_uiTexture);
 
-	FREE_IMAGE_FORMAT imageFormat = FreeImage_GetFileType(path, 0);
-
-	if (imageFormat == FIF_UNKNOWN)									// Try filetype from filename
-	{
-		imageFormat = FreeImage_GetFIFFromFilename(path);
-
-		if (imageFormat == FIF_UNKNOWN)								//still unknown?
-			return false;
-	}
-
-
-	if (!FreeImage_FIFSupportsReading(imageFormat))
-		return false;
-
-
-	FIBITMAP* imageBitmap = FreeImage_Load(imageFormat, path);
-
-
-	if (!imageBitmap)
-		return false;
-
-	BYTE* data = FreeImage_GetBits(imageBitmap); // Retrieve the image data
-
-	tmpInfo.iWidth = FreeImage_GetWidth(imageBitmap); // Get the image width and height
-	tmpInfo.iHeight = FreeImage_GetHeight(imageBitmap);
-	tmpInfo.iBPP = FreeImage_GetBPP(imageBitmap);
-	tmpInfo.std_sPath = path;
-
-	if (data == NULL || tmpInfo.iWidth == 0 || tmpInfo.iHeight == 0)
-		return false;
+	glBindTexture(target, m_uiTexture);
 
 	
-	tmpInfo.ucImageData = std::unique_ptr<BYTE[]>(new BYTE[ tmpInfo.iHeight * tmpInfo.iWidth * (tmpInfo.iBPP/8) ]);
 
+	glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	memcpy(tmpInfo.ucImageData.get(), data, tmpInfo.iHeight * tmpInfo.iWidth * (tmpInfo.iBPP / 8));
+	glTexImage2D(target, 0, GL_RGBA8, m_iWidth, m_iHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	
+	
+	
+	glBindTexture(target, 0);
+	glFinish();
 
-
-
-	FreeImage_Unload(imageBitmap); 
-
-	m_std_vTextureData.push_back( std::move(tmpInfo) );
-
-	return true;
-}
-
-
-void Texture::generateTexture(GLuint count, GLuint target)
-{
-	// Generate an OpenGL texture ID for this texture
-	glGenTextures(count, &m_uiTexture);
-	glBindTexture(target, m_uiTexture);
+	//glBindImageTexture(0, m_uiTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
 
 	m_uiTextureType = target;
 }
 
 
-Texture::Texture()
+Texture::Texture(const int width, const int height)
+	:m_iHeight(height), m_iWidth(width)
 {
-	m_o_sSampler = nullptr;
 	m_uitextureCount = 0;
 	m_uiTextureType = 0;
+
+	generateTexture(GL_TEXTURE_2D);
 }
 
 Texture::~Texture()
+{	
+	glDeleteTextures(1, &m_uiTexture);
+}
+
+
+
+void Texture::bindTexture() const
 {
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_uiTexture);
+	//glBindImageTexture(0, m_uiTexture, 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 	
 }
 
-
-
-void Texture::bindTexture(GLuint texUnit) const
-{
-	glActiveTexture(GL_TEXTURE0 + texUnit);
-	glBindTexture(m_uiTextureType, m_uiTexture);
-
-	if (m_o_sSampler != nullptr)
-	{
-		glBindSampler(texUnit, m_o_sSampler->getSampler());
-	}
-
-
-}
-
-void Texture::releaseTexture()
-{
-	glDeleteTextures(1, &m_uiTexture);
-
-}

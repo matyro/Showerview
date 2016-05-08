@@ -32,6 +32,7 @@ const std::string Shader::readShader(const char* const path)
 	catch (std::ifstream::failure& e)
 	{
 		std::cout << "Shader Error: " << path << " could not be read!" << std::endl;
+		std::cout << e.what() << std::endl;
 	}
 	return std::move(std::string(""));
 }
@@ -95,10 +96,10 @@ Shader::Shader(const GLchar* const vertexPath, const GLchar* const fragmentPath)
 	{
 		GLint messageLength = 0;
 
-		glGetShaderiv(this->m_uiProgram, GL_INFO_LOG_LENGTH, &messageLength);
+		glGetProgramiv(this->m_uiProgram, GL_INFO_LOG_LENGTH, &messageLength);
 		std::vector<GLchar> errorLog(messageLength);
 
-		glGetShaderInfoLog(this->m_uiProgram, messageLength, NULL, &errorLog[0]);
+		glGetProgramInfoLog(this->m_uiProgram, messageLength, NULL, &errorLog[0]);
 
 		glDeleteProgram(this->m_uiProgram);
 		std::cout << "Shader Error (Linking failed): " << &errorLog[0] << std::endl;
@@ -164,9 +165,14 @@ Shader::Shader(const GLchar* const vertexPath, const GLchar* const fragmentPath,
 	// Delete the shaders as they're linked into our program now and no longer necessary
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
-	glDeleteShader(geometryShader);
+	glDeleteShader(geometryShader);	
+}
 
-	ErrorLog<0>::OpenGLError("Shader load failed somehow!");
+
+Shader::Shader(Shader&& rhs)
+	:m_uiProgram(rhs.m_uiProgram), m_std_attributeLocationList(rhs.m_std_attributeLocationList), m_std_uniformLocationList(rhs.m_std_uniformLocationList)
+{
+	rhs.m_uiProgram = 0;
 }
 
 Shader::~Shader()
@@ -215,8 +221,7 @@ GLint Shader::uniform(const std::string &uniform)
 GLint Shader::addAttribute(const std::string& attributeName)
 {
 	m_std_attributeLocationList[attributeName] = glGetAttribLocation(this->m_uiProgram, attributeName.c_str());
-	ErrorLog<0>::OpenGLError("Shader load failed somehow!");
-
+	
 	// Check to ensure that the shader contains an attribute with this name
 	if (m_std_attributeLocationList[attributeName] == -1)
 	{

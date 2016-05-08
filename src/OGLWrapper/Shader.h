@@ -35,6 +35,9 @@ public:
 	Shader(const GLchar* const vertexPath, const GLchar* const fragmentPath);
 	Shader(const GLchar* const vertexPath, const GLchar* const fragmentPath, const GLchar* const geometryPath);
 
+	Shader(const Shader& rhs) = delete;
+	Shader(Shader&& rhs);
+
 	~Shader();
 
     // Uses the current shader

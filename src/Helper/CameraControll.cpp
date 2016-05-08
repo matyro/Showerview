@@ -30,7 +30,7 @@ namespace helper
 	{
 		if (m_o_OpenGLCam != nullptr)
 		{
-			m_o_OpenGLCam->rotateCam(deltaY*m_fRotationSpeed, -deltaX*m_fRotationSpeed, 0);
+			m_o_OpenGLCam->rotateCam(-deltaY*m_fRotationSpeed, -deltaX*m_fRotationSpeed, 0);
 		}
 	}
 
@@ -51,12 +51,18 @@ namespace helper
 	{
 		float mov[3];
 
-		mov[0] = m_dDeltaTime * m_fMovementSpeed * (this->m_uiMovmentDir[forward] - this->m_uiMovmentDir[backward]);
-		mov[1] = m_dDeltaTime * m_fMovementSpeed * (this->m_uiMovmentDir[right] - this->m_uiMovmentDir[left]);
-		mov[2] = m_dDeltaTime * m_fMovementSpeed * (this->m_uiMovmentDir[up] - this->m_uiMovmentDir[down]);
+		float movmentSpeed = m_fMovementSpeed;
+		if (this->m_uiMovmentDir[boost])
+		{
+			movmentSpeed *= 10;
+		}
+		
+		mov[0] = m_dDeltaTime * movmentSpeed * (this->m_uiMovmentDir[forward] - this->m_uiMovmentDir[backward]);
+		mov[1] = m_dDeltaTime * movmentSpeed * (this->m_uiMovmentDir[right] - this->m_uiMovmentDir[left]);
+		mov[2] = m_dDeltaTime * movmentSpeed * (this->m_uiMovmentDir[up] - this->m_uiMovmentDir[down]);
 
 		if( mov[0] || mov[1] || mov[2])
-			this->m_o_OpenGLCam->moveCam(mov[0], mov[1], mov[2]);
+			this->m_o_OpenGLCam->moveCam(mov[0], -mov[1], -mov[2]);
 	}
 }
 

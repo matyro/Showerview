@@ -20,17 +20,17 @@ void error_callback(int error, const char* description)
 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	static double oldX = xpos;
-	static double oldY = ypos;
+	static float oldX = static_cast<float>(xpos);
+	static float oldY = static_cast<float>(ypos);
 
-	double dx = xpos - oldX;
-	double dy = ypos - oldY;
+	float dx = static_cast<float>(xpos - oldX);
+	float dy = static_cast<float>(ypos - oldY);
 
 	SCamControll().rotate(dx, dy);
 	//std::cout << "Mousemove " << dx << " - " << dy << std::endl;
 
-	oldX = xpos;
-	oldY = ypos;
+	oldX = static_cast<float>(xpos);
+	oldY = static_cast<float>(ypos);
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -82,11 +82,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_D:
 			mov = helper::CameraControll::right;
 			break;
-		case GLFW_KEY_SPACE:
+		case GLFW_KEY_Q:
 			mov = helper::CameraControll::up;
 			break;
-		case GLFW_KEY_LEFT_SHIFT:
+		case GLFW_KEY_E:
 			mov = helper::CameraControll::down;
+			break;
+		case GLFW_KEY_SPACE:
+			mov = helper::CameraControll::boost;
 			break;
 		default:
 			break;
@@ -110,16 +113,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 }
 
-void FreeImageErrorHandler(FREE_IMAGE_FORMAT fif, const char *message)
-{
-	std::cout << "\n*** ";
-	if (fif != FIF_UNKNOWN)
-	{
-		printf("%s Format\n", FreeImage_GetFormatFromFIF(fif));
-	}
-	std::cout << message << "\n***\n";
-
-}
 
 
 void window_size_callback(GLFWwindow* window, int width, int height)

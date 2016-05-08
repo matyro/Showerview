@@ -17,7 +17,7 @@ namespace helper
 	class CameraControll
 	{
 	private:
-		std::shared_ptr<camera::Camera> m_o_OpenGLCam;			// Controlled camera
+		std::shared_ptr<Camera> m_o_OpenGLCam;			// Controlled camera
 
 		CameraControll();
 		CameraControll(CameraControll const &);					// No copy-Constructor
@@ -25,12 +25,12 @@ namespace helper
 
 		double m_dDeltaTime;
 
-		float m_fDeltaXAcc, m_fDeltaYAcc;
+		double m_fDeltaXAcc, m_fDeltaYAcc;
 
-		const float m_fRotationSpeed = 0.005; 	// Degree/Pixel
-		const float m_fMovementSpeed = 2.5;		// OpenGL Units / sec
+		const double m_fRotationSpeed = 0.005; 	// Degree/Pixel
+		const double m_fMovementSpeed = 2.5;		// OpenGL Units / sec
 
-		bool m_uiMovmentDir[6] = {0,0,0,0,0,0};
+		bool m_uiMovmentDir[7] = {0,0,0,0,0,0,  0};
 
 	protected:
 		
@@ -45,7 +45,9 @@ namespace helper
 					right=2,
 					left=3,
 					up=4,
-					down=5
+					down=5,
+
+					boost=6
 				};
 
 
@@ -58,7 +60,7 @@ namespace helper
 			return singelton; 
 		}
 
-		inline void setCamera(std::shared_ptr<camera::Camera> cam)
+		inline void setCamera(std::shared_ptr<Camera> cam)
 		{
 			this->m_o_OpenGLCam = cam;
 
