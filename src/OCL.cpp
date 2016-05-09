@@ -192,7 +192,7 @@ std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory> initOCL(cl_GLenum textureFl
 	//std::tuple<cl::Platform, cl::Device, cl::Context> 
 	auto hardware = createContext();
 
-	auto prog = loadProgram(std::get<1>(hardware), std::get<2>(hardware), "../Shader/kernel.cl");
+	auto prog = loadProgram(std::get<1>(hardware), std::get<2>(hardware), "../Shader/kernel2.cl");
 	
 	
 	//create queue to which we will push commands for the device.
@@ -223,21 +223,28 @@ std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory> initOCL(cl_GLenum textureFl
 	error = queue.enqueueWriteBuffer(lineBuffer, CL_TRUE, 0, sizeof(Line) * lines.size(), lines.data());
 	errorCheck("LineBuffer Transmit", error);
 
+	static const cl::Buffer pointBuffer = cl::Buffer(std::get<2>(hardware), CL_MEM_READ_WRITE, sizeof(Line) * lines.size(), 0, &error);
+	errorCheck("pointBuffer Create", error);
+	error = texture_writer.setArg(4, pointBuffer);
+	errorCheck("pointBuffer Set", error);
+	error = queue.enqueueWriteBuffer(pointBuffer, CL_TRUE, 0, sizeof(Line) * lines.size(), lines.data());
+	errorCheck("pointBuffer Transmit", error);
+
 	int size = lines.size();
-	texture_writer.setArg(4, size);
+	texture_writer.setArg(5, size);
 
 
 	return std::make_tuple(queue, texture_writer, texture);
 }
 
 
-void calcOCL(std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory>& data, const float count, const Plane& plane, const int width, const int height)
+void calcOCL(std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory>& data, const float count, const cl_float16& mat, const int width, const int height)
 {
 	auto tmp_ptr = std::vector<cl::Memory>({ std::get<2>(data) });
 	std::get<0>(data).enqueueAcquireGLObjects(&tmp_ptr);
 
 	std::get<1>(data).setArg(1, count);		
-	std::get<1>(data).setArg(2, plane);
+	std::get<1>(data).setArg(2, mat);
 
 	
 	std::get<0>(data).enqueueNDRangeKernel(std::get<1>(data), cl::NDRange(0, 0), cl::NDRange(width, height) , cl::NDRange(8, 48));

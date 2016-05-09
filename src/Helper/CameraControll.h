@@ -11,13 +11,17 @@
 #include <memory>
 
 #include "../Camera/Camera.h"
+#include "../Camera/CameraMatrix.h"
+
+#define TCam CameraMatrix
+
 
 namespace helper
-{
+{	
 	class CameraControll
 	{
 	private:
-		std::shared_ptr<Camera> m_o_OpenGLCam;			// Controlled camera
+		std::shared_ptr<TCam> m_o_OpenGLCam;			// Controlled camera
 
 		CameraControll();
 		CameraControll(CameraControll const &);					// No copy-Constructor
@@ -60,7 +64,7 @@ namespace helper
 			return singelton; 
 		}
 
-		inline void setCamera(std::shared_ptr<Camera> cam)
+		inline void setCamera(std::shared_ptr<TCam> cam)
 		{
 			this->m_o_OpenGLCam = cam;
 
@@ -78,5 +82,5 @@ namespace helper
 	};
 }
 
-helper::CameraControll& SCamControll();
+	helper::CameraControll& SCamControll();
 #endif /* CAMERA_CONTROLL_H_ */

@@ -2,7 +2,7 @@
 typedef struct Line
 {
 	float4 start;
-	float4 direction;	
+	float4 end;	
 } Line;
 
 typedef
@@ -15,6 +15,12 @@ typedef struct Plane
 	float4 planeR;
 	float4 planeD;
 } Plane;
+
+typedef struct Line2D
+{
+	float2 start;
+	float2 end;
+} Line2D;
 
 
 
@@ -55,38 +61,64 @@ float4 crossProduct(float4 v1, float4 v2)
 
 
 
-__kernel void transformLines(float16 mat, __global Line* lines, __const int lineSize)
-{ 
-	const int2 coordi = (int2)(get_global_id(0), get_global_id(1));
-	
-	float4 st = (float4)(dot(mat.s0123, lines.start),
-				dot(mat.s4567, lines.start),
-				dot(mat.s89ab, lines.start),
-				dot(mat.scdef, lines.start));
-
-	float4 en = (float4)(dot(mat.s0123, lines.end),
-		dot(mat.s4567, lines.end),
-		dot(mat.s89ab, lines.end),
-		dot(mat.scdef, lines.end));
-
-
-}
-
-
 
 
 
 
 
 //__constant for
-__kernel void writeTexture(__write_only image2d_t image, __const float t, __global Line* lines, __const int lineSize)
+__kernel void writeTexture(__write_only image2d_t image, __const float t, __const float16 mat, __global Line* lines, __global Line* pts,  __const int lineSize)
 {
 	const int2 coordi = (int2)(get_global_id(0), get_global_id(1));
 
 	const float2 coordf = convert_float2(coordi) / (float2)(get_global_size(0), get_global_size(1));
 
 
+	int i = get_global_id(0) + (get_global_id(1) * get_global_size(0));
+
+	if( i < lineSize )
+	{
+
+		pts[i].start = (float4)(dot(mat.s0123, lines[i].start),
+			dot(mat.s4567, lines[i].start),
+			dot(mat.s89ab, lines[i].start),
+			dot(mat.scdef, lines[i].start));
+
+		pts[i].end = (float4)(dot(mat.s0123, lines[i].end),
+			dot(mat.s4567, lines[i].end),
+			dot(mat.s89ab, lines[i].end),
+			dot(mat.scdef, lines[i].end));
+	
+	
+		if(i == 100)
+		{
+			printf("Coords: %f,%f,%f,%f -> %f,%f,%f,%f\n", lines[100].start.x, lines[100].start.y, lines[100].start.z, lines[100].start.w, pts[i].start.x, pts[i].start.y, pts[i].start.z, pts[i].start.w);
+			//printf("%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n", mat.s0, mat.s1, mat.s2, mat.s3, mat.s4, mat.s5, mat.s6, mat.s7, mat.s8, mat.s9, mat.sa, mat.sb, mat.sc, mat.sd, mat.se, mat.sf);
+		}
+	}
+
+
 	float4 color = (float4)(0, 0, 0, 0.0);
+
+
+	for(int i=0; i<lineSize; i++)
+	{
+		if(pts[i].start.x == coordi.x && pts[i].start.y == coordi.y)
+		{
+			color = (float4)(1, 0, 0, 1.0);
+		}
+
+		if (pts[i].end.x == coordi.x && pts[i].end.y == coordi.y)
+		{
+			color = (float4)(1, 0, 0, 1.0);
+		}
+	
+	}
+
+	
+
+
+
 	
 		
 	write_imagef(

@@ -16,7 +16,7 @@ struct Line
 {
 	cl_float4 start;
 	cl_float4 direction;
-	cl_float4 col;
+	//cl_float4 col;
 };
 
 
@@ -35,10 +35,10 @@ public:
 	{
 		Line tmp;
 		tmp.start = start;
-		tmp.col = col;
+		//tmp.col = col;
 
-		for(int i=0; i<4; i++)
-			tmp.direction.s[i] = end.s[i] - start.s[i];	
+		for (int i = 0; i < 4; i++)
+			tmp.direction.s[i] = end.s[i];// -start.s[i];
 		
 		m_vLines.push_back(tmp);
 	}

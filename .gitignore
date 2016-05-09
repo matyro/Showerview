@@ -1,22 +1,22 @@
-# Compiled Onkect files
+# Compiled Object files
 *.slo
 *.lo
 *.o
 *.obj
 
-# Precompiled
-*-gch
+# Precompiled Headers
+*.gch
 *.pch
 
-# Compiled Dynamic lib
+# Compiled Dynamic libraries
 *.so
-*.dll
 *.dylib
+*.dll
 
-# Fortran
+# Fortran module files
 *.mod
 
-# Compiled Static lib
+# Compiled Static libraries
 *.lai
 *.la
 *.a
@@ -26,5 +26,17 @@
 *.exe
 *.out
 *.app
-/Debug/
-/Release/
+
+#VC++
+*.tlog
+*.pdb
+*.idb
+*.suo
+*.db
+*.log
+*.sdf
+
+#Intel
+*.ilk
+*.iobj
+*.ipdb

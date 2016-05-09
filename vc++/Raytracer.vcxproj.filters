@@ -53,6 +53,9 @@
     <ClCompile Include="..\src\Camera\Camera.cpp">
       <Filter>Source Files\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Camera\CameraMatrix.cpp">
+      <Filter>Source Files\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Callback.h">
@@ -90,6 +93,9 @@
     </ClInclude>
     <ClInclude Include="..\src\Helper\Quadtree.h">
       <Filter>Header Files\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Camera\CameraMatrix.h">
+      <Filter>Header Files\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

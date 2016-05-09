@@ -12,6 +12,7 @@
 #include <Helper/Line.h>
 
 
+#include "Camera/CameraMatrix.h"
 
 #include "OCL.h"
 #include "OGL.h"
@@ -77,7 +78,7 @@ int main()
 	// Inits
 
 	// dist, fov, ratio
-	auto cam = std::make_shared<Camera>(1.0f, 90.0f, static_cast<float>(width) / static_cast<float>(height) );
+	auto cam = std::make_shared<CameraMatrix>(1.0f, 90.0f, static_cast<float>(width) / static_cast<float>(height) );
 	
 	SCamControll().setCamera(cam);	
 
@@ -114,7 +115,7 @@ int main()
 		{
 			float y = -tmpSize + 2.0f * j;
 
-			lines.addLine({ x, y, 20, 0.0f }, { x, y, -20, 0.0f }, { dis2(g), dis2(g), dis2(g), 1.0f });
+			lines.addLine({ x, y, 10, 1.0f }, { x, y, -10, 1.0f }, { dis2(g), dis2(g), dis2(g), 1.0f });
 		}		
 	}
 	
@@ -164,7 +165,7 @@ int main()
 		}
 		
 		time2 = glfwGetTime();
-		calcOCL( oclData, static_cast<float>(absCounter), cam->plane(), textureWidth, textureHeight);
+		calcOCL( oclData, static_cast<float>(absCounter), toFloat16(cam->getProjectionViewMatrix()), textureWidth, textureHeight);
 		timeCache2 += glfwGetTime() - time2;
 
 		drawOGL( oglData );
