@@ -11,7 +11,7 @@
 #include <Windows.h>
 #include <Wingdi.h>
 #else
-
+#include <GL/glx.h>
 #endif
 
 #include <CL/cl.hpp>
@@ -118,7 +118,7 @@ std::tuple<cl::Platform, cl::Device, cl::Context> createContext()
 		auto hRC = wglGetCurrentContext();
 	#else
 		auto hDC = glXGetCurrentContext();
-		auto hRC = glfwGetWGLContext();
+		auto hRC = glXGetCurrentDisplay();
 	#endif
 
 		cl_context_properties props[] =
