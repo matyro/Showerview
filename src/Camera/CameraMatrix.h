@@ -15,8 +15,9 @@ class CameraMatrix
 
 private:
 	glm::vec3 m_vec3CamPos;
-	glm::vec3 m_vec3ViewDirection;
-
+	
+	float m_fPitch;
+	float m_fYaw;
 
 	glm::mat4 m_glm_viewMatrix;
 	glm::mat4 m_glm_projectionMatrix;

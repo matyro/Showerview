@@ -97,22 +97,23 @@ __kernel void writeTexture(__write_only image2d_t image, __const float t, __cons
 		}
 	}
 
+	barrier( CLK_GLOBAL_MEM_FENCE );
 
 	float4 color = (float4)(0, 0, 0, 0.0);
 
 
 	for(int i=0; i<lineSize; i++)
 	{
-		if(pts[i].start.x == coordi.x && pts[i].start.y == coordi.y)
+		if(pts[i].start.y <= 0 && pts[i].end.y)
 		{
-			color = (float4)(1, 0, 0, 1.0);
+			continue;
 		}
 
-		if (pts[i].end.x == coordi.x && pts[i].end.y == coordi.y)
-		{
-			color = (float4)(1, 0, 0, 1.0);
-		}
-	
+		float2 st = pts[i].start.xy;
+		float2 en = pts[i].end.xy;
+		float2 dir = en - st;
+		
+		// bestimme distanz
 	}
 
 	

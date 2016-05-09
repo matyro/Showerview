@@ -22,11 +22,30 @@
 
 void CameraMatrix::calcMatrix()
 {
-	m_glm_viewMatrix = glm::lookAt(m_vec3CamPos, // the position of your camera, in world space
-		m_vec3CamPos + m_vec3ViewDirection, // where you want to look at, in world space
-		m_glm_up // probably glm::vec3(0,1,0), but (0,-1,0) would make you looking upside-down, which can be great too
-	);
+	const float p = -m_fPitch;
+	const float y = -m_fYaw;
 
+	const float a = -m_vec3CamPos.x;
+	const float b = -m_vec3CamPos.y;
+	const float c = -m_vec3CamPos.z;
+
+	
+	glm::mat4 xRot(	1.0f,	0.0f,	0.0f,	0.0f,
+					0.0f,	cos(p),	-sin(p),0.0f,
+					0.0f,	sin(p),	cos(p),	0.0f,
+					0.0f,	0.0f,	0.0f,	1.0f);
+
+	glm::mat4 zRot(	cos(y), -sin(y),0.0f,	0.0f,
+					sin(y),	cos(y),	0.0f,	0.0f,
+					0.0f,	0.0f,	1.0f,	0.0f,
+					0.0f,	0.0f,	0.0f,	1.0f);
+
+	glm::mat4 tran(	1.0f,	0.0f,	0.0f,	a,
+					0.0f,	1.0f,	0.0f,	b,
+					0.0f,	0.0f,	1.0f,	c,
+					0.0f,	0.0f,	0.0f,	1.0f);
+
+	m_glm_viewMatrix = (xRot * zRot) + tran;
 
 	m_glm_projectionMatrix = glm::perspective(m_fFov, // The horizontal Field of View, in degrees : the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
 		m_fiRatio, // Aspect Ratio. Depends on the size of your window. Notice that 4/3 == 800/600 == 1280/960, sounds familiar ?
@@ -42,10 +61,10 @@ void CameraMatrix::calcMatrix()
 }
 
 CameraMatrix::CameraMatrix(const float dist, const float fov, const float ratio)
-	:m_fDist(dist), m_fFov((M_PI * fov) / 180.0f), m_fiRatio(ratio), m_bCanMove(false)
+	:m_fDist(dist), m_fFov((M_PI * fov) / 180.0f), m_fiRatio(ratio), m_bCanMove(false), m_fPitch(0), m_fYaw(0)
 {
 	m_vec3CamPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	m_vec3ViewDirection = glm::vec3(0.0f, 1.0f, 0.0f);
+	
 
 	m_glm_up = glm::vec3(0.0f, 0.0f, 1.0f);
 
@@ -72,27 +91,21 @@ const glm::mat4 CameraMatrix::getViewMatrix() const
 void CameraMatrix::rotateCam(const float pitch, const float yaw, const float roll)
 {
 	if (m_bCanMove)
-	{
-		//m_vec3ViewDirection = glm::vec3(0.0f, 0.0f, -1.0f);
+	{		
+		m_fYaw += yaw;
 
-		glm::vec3 cameraRight = glm::normalize(glm::cross(m_glm_up, m_vec3ViewDirection));
-		glm::vec3 cameraUp = glm::cross(m_vec3ViewDirection, cameraRight);
-
-
-		const float zAngle = glm::angle(m_vec3ViewDirection, m_glm_up);
 		const float zAxisCut = 0.2;
+		
 
-		m_vec3ViewDirection = glm::rotate(m_vec3ViewDirection, yaw, cameraUp);
-
-		if ((zAngle > (glm::pi<float>() - zAxisCut) && (pitch > 0))
-			|| ((pitch < 0) && zAngle < 0.2))
+		if ((m_fPitch > (glm::pi<float>() - zAxisCut) && (pitch > 0))
+			|| ((pitch < 0) && m_fPitch < 0.2))
 		{
 			this->calcMatrix();
 			return;
 		}
 		else
 		{
-			m_vec3ViewDirection = glm::rotate(m_vec3ViewDirection, pitch, cameraRight);
+			m_fPitch += pitch;
 			this->calcMatrix();
 		}
 
@@ -104,11 +117,26 @@ void CameraMatrix::rotateCam(const float pitch, const float yaw, const float rol
 
 void CameraMatrix::moveCam(const float forward_backward, const float right_left, const float up_down)
 {
+	const float p = m_fPitch;
+	const float y = m_fYaw;
+
+	glm::mat3 xRot(1.0f, 0.0f, 0.0f,
+		0.0f, cos(p), -sin(p), 
+		0.0f, sin(p), cos(p));
+
+	glm::mat3 zRot(cos(y), -sin(y), 0.0f, 
+		sin(y), cos(y), 0.0f,
+		0.0f, 0.0f, 1.0f);
+
+
+	glm::vec3 viewDir(0.0f,	1.0f,	0.0f);
+	viewDir = (xRot * zRot) * viewDir;
+
 	//if (m_bCanMove)
 	{
-		const glm::vec3 cameraForward = glm::normalize(m_vec3ViewDirection);
-		const glm::vec3 cameraRight = glm::normalize(glm::cross(m_glm_up, m_vec3ViewDirection));
-		const glm::vec3 cameraUp = glm::normalize(glm::cross(m_vec3ViewDirection, cameraRight));
+		const glm::vec3 cameraForward = glm::normalize(viewDir);
+		const glm::vec3 cameraRight = glm::normalize(glm::cross(m_glm_up, viewDir));
+		const glm::vec3 cameraUp = glm::normalize(glm::cross(viewDir, cameraRight));
 
 		this->m_vec3CamPos += cameraForward*forward_backward + cameraRight*right_left + cameraUp*up_down;
 
