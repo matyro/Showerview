@@ -16,7 +16,7 @@ struct Line
 {
 	cl_float4 start;
 	cl_float4 direction;
-	//cl_float4 col;
+	cl_float4 col;
 };
 
 

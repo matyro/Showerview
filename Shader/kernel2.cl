@@ -3,6 +3,7 @@ typedef struct Line
 {
 	float4 start;
 	float4 end;	
+	float4 col;
 } Line;
 
 typedef
@@ -67,7 +68,7 @@ float4 crossProduct(float4 v1, float4 v2)
 
 
 //__constant for
-__kernel void writeTexture(__write_only image2d_t image, __const float t, __const float16 mat, __global Line* lines, __global Line* pts,  __const int lineSize)
+__kernel void writeTexture(__write_only image2d_t image, __const float4 mov, __const float16 rot, __const float16 proj, __global Line* lines, __global Line* pts,  __const int lineSize)
 {
 	const int2 coordi = (int2)(get_global_id(0), get_global_id(1));
 
@@ -78,24 +79,40 @@ __kernel void writeTexture(__write_only image2d_t image, __const float t, __cons
 
 	if( i < lineSize )
 	{
-		const float4 tmpS = lines[i].start;
-		const float4 tmpE = lines[i].end;
+		float4 tmpS = lines[i].start + mov;
+		float4 tmpE = lines[i].end + mov;
 
-		pts[i].start = (float4)(
-			(mat.s0 * tmpS.s0) + (mat.s1 * tmpS.s1) + (mat.s2 * tmpS.s2)  + (mat.s3 * tmpS.s3),
-			(mat.s4 * tmpS.s0) + (mat.s5 * tmpS.s1) + (mat.s6 * tmpS.s2) + (mat.s7 * tmpS.s3),
-			(mat.s8 * tmpS.s0) + (mat.s9 * tmpS.s1) + (mat.sa * tmpS.s2) + (mat.sb * tmpS.s3),
-			(mat.sc * tmpS.s0) + (mat.sd * tmpS.s1) + (mat.se * tmpS.s2) + (mat.sf * tmpS.s3));
+		tmpS = (float4)(
+			dot(rot.s0123, tmpS),
+			dot(rot.s4567, tmpS),
+			dot(rot.s89ab, tmpS),
+			dot(rot.scdef, tmpS));
 
-		pts[i].end = (float4)(
-			(mat.s0 * tmpE.s0) + (mat.s1 * tmpE.s1) + (mat.s2 * tmpE.s2) + (mat.s3 * tmpE.s3),
-			(mat.s4 * tmpE.s0) + (mat.s5 * tmpE.s1) + (mat.s6 * tmpE.s2) + (mat.s7 * tmpE.s3),
-			(mat.s8 * tmpE.s0) + (mat.s9 * tmpE.s1) + (mat.sa * tmpE.s2) + (mat.sb * tmpE.s3),
-			(mat.sc * tmpE.s0) + (mat.sd * tmpE.s1) + (mat.se * tmpE.s2) + (mat.sf * tmpE.s3));
+		tmpE = (float4)(
+			dot(rot.s0123, tmpE),
+			dot(rot.s4567, tmpE),
+			dot(rot.s89ab, tmpE),
+			dot(rot.scdef, tmpE));
 
+
+		tmpS = (float4)(
+			dot(proj.s0123, tmpS),
+			dot(proj.s4567, tmpS),
+			dot(proj.s89ab, tmpS),
+			dot(proj.scdef, tmpS));
+
+		tmpE = (float4)(
+			dot(proj.s0123, tmpE),
+			dot(proj.s4567, tmpE),
+			dot(proj.s89ab, tmpE),
+			dot(proj.scdef, tmpE));
 		
-		pts[i].start = pts[i].start / pts[i].start.z;
-		pts[i].end = pts[i].end / pts[i].end.z;
+		
+
+
+		pts[i].start = tmpS / tmpS.w;
+		pts[i].end = tmpE / tmpE.w;
+	
 
 	
 	
@@ -116,7 +133,7 @@ __kernel void writeTexture(__write_only image2d_t image, __const float t, __cons
 
 	for(int i=0; i<lineSize; i++)
 	{
-		if(pts[i].start.w <= 0 && pts[i].end.w <= 0)
+		if(pts[i].start.z <= 0 && pts[i].end.z <= 0)
 		{
 			continue;
 		}
@@ -169,12 +186,13 @@ __kernel void writeTexture(__write_only image2d_t image, __const float t, __cons
 		*/
 
 		float dist = min( length(coordf - st), length(coordf - en));
-		float multi = pts[i].start.w;
+		float multi = pts[i].start.z;
 
 		//multi = max(0.0f, multi);
 
-		if(dist/multi < 0.5f)
+		if(dist*multi < 0.5f)
 		{
+			//color = color * lines[i].col;
 			counter = counter + 1;
 		}
 	}

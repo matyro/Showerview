@@ -25,60 +25,38 @@ void CameraMatrix::calcMatrix()
 	
 	const float a = m_vec3CamPos.x;
 	const float b = m_vec3CamPos.y;
-	const float c = m_vec3CamPos.z;
+	const float c = -m_vec3CamPos.z;
 
-	
-	m_vec3ViewDir = glm::vec3(0.0f, 0.0f, 1.0f);
 	glm::vec3 cameraRight = glm::normalize(glm::cross(m_glm_up, m_vec3ViewDir));
 	glm::vec3 cameraUp = glm::cross(m_vec3ViewDir, cameraRight);
-	m_vec3ViewDir = glm::rotate(m_vec3ViewDir, m_fYaw, cameraUp);
-	m_vec3ViewDir = glm::rotate(m_vec3ViewDir, m_fPitch, cameraRight);
-
 	
-	std::cout << "ViewDir: " << glm::to_string(m_vec3ViewDir) << std::endl;
+	//std::cout << "ViewDir: " << glm::to_string(m_vec3ViewDir) << std::endl;
 
-	glm::mat4 yRot = customRotate(m_fYaw, cameraUp);
+	glm::mat4 yRot = glm::rotate(m_fYaw, cameraUp);
 
-	glm::mat4 xRot = customRotate(m_fPitch, cameraRight);
+	glm::mat4 xRot = glm::rotate(m_fPitch, cameraRight);
 	
 	
 
-	glm::mat4 tran(	1.0f,	0.0f,	0.0f,	a,
-					0.0f,	1.0f,	0.0f,	b,
-					0.0f,	0.0f,	1.0f,	c,
-					0.0f,	0.0f,	0.0f,	1.0f);
+	glm::mat4 tran = glm::translate(glm::vec3(a, b, c));	
 
-	m_glm_viewMatrix = tran * yRot * xRot;
+	m_glm_viewMatrix = yRot * xRot * tran ;
 
 	//m_glm_viewMatrix = glm::inverse(m_glm_viewMatrix);
 
-	std::cout << "YRot: " << glm::to_string(yRot) << std::endl;
-	std::cout << "XRot: " << glm::to_string(xRot) << std::endl;
-	std::cout << "Tran: " << glm::to_string(tran) << std::endl;
+	//std::cout << "YRot: " << glm::to_string(yRot) << std::endl;
+	//std::cout << "XRot: " << glm::to_string(xRot) << std::endl;
+	//std::cout << "Tran: " << glm::to_string(tran) << std::endl;
 
 
-	std::cout << "Tran yRot: " << glm::to_string(tran * yRot) << std::endl; 
-	std::cout << "yRot xRot: " << glm::to_string(yRot * xRot) << std::endl;
+	//std::cout << "Tran yRot: " << glm::to_string(tran * yRot) << std::endl; 
+	//std::cout << "yRot xRot: " << glm::to_string(yRot * xRot) << std::endl;
 
-	std::cout << "All: " << glm::to_string(m_glm_viewMatrix) << std::endl << std::endl;
+	//std::cout << "All: " << glm::to_string(m_glm_viewMatrix) << std::endl << std::endl;
 
+		
 
-	float n = 1.0f;			//near
-	float f = 32768.0f;		//far
-
-	float l = sin(m_fFov / 2.0f) * n;	// left
-
-	float t = m_fiRatio * l;			// top
-
-	
-
-
-	m_glm_projectionMatrix = glm::mat4( n/l,	0.0f,	0.0f,	0.0f,
-										0.0f,   n/t,	0.0f,	0.0f,
-										0.0f,	0.0f,	1.0f,	0.0f,
-										0.0f,	0.0f,	0.0f,	1.0f);
-
-	
+	m_glm_projectionMatrix = glm::perspective(m_fFov, 1.0f / m_fiRatio, 1.0f, 1000.0f);
 
 	//std::cout << "\nOriginal Position: " << glm::to_string(m_vec3CamPos) << std::endl;
 	//std::cout << "Cam Position: " << glm::to_string(glm::inverse(m_glm_viewMatrix)[3]) << std::endl;
@@ -120,7 +98,14 @@ void CameraMatrix::rotateCam(const float pitch, const float yaw, const float rol
 {
 	if (m_bCanMove)
 	{		
+		glm::vec3 cameraRight = glm::normalize(glm::cross(m_glm_up, m_vec3ViewDir));
+		glm::vec3 cameraUp = glm::cross(m_vec3ViewDir, cameraRight);
+
+
 		m_fYaw += yaw;
+		m_vec3ViewDir = glm::rotate(m_vec3ViewDir, yaw, cameraUp);
+
+
 
 		const float zAxisCut = 0.2f;
 		
@@ -133,6 +118,7 @@ void CameraMatrix::rotateCam(const float pitch, const float yaw, const float rol
 		}
 		else
 		{
+			m_vec3ViewDir = glm::rotate(m_vec3ViewDir, pitch, cameraRight);
 			m_fPitch += pitch;
 			this->calcMatrix();
 		}
@@ -166,10 +152,10 @@ cl_float16 toFloat16(glm::mat4 mat)
 
 	for (int i = 0; i < 4; i++)
 	{
-		tmp.s[0 + i * 4] = mat[i][0];
-		tmp.s[1 + i * 4] = mat[i][1];
-		tmp.s[2 + i * 4] = mat[i][2];
-		tmp.s[3 + i * 4] = mat[i][3];
+		tmp.s[0 + i * 4] = mat[0][i];
+		tmp.s[1 + i * 4] = mat[1][i];
+		tmp.s[2 + i * 4] = mat[2][i];
+		tmp.s[3 + i * 4] = mat[3][i];
 	}
 	return tmp;
 }
