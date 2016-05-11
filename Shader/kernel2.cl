@@ -71,55 +71,118 @@ __kernel void writeTexture(__write_only image2d_t image, __const float t, __cons
 {
 	const int2 coordi = (int2)(get_global_id(0), get_global_id(1));
 
-	const float2 coordf = convert_float2(coordi) / (float2)(get_global_size(0), get_global_size(1));
-
+	const float2 coordf = (2 * convert_float2(coordi) / (float2)(get_global_size(0), get_global_size(1))) - (float2)(1.0f,1.0f);
+	
 
 	int i = get_global_id(0) + (get_global_id(1) * get_global_size(0));
 
 	if( i < lineSize )
 	{
+		const float4 tmpS = lines[i].start;
+		const float4 tmpE = lines[i].end;
 
-		pts[i].start = (float4)(dot(mat.s0123, lines[i].start),
-			dot(mat.s4567, lines[i].start),
-			dot(mat.s89ab, lines[i].start),
-			dot(mat.scdef, lines[i].start));
+		pts[i].start = (float4)(
+			(mat.s0 * tmpS.s0) + (mat.s1 * tmpS.s1) + (mat.s2 * tmpS.s2)  + (mat.s3 * tmpS.s3),
+			(mat.s4 * tmpS.s0) + (mat.s5 * tmpS.s1) + (mat.s6 * tmpS.s2) + (mat.s7 * tmpS.s3),
+			(mat.s8 * tmpS.s0) + (mat.s9 * tmpS.s1) + (mat.sa * tmpS.s2) + (mat.sb * tmpS.s3),
+			(mat.sc * tmpS.s0) + (mat.sd * tmpS.s1) + (mat.se * tmpS.s2) + (mat.sf * tmpS.s3));
 
-		pts[i].end = (float4)(dot(mat.s0123, lines[i].end),
-			dot(mat.s4567, lines[i].end),
-			dot(mat.s89ab, lines[i].end),
-			dot(mat.scdef, lines[i].end));
+		pts[i].end = (float4)(
+			(mat.s0 * tmpE.s0) + (mat.s1 * tmpE.s1) + (mat.s2 * tmpE.s2) + (mat.s3 * tmpE.s3),
+			(mat.s4 * tmpE.s0) + (mat.s5 * tmpE.s1) + (mat.s6 * tmpE.s2) + (mat.s7 * tmpE.s3),
+			(mat.s8 * tmpE.s0) + (mat.s9 * tmpE.s1) + (mat.sa * tmpE.s2) + (mat.sb * tmpE.s3),
+			(mat.sc * tmpE.s0) + (mat.sd * tmpE.s1) + (mat.se * tmpE.s2) + (mat.sf * tmpE.s3));
+
+		
+		pts[i].start = pts[i].start / pts[i].start.z;
+		pts[i].end = pts[i].end / pts[i].end.z;
+
 	
 	
-		if(i == 100)
+		if(i == 0)
 		{
-			printf("Coords: %f,%f,%f,%f -> %f,%f,%f,%f\n", lines[100].start.x, lines[100].start.y, lines[100].start.z, lines[100].start.w, pts[i].start.x, pts[i].start.y, pts[i].start.z, pts[i].start.w);
+			//printf("Coords Start: %f,%f,%f,%f -> %f,%f,%f,%f\n", lines[i].start.x, lines[i].start.y, lines[i].start.z, lines[i].start.w, pts[i].start.x, pts[i].start.y, pts[i].start.z, pts[i].start.w);
+			//printf("Coords End: %f,%f,%f,%f -> %f,%f,%f,%f\n", lines[i].end.x, lines[i].end.y, lines[i].end.z, lines[i].end.w, pts[i].end.x, pts[i].end.y, pts[i].end.z, pts[i].end.w);
+
 			//printf("%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n", mat.s0, mat.s1, mat.s2, mat.s3, mat.s4, mat.s5, mat.s6, mat.s7, mat.s8, mat.s9, mat.sa, mat.sb, mat.sc, mat.sd, mat.se, mat.sf);
 		}
 	}
 
 	barrier( CLK_GLOBAL_MEM_FENCE );
 
+	float counter = 0;
 	float4 color = (float4)(0, 0, 0, 0.0);
 
 
 	for(int i=0; i<lineSize; i++)
 	{
-		if(pts[i].start.y <= 0 && pts[i].end.y)
+		if(pts[i].start.w <= 0 && pts[i].end.w <= 0)
 		{
 			continue;
 		}
 
 		float2 st = pts[i].start.xy;
 		float2 en = pts[i].end.xy;
-		float2 dir = en - st;
 		
+		/*float2 v = en - st;		
+		float2 w = coordf - st;
+
+
 		// bestimme distanz
+
+		float dist = FLT_MAX;
+		float multi = 0;
+
+		float c1 = dot(v, w);
+		float c2 = dot(v, v);
+
+		if(c1 <= 0)
+		{ 
+			dist = length(coordf - st);
+			multi = pts[i].start.w;
+		}
+		else if(c2 <= 0)
+		{
+			dist = length(coordf - en);
+			multi = pts[i].end.w;
+		}
+		else
+		{ 
+			float2 P = st + (c1 / c2) * v;
+
+			multi = pts[i].start.w + ((pts[i].end.w - pts[i].start.w) * (c1 / c2));
+			dist = length(coordf - P);
+		}
+
+		if (get_global_id(0) == 400 && get_global_id(1) == 400)
+		{ 			
+			//printf("Coords Start: %f,%f,%f,%f -> %f,%f,%f,%f\n", lines[i].start.x, lines[i].start.y, lines[i].start.z, lines[i].start.w, pts[i].start.x, pts[i].start.y, pts[i].start.z, pts[i].start.w);
+			//printf("Coords End: %f,%f,%f,%f -> %f,%f,%f,%f\n", lines[i].end.x, lines[i].end.y, lines[i].end.z, lines[i].end.w, pts[i].end.x, pts[i].end.y, pts[i].end.z, pts[i].end.w);
+
+
+			//printf("Dist %i: %f\n",i,dist);
+			//printf("Multi %i: %f\n", i, multi);
+
+			color = (float4)(1.0, 0, 1.0f, 1.0);
+			counter = 0;
+		}
+		*/
+
+		float dist = min( length(coordf - st), length(coordf - en));
+		float multi = pts[i].start.w;
+
+		//multi = max(0.0f, multi);
+
+		if(dist/multi < 0.5f)
+		{
+			counter = counter + 1;
+		}
 	}
 
-	
-
-
-
+	if(counter > 0)
+	{ 
+		color = (float4)(1.0, counter / lineSize, 0, 1.0);
+	}
 	
 		
 	write_imagef(

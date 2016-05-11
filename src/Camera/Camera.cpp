@@ -23,6 +23,23 @@
 
 
 
+struct Plane
+{
+	cl_float4 camPos;
+	cl_float4 viewDir;
+	cl_float4 planeTL;
+	cl_float4 planeR;
+	cl_float4 planeD;
+};
+
+struct Matrix
+{
+	cl_float4 a;	// Zeile 1
+	cl_float4 b;   // Zeile 2
+	cl_float4 c;	// Zeile 3
+	cl_float4 d;	// Zeile 4
+};
+
 void Camera::update()
 {
 	glm::vec3 right = glm::normalize(glm::cross(m_vec3ViewDirection, m_glm_up));
@@ -42,7 +59,7 @@ void Camera::update()
 
 
 Camera::Camera(const float dist, const float fov, const float ratio)
-	:m_fDist(dist), m_fFov((M_PI * fov) / 180.0f), m_fiRatio(1.0f / ratio), m_bCanMove(false)
+	:m_fDist(dist), m_fFov(static_cast<float>(M_PI * fov) / 180.0f), m_fiRatio(1.0f / ratio), m_bCanMove(false)
 {
 	
 	m_vec3CamPos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -108,6 +125,15 @@ void Camera::moveCam(const float forward_backward, const float right_left, const
 const glm::vec3 Camera::getPosition()
 {
 	return this->m_vec3CamPos;
+}
+
+inline const Plane  Camera::plane()
+{
+	return{ m_vec3CamPos.x, m_vec3CamPos.y, m_vec3CamPos.z, 0.0f,
+		m_vec3ViewDirection.x,  m_vec3ViewDirection.y,  m_vec3ViewDirection.z, 0.0f,
+		m_vec3TopLeft.x, m_vec3TopLeft.y, m_vec3TopLeft.z, 0.0f,
+		m_vec3Right.x, m_vec3Right.y, m_vec3Right.z, 0.0f,
+		m_vec3Down.x, m_vec3Down.y, m_vec3Down.z, 0.0f };
 }
 
 

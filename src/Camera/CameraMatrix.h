@@ -15,6 +15,7 @@ class CameraMatrix
 
 private:
 	glm::vec3 m_vec3CamPos;
+	glm::vec3 m_vec3ViewDir;
 	
 	float m_fPitch;
 	float m_fYaw;
@@ -60,3 +61,4 @@ public:
 
 cl_float16 toFloat16(glm::mat4 mat);
 
+glm::mat4 customRotate(float t, glm::vec3 u);

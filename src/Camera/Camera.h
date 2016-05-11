@@ -1,10 +1,3 @@
-/*
- * CameraPerspective.h
- *
- *  Created on: 16.09.2015
- *      Author: dominik
- */
-
 #pragma once
 
 #include <glm/glm.hpp>
@@ -19,22 +12,11 @@
 
 
 
-struct Plane
-{
-	cl_float4 camPos;
-	cl_float4 viewDir;
-	cl_float4 planeTL;
-	cl_float4 planeR;
-	cl_float4 planeD;
-};
+struct Plane;
 
-struct Matrix
-{
-	cl_float4 a;	// Zeile 1
-	cl_float4 b;   // Zeile 2
-	cl_float4 c;	// Zeile 3
-	cl_float4 d;	// Zeile 4
-};
+
+struct Matrix;
+
 
 class Camera
 {
@@ -85,14 +67,7 @@ public:
 	inline const bool isMovable() const { return this->m_bCanMove; }
 
 
-	inline const Plane plane()
-	{
-		return  {m_vec3CamPos.x, m_vec3CamPos.y, m_vec3CamPos.z, 0.0f,
-				 m_vec3ViewDirection.x,  m_vec3ViewDirection.y,  m_vec3ViewDirection.z, 0.0f,
-				 m_vec3TopLeft.x, m_vec3TopLeft.y, m_vec3TopLeft.z, 0.0f,
-				 m_vec3Right.x, m_vec3Right.y, m_vec3Right.z, 0.0f,
-				 m_vec3Down.x, m_vec3Down.y, m_vec3Down.z, 0.0f } ;
-	}
+	inline const Plane plane();
 
 
 

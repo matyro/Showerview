@@ -62,7 +62,7 @@ namespace helper
 		mov[2] = m_dDeltaTime * movmentSpeed * (this->m_uiMovmentDir[up] - this->m_uiMovmentDir[down]);
 
 		if( mov[0] || mov[1] || mov[2])
-			this->m_o_OpenGLCam->moveCam(mov[0], -mov[1], -mov[2]);
+			this->m_o_OpenGLCam->moveCam(mov[0], mov[1], -mov[2]);
 	}
 }
 
