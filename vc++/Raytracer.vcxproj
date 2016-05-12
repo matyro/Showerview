@@ -117,9 +117,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <ExecutablePath>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\bin\Release\x64;E:\Programme\NVIDIA Corporation\CUDA\bin\win64\Debug;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glfw\include;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\include;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\src;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glm;E:\Programme\NVIDIA Corporation\CUDA\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glfw\lib-vc2015;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\lib\Release\x64;E:\Programme\NVIDIA Corporation\CUDA\lib\x64;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ProjectDir)..\glew-1.13.0\bin\Release\x64;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(ProjectDir)..\glfw\include;$(ProjectDir)..\glew-1.13.0\include;$(ProjectDir)..\src;$(ProjectDir)..\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\glfw\lib-vc2015;$(ProjectDir)..\glew-1.13.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)..\build\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
