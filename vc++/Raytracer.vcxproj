@@ -180,14 +180,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\include;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glfw\include;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\src;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glm;E:\Programme\NVIDIA Corporation\CUDA\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\glew-1.13.0\include;$(ProjectDir)..\glfw\include;$(ProjectDir)..\src;$(ProjectDir)..\glm;$(INTELOCLSDKROOT)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glfw\lib-vc2015;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\lib\Release\x64;E:\Programme\NVIDIA Corporation\CUDA\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\glfw\lib-vc2015;$(ProjectDir)..\glew-1.13.0\lib\Release\x64;$(INTELOCLSDKROOT)lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32.lib;glfw3.lib;glu32.lib;opengl32.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
