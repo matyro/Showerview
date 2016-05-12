@@ -68,7 +68,7 @@ float4 crossProduct(float4 v1, float4 v2)
 
 
 //__constant for
-__kernel void writeTexture(__write_only image2d_t image, __const float4 mov, __const float16 rot, __const float16 proj, __global Line* lines, __global Line* pts,  __const int lineSize)
+__kernel void writeTexture(__write_only image2d_t image, __const float4 mov, __const float16 rot, __const float16 proj, __global Line* lines, __global Line* pts,  __const int lineSize, __const int frames)
 {
 	const int2 coordi = (int2)(get_global_id(0), get_global_id(1));
 

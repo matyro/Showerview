@@ -38,9 +38,7 @@ void CameraMatrix::calcMatrix()
 	
 	
 
-	glm::mat4 tran = glm::translate(glm::vec3(a, b, c));	
-
-	m_glm_viewMatrix = yRot * xRot * tran ;
+	m_glm_viewMatrix = yRot * xRot;
 
 	//m_glm_viewMatrix = glm::inverse(m_glm_viewMatrix);
 
@@ -144,7 +142,28 @@ void CameraMatrix::moveCam(const float forward_backward, const float right_left,
 
 }
 
+cl_float4 toFloat4(glm::vec3 v)
+{
+	cl_float4 tmp;
 
+	for (int i = 0; i<3; i++)
+		tmp.s[i] = v[i];
+
+
+	tmp.s[4] = 0.0f;
+
+	return tmp;
+}
+cl_float4 toFloat4(glm::vec4 v)
+{
+	cl_float4 tmp;
+
+	for(int i=0; i<4; i++)
+		tmp.s[i ] = v[i];
+		
+	
+	return tmp;
+}
 
 cl_float16 toFloat16(glm::mat4 mat)
 {

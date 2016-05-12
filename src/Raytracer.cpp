@@ -173,7 +173,11 @@ int main()
 		}
 		
 		time2 = glfwGetTime();
-		calcOCL( oclData, static_cast<float>(absCounter), toFloat16(cam->getProjectionViewMatrix()), textureWidth, textureHeight);
+
+		// calcOCL(std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory>& data, const float count, const cl_float4& mov, const cl_float16& rot, const cl_float16& proj, const int width, const int height)
+
+		calcOCL( oclData, static_cast<float>(absCounter), toFloat4(cam->getPosition()), toFloat16(cam->getViewMatrix()), toFloat16(cam->getProjectionMatrix()), textureWidth, textureHeight);
+
 		timeCache2 += glfwGetTime() - time2;
 
 		drawOGL( oglData );

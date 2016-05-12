@@ -218,33 +218,36 @@ std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory> initOCL(cl_GLenum textureFl
 	
 	static const cl::Buffer lineBuffer = cl::Buffer(std::get<2>(hardware), CL_MEM_READ_ONLY , sizeof(Line) * lines.size(), 0, &error);
 	errorCheck("LineBuffer Create", error);
-	error = texture_writer.setArg(3, lineBuffer);
+	error = texture_writer.setArg(4, lineBuffer);
 	errorCheck("LineBuffer Set", error);
 	error = queue.enqueueWriteBuffer(lineBuffer, CL_TRUE, 0, sizeof(Line) * lines.size(), lines.data());
 	errorCheck("LineBuffer Transmit", error);
 
 	static const cl::Buffer pointBuffer = cl::Buffer(std::get<2>(hardware), CL_MEM_READ_WRITE, sizeof(Line) * lines.size(), 0, &error);
 	errorCheck("pointBuffer Create", error);
-	error = texture_writer.setArg(4, pointBuffer);
+	error = texture_writer.setArg(5, pointBuffer);
 	errorCheck("pointBuffer Set", error);
 	error = queue.enqueueWriteBuffer(pointBuffer, CL_TRUE, 0, sizeof(Line) * lines.size(), lines.data());
 	errorCheck("pointBuffer Transmit", error);
 
 	int size = lines.size();
-	texture_writer.setArg(5, size);
+	texture_writer.setArg(6, size);
 
 
 	return std::make_tuple(queue, texture_writer, texture);
 }
 
 
-void calcOCL(std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory>& data, const float count, const cl_float16& mat, const int width, const int height)
+void calcOCL(std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory>& data, const float count, const cl_float4& mov, const cl_float16& rot, const cl_float16& proj, const int width, const int height)
 {
 	auto tmp_ptr = std::vector<cl::Memory>({ std::get<2>(data) });
 	std::get<0>(data).enqueueAcquireGLObjects(&tmp_ptr);
 
-	std::get<1>(data).setArg(1, count);		
-	std::get<1>(data).setArg(2, mat);
+	std::get<1>(data).setArg(7, count);	
+
+	std::get<1>(data).setArg(1, mov);
+	std::get<1>(data).setArg(2, rot);
+	std::get<1>(data).setArg(3, proj);
 
 	
 	std::get<0>(data).enqueueNDRangeKernel(std::get<1>(data), cl::NDRange(0, 0), cl::NDRange(width, height) , cl::NDRange(8, 48));

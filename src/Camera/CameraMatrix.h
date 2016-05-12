@@ -57,8 +57,8 @@ public:
 
 };
 
-
-
+cl_float4 toFloat4(glm::vec3 v);
+cl_float4 toFloat4(glm::vec4 v);
 cl_float16 toFloat16(glm::mat4 mat);
 
 glm::mat4 customRotate(float t, glm::vec3 u);
