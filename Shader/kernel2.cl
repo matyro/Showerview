@@ -186,11 +186,11 @@ __kernel void writeTexture(__write_only image2d_t image, __const float4 mov, __c
 		*/
 
 		float dist = min( length(coordf - st), length(coordf - en));
-		float multi = pts[i].start.z;
+		float multi = length(pts[i].start.s012);
 
 		//multi = max(0.0f, multi);
 
-		if(dist*multi < 0.5f)
+		if(dist/multi < 0.5f)
 		{
 			//color = color * lines[i].col;
 			counter = counter + 1;
