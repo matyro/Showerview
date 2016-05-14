@@ -114,7 +114,7 @@ int main()
 
 	//lines.addLine({ 0.0f, 0.0f, 0.0f, 1.0f }, { 0, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
 
-	const int tmpSize = 0;
+	const int tmpSize = 25;
 	for (int i = 0; i < tmpSize; i++)
 	{
 		float x = -tmpSize + 2.0f * i;

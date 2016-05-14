@@ -35,12 +35,12 @@ void CameraMatrix::calcMatrix()
 	glm::mat4 yRot = glm::rotate(m_fYaw, cameraUp);
 
 	glm::mat4 xRot = glm::rotate(m_fPitch, cameraRight);
+
+	glm::mat4 tran = glm::translate(m_vec3CamPos);
 	
 	
 
-	m_glm_viewMatrix = yRot * xRot;
-
-	//m_glm_viewMatrix = glm::inverse(m_glm_viewMatrix);
+	m_glm_viewMatrix = tran * yRot * xRot;
 
 	//std::cout << "YRot: " << glm::to_string(yRot) << std::endl;
 	//std::cout << "XRot: " << glm::to_string(xRot) << std::endl;
