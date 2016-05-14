@@ -42,7 +42,7 @@ int main()
 	//Early error Callback
 	glfwSetErrorCallback(error_callback);
 
-	GLFWwindow* window = glfwCreateWindow(1024, 768, "Showerview", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1024, 1024, "Showerview", NULL, NULL);
 	if (!window)
 	{
 		std::cerr << "Window creation failed" << std::endl;
@@ -85,8 +85,8 @@ int main()
 
 	//glfwMakeContextCurrent(window);
 
-	int textureWidth = static_cast<int>(width * 1.00f);
-	int textureHeight = static_cast<int>(height * 1.00f);
+	int textureWidth = 1024;// static_cast<int>(width * 1.00f);
+	int textureHeight = 1024;//static_cast<int>(height * 1.00f);
 
 	//initOCL();
 	auto oglData = initOGL(textureWidth, textureHeight);
@@ -107,7 +107,7 @@ int main()
 	std::uniform_real_distribution<float> dis2(0, 1);
 
 
-	lines.addLine({ 10.0f, 0.0f, 0.0f, 1.0f }, { -10, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
+	lines.addLine({ 10.0f, 0.0f, 0.0f, 1.0f }, { -10.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
 	/*lines.addLine({ 0.0f, 10.0f, 0.0f, 1.0f }, { 0, -10.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f });
 	lines.addLine({ 0.0f, 0.0f, 10.0f, 1.0f }, { 0.0f, 0.0f, -10.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f });*/
 
@@ -176,7 +176,7 @@ int main()
 
 		// calcOCL(std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory>& data, const float count, const cl_float4& mov, const cl_float16& rot, const cl_float16& proj, const int width, const int height)
 
-		calcOCL( oclData, static_cast<float>(absCounter), toFloat4(cam->getPosition()), toFloat16(cam->getViewMatrix()), toFloat16(cam->getProjectionMatrix()), textureWidth, textureHeight);
+		calcOCL( oclData, static_cast<float>(absCounter), toFloat16(cam->getViewMatrix()), toFloat16(cam->getProjectionMatrix()), lines.size(), textureWidth, textureHeight);
 
 		timeCache2 += glfwGetTime() - time2;
 

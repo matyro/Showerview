@@ -14,6 +14,8 @@
 #include <GL/glx.h>
 #endif
 
+#include <GL/glew.h>
+
 #include <CL/cl.hpp>
 
 #include "Helper/OpenCL_Error.h"
@@ -192,7 +194,7 @@ std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory> initOCL(cl_GLenum textureFl
 	//std::tuple<cl::Platform, cl::Device, cl::Context> 
 	auto hardware = createContext();
 
-	auto prog = loadProgram(std::get<1>(hardware), std::get<2>(hardware), "../Shader/kernel2.cl");
+	auto prog = loadProgram(std::get<1>(hardware), std::get<2>(hardware), "../Shader/kernel3.cl");
 	
 	
 	//create queue to which we will push commands for the device.
@@ -208,53 +210,60 @@ std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory> initOCL(cl_GLenum textureFl
 		texture_writer.getInfo(CL_KERNEL_NUM_ARGS, &tmp);
 		std::cout << "Number of Arguments: " << tmp << std::endl;
 	}
+
+	auto workGroupSize = texture_writer.getWorkGroupInfo<CL_KERNEL_WORK_GROUP_SIZE>(std::get<1>(hardware), &error);
+	errorCheck("Work Group Info", error);
+
+	std::cout << "Maximal workgroup size: " << workGroupSize << std::endl;
 	
 	
-	
-	cl::Memory texture = cl::ImageGL(std::get<2>(hardware), CL_MEM_WRITE_ONLY, textureFlag, 0, textureID, &error);
+	cl::Memory texture = cl::ImageGL(std::get<2>(hardware), CL_MEM_READ_WRITE, textureFlag, 0, textureID, &error);
 	errorCheck("shared texture creation", error);	
 	texture_writer.setArg(0, sizeof(cl::Memory), &texture);
 
 	
 	static const cl::Buffer lineBuffer = cl::Buffer(std::get<2>(hardware), CL_MEM_READ_ONLY , sizeof(Line) * lines.size(), 0, &error);
 	errorCheck("LineBuffer Create", error);
-	error = texture_writer.setArg(4, lineBuffer);
+	error = texture_writer.setArg(3, lineBuffer);
 	errorCheck("LineBuffer Set", error);
 	error = queue.enqueueWriteBuffer(lineBuffer, CL_TRUE, 0, sizeof(Line) * lines.size(), lines.data());
 	errorCheck("LineBuffer Transmit", error);
 
-	static const cl::Buffer pointBuffer = cl::Buffer(std::get<2>(hardware), CL_MEM_READ_WRITE, sizeof(Line) * lines.size(), 0, &error);
-	errorCheck("pointBuffer Create", error);
-	error = texture_writer.setArg(5, pointBuffer);
-	errorCheck("pointBuffer Set", error);
-	error = queue.enqueueWriteBuffer(pointBuffer, CL_TRUE, 0, sizeof(Line) * lines.size(), lines.data());
-	errorCheck("pointBuffer Transmit", error);
 
 	int size = lines.size();
-	texture_writer.setArg(6, size);
+	texture_writer.setArg(4, size);
 
 
 	return std::make_tuple(queue, texture_writer, texture);
 }
 
 
-void calcOCL(std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory>& data, const float count, const cl_float4& mov, const cl_float16& rot, const cl_float16& proj, const int width, const int height)
+void calcOCL(std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory>& data, const float frameCount, const cl_float16& view, const cl_float16& proj, const int lineCount, const int width, const int height)
 {
+	//std::cout << "Start OCL: " << frameCount << std::endl;
+
+	cl_int error = 0;
+
 	auto tmp_ptr = std::vector<cl::Memory>({ std::get<2>(data) });
-	std::get<0>(data).enqueueAcquireGLObjects(&tmp_ptr);
 
-	std::get<1>(data).setArg(7, count);	
+	error = std::get<0>(data).enqueueAcquireGLObjects(&tmp_ptr);
+	errorCheck("Acquire Texture", error);
 
-	std::get<1>(data).setArg(1, mov);
-	std::get<1>(data).setArg(2, rot);
-	std::get<1>(data).setArg(3, proj);
+	std::get<1>(data).setArg(5, frameCount);
+
+	std::get<1>(data).setArg(1, view);
+	std::get<1>(data).setArg(2, proj);
 
 	
-	std::get<0>(data).enqueueNDRangeKernel(std::get<1>(data), cl::NDRange(0, 0), cl::NDRange(width, height) , cl::NDRange(8, 48));
+	error = std::get<0>(data).enqueueNDRangeKernel(std::get<1>(data), cl::NDRange(0, 0), cl::NDRange(lineCount, width , height ) , cl::NDRange(1, 8, 8));
+	errorCheck("Exe Kernel", error);
+	
+	error = std::get<0>(data).enqueueReleaseGLObjects(&tmp_ptr);
+	errorCheck("Release Texture", error);
 
-
-	std::get<0>(data).enqueueReleaseGLObjects(&tmp_ptr);
-
+	//std::cout << "Free OCL" << std::endl;
+	std::get<0>(data).flush();
 	std::get<0>(data).finish();
+	//std::cout << "End OCL" << std::endl;
 	
 }

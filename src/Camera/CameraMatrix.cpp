@@ -40,7 +40,7 @@ void CameraMatrix::calcMatrix()
 	
 	
 
-	m_glm_viewMatrix = tran * yRot * xRot;
+	m_glm_viewMatrix = yRot * xRot * tran;
 
 	//std::cout << "YRot: " << glm::to_string(yRot) << std::endl;
 	//std::cout << "XRot: " << glm::to_string(xRot) << std::endl;

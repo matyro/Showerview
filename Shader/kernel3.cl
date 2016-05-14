@@ -2,26 +2,9 @@
 typedef struct Line
 {
 	float4 start;
-	float4 end;	
+	float4 end;
 	float4 col;
 } Line;
-
-typedef
-
-typedef struct Plane
-{ 
-	float4 camPos;
-	float4 viewDir;
-	float4 planeTL;
-	float4 planeR;
-	float4 planeD;
-} Plane;
-
-typedef struct Line2D
-{
-	float2 start;
-	float2 end;
-} Line2D;
 
 
 
@@ -68,87 +51,81 @@ float4 crossProduct(float4 v1, float4 v2)
 
 
 //__constant for
-__kernel void writeTexture(__write_only image2d_t image, __const float16 mat, __global Line* lines, __global Line* pts,  __const int lineSize, __const int frames)
+__kernel void writeTexture(__read_write image2d_t image, float16 view, float16 proj, __global Line* lines, int lineSize, int frames)
 {
-	const int2 coordi = (int2)(get_global_id(0), get_global_id(1));
-
-	const float2 coordf = (2 * convert_float2(coordi) / (float2)(get_global_size(0), get_global_size(1))) - (float2)(1.0f,1.0f);
 	
 
-	int i = get_global_id(0) + (get_global_id(1) * get_global_size(0));
+	int lineID = get_global_id(0);
+	int2 coordi = (int2)(get_global_id(1) , get_global_id(2) );//(int2)(get_global_id(1) * 8, get_global_id(2) * 8);
+	//coordi = coordi + (int2)(get_local_id(1), get_local_id(2));
 
-	if( i < lineSize )
+	__local float4 start;
+	__local float4 end;
+
+	__local float4 viewStart;
+	__local float4 viewEnd;
+
+	__local float4 projStart;
+	__local float4 projEnd;
+
+	if (lineID < lineSize && (get_local_id(1) == 0) && (get_local_id(2) == 0))
 	{
+		start = lines[lineID].start;
+		end = lines[lineID].end;
 
-		float4 tmpS = lines[i].start.s0123 + mov.s0123;
-		float4 tmpE = lines[i].end.s0123 + mov.s0123;
+		viewStart = (float4)(
+			dot(view.s0123, start),
+			dot(view.s4567, start),
+			dot(view.s89ab, start),
+			dot(view.scdef, start));
 
-		tmpS = (float4)(
-			dot(rot.s0123, tmpS),
-			dot(rot.s4567, tmpS),
-			dot(rot.s89ab, tmpS),
-			dot(rot.scdef, tmpS));
+		viewEnd = (float4)(
+			dot(view.s0123, end),
+			dot(view.s4567, end),
+			dot(view.s89ab, end),
+			dot(view.scdef, end));
 
-		tmpE = (float4)(
-			dot(rot.s0123, tmpE),
-			dot(rot.s4567, tmpE),
-			dot(rot.s89ab, tmpE),
-			dot(rot.scdef, tmpE));
+		projStart = (float4)(
+			dot(proj.s0123, viewStart),
+			dot(proj.s4567, viewStart),
+			dot(proj.s89ab, viewStart),
+			dot(proj.scdef, viewStart));
 
+		projEnd = (float4)(
+			dot(proj.s0123, viewEnd),
+			dot(proj.s4567, viewEnd),
+			dot(proj.s89ab, viewEnd),
+			dot(proj.scdef, viewEnd));
 
-		tmpS = (float4)(
-			dot(proj.s0123, tmpS),
-			dot(proj.s4567, tmpS),
-			dot(proj.s89ab, tmpS),
-			dot(proj.scdef, tmpS));
+		projStart = projStart / projStart.w;	
+		projEnd = projEnd / projEnd.w;
 
-		tmpE = (float4)(
-			dot(proj.s0123, tmpE),
-			dot(proj.s4567, tmpE),
-			dot(proj.s89ab, tmpE),
-			dot(proj.scdef, tmpE));
-		
-		
-
-
-		pts[i].start.x = tmpS.x / tmpS.w;
-		pts[i].start.y = tmpS.y / tmpS.w;
-		pts[i].start.z = tmpS.z;
-		pts[i].start.w = 1.0f;
-
-		pts[i].end.x = tmpE.x / tmpE.w;
-		pts[i].end.y = tmpE.y / tmpE.w;
-		pts[i].end.z = tmpE.z;
-		pts[i].end.w = 1.0f;
-	
-	
-		if(i == 0)
+		if(get_global_id(1) == 0 && get_global_id(2) == 0)
 		{
-			//printf("Coords Start: %f,%f,%f,%f -> %f,%f,%f,%f\n", lines[i].start.x, lines[i].start.y, lines[i].start.z, lines[i].start.w, pts[i].start.x, pts[i].start.y, pts[i].start.z, pts[i].start.w);
-			//printf("Move: %f,%f,%f,%f\n", mov.x, mov.y, mov.z, mov.w);
-			//printf("Coords End: %f,%f,%f,%f -> %f,%f,%f,%f\n", lines[i].end.x, lines[i].end.y, lines[i].end.z, lines[i].end.w, pts[i].end.x, pts[i].end.y, pts[i].end.z, pts[i].end.w);
-
-			//printf("%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n", mat.s0, mat.s1, mat.s2, mat.s3, mat.s4, mat.s5, mat.s6, mat.s7, mat.s8, mat.s9, mat.sa, mat.sb, mat.sc, mat.sd, mat.se, mat.sf);
+			//printf("Coords View Start: %f,%f,%f,%f -> %f,%f,%f,%f\n", start.x, start.y, start.z, start.w, viewStart.x, viewStart.y, viewStart.z, viewStart.w);
+			//printf("Coords View End: %f,%f,%f,%f -> %f,%f,%f,%f\n", end.x, end.y, end.z, end.w, viewEnd.x, viewEnd.y, viewEnd.z, viewEnd.w);
+			//printf("Coords Proj Start: %f,%f,%f,%f -> %f,%f,%f,%f\n", start.x, start.y, start.z, start.w, projStart.x, projStart.y, projStart.z, projStart.w);
+			//printf("Coords Proj End: %f,%f,%f,%f -> %f,%f,%f,%f\n", end.x, end.y, end.z, end.w, projEnd.x, projEnd.y, projEnd.z, projEnd.w);
 		}
+		
+
 	}
 
-	barrier( CLK_GLOBAL_MEM_FENCE );
+	barrier(CLK_LOCAL_MEM_FENCE);
 
-	float counter = 0;
-	float4 color = (float4)(0, 0, 0, 0.0);
-
-
-	for(int i=0; i<lineSize; i++)
-	{
-		if(pts[i].start.z <= 0 && pts[i].end.z <= 0)
-		{
-			continue;
-		}
-
-		float2 st = pts[i].start.xy;
-		float2 en = pts[i].end.xy;
 		
-		float2 v = en - st;		
+	
+	if (viewStart.z > 0 && viewEnd.z > 0)
+	{
+		//float4 imageSegment = read_imagef(image, coordi);
+		float4 imageSegment = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
+
+		float2 coordf = (2 * convert_float2(coordi) / (float2)(get_global_size(1), get_global_size(2))) - (float2)(1.0f, 1.0f);
+
+		float2 st = projStart.xy;
+		float2 en = projEnd.xy;
+
+		float2 v = en - st;
 		float2 w = coordf - st;
 
 
@@ -160,59 +137,44 @@ __kernel void writeTexture(__write_only image2d_t image, __const float16 mat, __
 		float c1 = dot(v, w);
 		float c2 = dot(v, v);
 
-		if(c1 <= 0)
-		{ 
+		if (c1 <= 0)
+		{
 			dist = length(coordf - st);
-			multi = length(pts[i].start);
+			multi = length(viewStart);
 		}
-		else if(c2 <= c1)
+		else if (c2 <= c1)
 		{
 			dist = length(coordf - en);
-			multi = length(pts[i].end);
+			multi = length(viewEnd);
 		}
 		else
-		{ 
+		{
 			float2 P = st + (c1 / c2) * v;
 
-			multi = length( pts[i].start + ((pts[i].end - pts[i].start) * (c1 / c2)) );
+			multi = length(viewStart + ((viewEnd - viewStart) * (c1 / c2)));
 			dist = length(coordf - P);
 		}
 
-		/*if (get_global_id(0) == 400 && get_global_id(1) == 400)
-		{ 			
-			//printf("Coords Start: %f,%f,%f,%f -> %f,%f,%f,%f\n", lines[i].start.x, lines[i].start.y, lines[i].start.z, lines[i].start.w, pts[i].start.x, pts[i].start.y, pts[i].start.z, pts[i].start.w);
-			//printf("Coords End: %f,%f,%f,%f -> %f,%f,%f,%f\n", lines[i].end.x, lines[i].end.y, lines[i].end.z, lines[i].end.w, pts[i].end.x, pts[i].end.y, pts[i].end.z, pts[i].end.w);
-
-
-			//printf("Dist %i: %f\n",i,dist);
-			//printf("Multi %i: %f\n", i, multi);
-
-			color = (float4)(1.0, 0, 1.0f, 1.0);
-			counter = 0;
-		}
-		*/
-
-		//float dist = min( length(coordf - st), length(coordf - en));
-		//float multi = length(pts[i].start.xyz);
-
-		//multi = max(0.0f, multi);
-
-		if(dist*multi < 0.2f)
-		{
-			//color = color * lines[i].col;
-			counter = counter + 1;
-		}
-	}
-
-	if(counter > 0)
-	{ 
-		color = (float4)(1.0, counter / lineSize, 0, 1.0);
-	}
-	
 		
-	write_imagef(
-		image,
-		coordi,
-		color
-	);
+
+		if (dist*multi < 0.2f)
+		{
+			imageSegment.x = 1.0f;
+			imageSegment.y = imageSegment.y + (1.0f / get_global_size(0));
+			write_imagef(image, coordi, imageSegment);
+		}
+		else
+		{
+			write_imagef(image, coordi, (float4)(0.2f, 0.1f, 0.2f, 1.0f));
+		}
+
+
+		if (get_global_id(1) == 512 && get_global_id(2) == 512)
+		{			
+			write_imagef(image, coordi, (float4)(0.0f, 1.0f, 0.0f, 1.0f));
+		}
+	}
+
+
+	return;
 }

@@ -46,5 +46,6 @@ void drawOGL( std::tuple<std::shared_ptr<Texture>, std::shared_ptr<Shader>, std:
 
 	std::get<2>(data)->draw(GL_TRIANGLE_FAN, 4);	
 
-	//glFlush();	
+	glFlush();	
+	
 }
