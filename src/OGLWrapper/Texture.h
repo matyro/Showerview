@@ -50,7 +50,7 @@ public:
 	void bindTexture() const;
 	
 	
-	const inline GLuint getTextureID() const { return m_uiTexture; }
+	inline const GLuint getTextureID() const { return m_uiTexture; }
 	
 
 

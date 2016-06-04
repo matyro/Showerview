@@ -30,6 +30,12 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{4fc2611d-50af-4316-882c-653248ac0344}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\OCL">
+      <UniqueIdentifier>{7a7d435e-c28a-4fc8-be65-7e0b42e406cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\OCL">
+      <UniqueIdentifier>{7637b209-e766-45f7-b5f6-e83a22fe38a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Raytracer.cpp">
@@ -56,6 +62,21 @@
     <ClCompile Include="..\src\Camera\CameraMatrix.cpp">
       <Filter>Source Files\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\OCL\OpenCL_Kernel.cpp">
+      <Filter>Source Files\OCL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\OCL\OpenCL_Program.cpp">
+      <Filter>Source Files\OCL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\OCL\OpenCL_Queue.cpp">
+      <Filter>Source Files\OCL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\OCL\OpenCL_Hardware.cpp">
+      <Filter>Source Files\OCL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\OCL\OpenCL_Error.cpp">
+      <Filter>Source Files\OCL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Callback.h">
@@ -66,9 +87,6 @@
     </ClInclude>
     <ClInclude Include="..\src\OCL.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Helper\OpenCL_Error.h">
-      <Filter>Header Files\Helper</Filter>
     </ClInclude>
     <ClInclude Include="..\src\OGLWrapper\Vertex.h">
       <Filter>Header Files\OGLWrapper</Filter>
@@ -96,6 +114,24 @@
     </ClInclude>
     <ClInclude Include="..\src\Camera\CameraMatrix.h">
       <Filter>Header Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\OCL\OpenCL_Error.h">
+      <Filter>Header Files\OCL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\OCL\OpenCL_Kernel.h">
+      <Filter>Header Files\OCL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\OCL\OpenCL_Program.h">
+      <Filter>Header Files\OCL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\OCL\OpenCL_Queue.h">
+      <Filter>Header Files\OCL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\OCL\OpenCL_Hardware.h">
+      <Filter>Header Files\OCL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\OCL\OpenCL_Include.h">
+      <Filter>Header Files\OCL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

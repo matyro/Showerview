@@ -1,9 +1,7 @@
 
 #include <iostream>
 #include <vector>
-#include <sstream>
 #include <tuple>
-#include <fstream>
 #include <string>
 
 
@@ -16,254 +14,108 @@
 
 #include <GL/glew.h>
 
-#include <CL/cl.hpp>
-
-#include "Helper/OpenCL_Error.h"
-#include "Camera/Camera.h"
-
-
 #include "OCL.h"
 
-std::tuple<cl::Platform, cl::Device, cl::Context> createContext()
+
+
+
+std::tuple<OCL_Queue, OCL_Kernel, OCL_Kernel> initOCL(cl_GLenum textureFlag, unsigned int textureID, std::vector<Line>& lines)
 {
-	std::vector<cl::Platform> all_platforms;
-	cl::Platform::get(&all_platforms);
-	if (all_platforms.size() == 0) {
-		std::cout << " No OpenCL platforms found. Check OpenCL installation!\n";
-		std::cin.get();
-		exit(1);
-	}
-
-	for (auto itr : all_platforms)
-	{
-		static int count = 1;
-		std::cout << "Platform [" << count++ << "]: " << itr.getInfo<CL_PLATFORM_NAME>() << std::endl;
-	}
-	cl::Platform platform;
-
-	while (true)
-	{
-		std::cout << "Select platform: ";
-		std::string str;
-		std::getline(std::cin, str);
-		std::stringstream sstr(str);
-		int id = -1;
-		sstr >> id;
-
-		if (id > 0 && id <= all_platforms.size())
-		{
-			platform = all_platforms[id - 1];
-			break;
-		}
-		else
-			std::cout << "Selection wrong: " << id << "\n\n\n\n\n\n\n\n\n\n\n\n" << std::endl;
-	}
-
-	std::cout << "\n >> Using platform: " << platform.getInfo<CL_PLATFORM_NAME>() << "\n\n\n";
-
-
-
-	//Get Devices
-	std::vector<cl::Device> all_devices;
-	platform.getDevices(CL_DEVICE_TYPE_ALL, &all_devices);
-	if (all_devices.size() == 0) {
-		std::cout << " No OpenCL devices found. Check OpenCL installation!\n";
-		std::cin.get();
-		exit(1);
-	}
-
-
-	std::cout << "Needed Extension: cl_khr_gl_sharing" << std::endl;
-	for (auto itr : all_devices)
-	{
-		static int count = 1;
-		std::cout << "Devices [" << count++ << "]: " << itr.getInfo<CL_DEVICE_NAME>() << std::endl;		
-		std::cout << "Extensions cl_khr_gl_sharing: " << std::boolalpha << (itr.getInfo<CL_DEVICE_EXTENSIONS>().find("cl_khr_gl_sharing") != std::string::npos) << std::endl;
-	}
-
-
-	cl::Device device;
-	while (true)
-	{
-		std::cout << "Select device: ";
-		std::string str;
-		std::getline(std::cin, str);
-		std::stringstream sstr(str);
-		int id = -1;
-		sstr >> id;
-
-		if (id > 0 && id <= all_devices.size())
-		{
-			device = all_devices[id - 1];
-			break;
-		}
-		else
-			std::cout << "Selection wrong: " << id << "\n\n\n\n\n\n\n\n\n\n\n\n" << std::endl;
-	}
-
-		
-	if (device.getInfo<CL_DEVICE_EXTENSIONS>().find("cl_khr_gl_sharing") == std::string::npos)
-	{
-		std::cout << "\n\n Extension cl_khr_gl_sharing needed but not available!" << std::endl;
-		std::cout << "Currently no fallback modus implemented ..." << std::endl;
-		std::cin.get();
-		exit(-1);
-	}
-	else
-	{
-		std::cout << "\nUsing device: " << device.getInfo<CL_DEVICE_NAME>() << "\n\n\n\n";
-	}
 	
 
-    #ifdef _WIN32
-		auto hDC = wglGetCurrentDC();
-		auto hRC = wglGetCurrentContext();
-	#else
-		auto hDC = glXGetCurrentContext();
-		auto hRC = glXGetCurrentDisplay();
-	#endif
+	auto hardware = OCL_Hardware();
 
-		cl_context_properties props[] =
-		{
-			CL_GL_CONTEXT_KHR, (cl_context_properties)hRC,
-			CL_WGL_HDC_KHR, (cl_context_properties)hDC,
-			CL_CONTEXT_PLATFORM, (cl_context_properties)(platform)(),
-			0
-		};
+	auto program = OCL_Program("../Shader/kernel3.cl");
+	program.load(hardware.getDevice(), hardware.getContext());
 
+	auto queue = OCL_Queue(hardware.getContext(), hardware.getDevice());
 	
-	cl_int error;
-	auto context = cl::Context(device, props,0,0, &error);
-	errorCheck("context creation", error);
+	
+	std::cout << "Init Kernel 1" << std::endl;
+	auto kernel1 = OCL_Kernel("tansform");
+	kernel1.createKernel(program.getProgram());
+	kernel1.info();
 
-	return std::make_tuple(platform, device, context );
+
+	kernel1.addBuffer(hardware.getContext(), CL_MEM_READ_WRITE, 2, lines);	
+	kernel1.setArg(3, static_cast<unsigned int>(lines.size()) );
+
+	kernel1.setupQueue(queue.getQueue());
+
+
+	std::cout << "Init Kernel 2" << std::endl;
+	auto kernel2 = OCL_Kernel("sortToBins");
+	kernel2.createKernel(program.getProgram());
+	kernel2.info();	
+
+	kernel2.setArg(0, kernel1.getBuffer(0));		
+	kernel2.setArg(1, static_cast<unsigned int>(lines.size()) );
+	kernel2.addBuffer(hardware.getContext(), CL_MEM_READ_WRITE, 2, 8 * 8 * sizeof(unsigned int));
+	kernel2.addBuffer(hardware.getContext(), CL_MEM_READ_WRITE, 3, 8 * 8 * sizeof(Line) * lines.size());
+
+	kernel2.setupQueue(queue.getQueue());
+
+
+
+	std::cout << "Init Kernel 3" << std::endl;
+	auto kernel3 = OCL_Kernel("sortToTile");
+	kernel3.createKernel(program.getProgram());
+	kernel3.info();
+
+	kernel3.setupQueue(queue.getQueue());
+
+	std::cout << "Init Kernel 4" << std::endl;
+	auto kernel4 = OCL_Kernel("writeTexture");
+	kernel4.createKernel(program.getProgram());
+	kernel4.info();
+
+	kernel4.addMemoryGL(hardware.getContext(), 0, textureFlag, textureID);
+
+	kernel4.setupQueue(queue.getQueue());
+
+
+
+	return std::make_tuple(queue, kernel1, kernel2);
 }
 
 
-
-cl::Program loadProgram(cl::Device& device, cl::Context& context, std::string path)
+void calcOCL(std::tuple<OCL_Queue, OCL_Kernel, OCL_Kernel>& data, const float frameCount, const cl_float16& view, const cl_float16& proj, const int lineCount, const int width, const int height)
 {
-	std::string kernel_code;
-
-	std::ifstream file;
-
-	// setException
-	file.exceptions(std::ifstream::badbit);
-
-	try
-	{
-		file.open(path);
-
-		std::stringstream sstr;
-
-		//
-		sstr << file.rdbuf();
-
-		file.close();
-
-		kernel_code = sstr.str();
-	}
-	catch (std::ifstream::failure& e)
-	{
-		std::cout << "OpenCL Error: " << path << " could not be read!" << std::endl;
-		std::cout << e.what() << std::endl;
-
-		std::cin.get();
-		exit(-1);
-	}
-		
-		
-	cl::Program::Sources sources;
-
-	sources.push_back({ kernel_code.c_str(),kernel_code.length() });
-
-	cl::Program program(context, sources);
-	if (program.build({ device }, "-cl-single-precision-constant -cl-mad-enable -cl-fast-relaxed-math") != CL_SUCCESS) {
-		std::cout << " Error building: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(device) << "\n";
-		std::cin.get();
-		exit(1);
-	}
-
-	return program;
-}
-
-
-
-std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory> initOCL(cl_GLenum textureFlag, unsigned int textureID, std::vector<Line>& lines)
-{
-	//std::tuple<cl::Platform, cl::Device, cl::Context> 
-	auto hardware = createContext();
-
-	auto prog = loadProgram(std::get<1>(hardware), std::get<2>(hardware), "../Shader/kernel3.cl");
-	
-	
-	//create queue to which we will push commands for the device.
-	cl_int error;
-	cl::CommandQueue queue(std::get<2>(hardware), std::get<1>(hardware),0, &error);		
-	errorCheck("CommandQueue creation", error);
-
-	cl::Kernel texture_writer(prog, "writeTexture", &error);
-	errorCheck("Kernel creation", error);
-
-	{
-		cl_uint tmp;
-		texture_writer.getInfo(CL_KERNEL_NUM_ARGS, &tmp);
-		std::cout << "Number of Arguments: " << tmp << std::endl;
-	}
-
-	auto workGroupSize = texture_writer.getWorkGroupInfo<CL_KERNEL_WORK_GROUP_SIZE>(std::get<1>(hardware), &error);
-	errorCheck("Work Group Info", error);
-
-	std::cout << "Maximal workgroup size: " << workGroupSize << std::endl;
-	
-	
-	cl::Memory texture = cl::ImageGL(std::get<2>(hardware), CL_MEM_READ_WRITE, textureFlag, 0, textureID, &error);
-	errorCheck("shared texture creation", error);	
-	texture_writer.setArg(0, sizeof(cl::Memory), &texture);
-
-	
-	static const cl::Buffer lineBuffer = cl::Buffer(std::get<2>(hardware), CL_MEM_READ_ONLY , sizeof(Line) * lines.size(), 0, &error);
-	errorCheck("LineBuffer Create", error);
-	error = texture_writer.setArg(3, lineBuffer);
-	errorCheck("LineBuffer Set", error);
-	error = queue.enqueueWriteBuffer(lineBuffer, CL_TRUE, 0, sizeof(Line) * lines.size(), lines.data());
-	errorCheck("LineBuffer Transmit", error);
-
-
-	int size = lines.size();
-	texture_writer.setArg(4, size);
-
-
-	return std::make_tuple(queue, texture_writer, texture);
-}
-
-
-void calcOCL(std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory>& data, const float frameCount, const cl_float16& view, const cl_float16& proj, const int lineCount, const int width, const int height)
-{
-	//std::cout << "Start OCL: " << frameCount << std::endl;
+	std::cout << "Start OCL: " << frameCount << std::endl;
 
 	cl_int error = 0;
 
-	auto tmp_ptr = std::vector<cl::Memory>({ std::get<2>(data) });
+	auto& queue = std::get<0>(data);
+	auto& kernel1= std::get<1>(data);
+	auto& kernel2 = std::get<2>(data);
+	
+	
 
-	error = std::get<0>(data).enqueueAcquireGLObjects(&tmp_ptr);
-	errorCheck("Acquire Texture", error);
+	kernel1.setArg(0, view);
+	kernel1.setArg(1, proj);
+	
 
-	std::get<1>(data).setArg(5, frameCount);
+	const int groupSize = 128;
+	int exeSize1 = std::ceil(lineCount / static_cast<float>(groupSize)) * groupSize;
 
-	std::get<1>(data).setArg(1, view);
-	std::get<1>(data).setArg(2, proj);
+
+	std::cout << "Kernel1 Start" << std::endl;
+	error = queue.getQueue().enqueueNDRangeKernel(kernel1.getKernel(), cl::NDRange(0), cl::NDRange(exeSize1), cl::NDRange(groupSize));
+	errorCheck("Exe Kernel1", error);	
+	std::cout << "Kernel1 End" << std::endl;
 
 	
-	error = std::get<0>(data).enqueueNDRangeKernel(std::get<1>(data), cl::NDRange(0, 0), cl::NDRange(lineCount, width , height ) , cl::NDRange(1, 8, 8));
-	errorCheck("Exe Kernel", error);
-	
-	error = std::get<0>(data).enqueueReleaseGLObjects(&tmp_ptr);
-	errorCheck("Release Texture", error);
+	//kernel2.init(queue.getQueue());
 
-	//std::cout << "Free OCL" << std::endl;
-	std::get<0>(data).flush();
-	std::get<0>(data).finish();
-	//std::cout << "End OCL" << std::endl;
+	std::cout << "Kernel2" << std::endl;
+	error = queue.getQueue().enqueueNDRangeKernel(kernel2.getKernel(), cl::NDRange(0, 0, 0), cl::NDRange(exeSize1, 8 , 8) , cl::NDRange(groupSize, 1, 1));
+	errorCheck("Exe Kernel2", error);
 	
+	//kernel2.release(queue.getQueue());
+	
+
+	std::cout << "Wait OCL:" << std::endl;
+	queue.getQueue().finish();	
+
+	std::cout << "End OCL:" << std::endl;
 }

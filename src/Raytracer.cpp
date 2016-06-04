@@ -107,14 +107,14 @@ int main()
 	std::uniform_real_distribution<float> dis2(0, 1);
 
 
-	lines.addLine({ 10.0f, 0.0f, 0.0f, 1.0f }, { -10.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
+	lines.addLine({ 10.0f, 0.0f, 2.0f, 1.0f }, { -10.0f, 0.0f, 2.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
 	/*lines.addLine({ 0.0f, 10.0f, 0.0f, 1.0f }, { 0, -10.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f });
 	lines.addLine({ 0.0f, 0.0f, 10.0f, 1.0f }, { 0.0f, 0.0f, -10.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f });*/
 
 
 	//lines.addLine({ 0.0f, 0.0f, 0.0f, 1.0f }, { 0, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
 
-	const int tmpSize = 25;
+	const int tmpSize = 0;
 	for (int i = 0; i < tmpSize; i++)
 	{
 		float x = -tmpSize + 2.0f * i;
@@ -190,7 +190,7 @@ int main()
 		counter++;
 		absCounter++;
 
-		//std::cin.get();
+		std::cin.get();
 	}
 
 	//Terminate everything

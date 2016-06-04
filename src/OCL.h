@@ -1,14 +1,21 @@
 #pragma once
 
 
-#include <CL/cl.hpp>
-
 #include <array>
 
 #include "Camera/Camera.h"
 
 #include "Helper/Line.h"
 
-std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory> initOCL(unsigned int textureFlag, unsigned int textureID, std::vector<Line>& lines);
 
-void calcOCL(std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory>& , const float , const cl_float16&, const cl_float16&, const int,  const int, const int);
+
+#include "OCL/OpenCL_Error.h"
+#include "OCL/OpenCL_Hardware.h"
+#include "OCL/OpenCL_Kernel.h"
+#include "OCL/OpenCL_Program.h"
+#include "OCL/OpenCL_Queue.h"
+
+
+std::tuple<OCL_Queue, OCL_Kernel, OCL_Kernel> initOCL(unsigned int textureFlag, unsigned int textureID, std::vector<Line>& lines);
+
+void calcOCL(std::tuple<OCL_Queue, OCL_Kernel, OCL_Kernel>& , const float , const cl_float16&, const cl_float16&, const int,  const int, const int);

@@ -1,15 +1,17 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtx/vector_angle.hpp>
-#include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/trigonometric.hpp>
+#include <glm/ext.hpp>
+#include <glm/gtc/constants.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include <array>
 #include <iostream>
 #include <math.h>
 
-#include <CL/cl.hpp>
-
+#include "OCL/OpenCL_Include.h"
 
 
 struct Plane;

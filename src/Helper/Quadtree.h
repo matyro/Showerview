@@ -8,7 +8,7 @@
 #include <array>
 
 
-#include <CL/cl.hpp>
+#include "OCL/OpenCL_Include.h"
 
 
 

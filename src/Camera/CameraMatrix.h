@@ -8,7 +8,8 @@
 #include <iostream>
 #include <math.h>
 
-#include <CL/cl.hpp>
+#include "OCL/OpenCL_Include.h"
+
 
 class CameraMatrix
 {

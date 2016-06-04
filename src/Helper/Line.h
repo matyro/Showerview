@@ -7,10 +7,7 @@
 #include <vector>
 #include <array>
 
-
-#include <CL/cl.hpp>
-
-
+#include "OCL/OpenCL_Include.h"
 
 struct Line
 {
@@ -31,7 +28,7 @@ public:
 	LineSet() {}
 
 
-	void addLine(cl_float4 start, cl_float4 end, cl_float4 col)
+	inline void addLine(cl_float4 start, cl_float4 end, cl_float4 col)
 	{
 		Line tmp;
 		tmp.start = start;

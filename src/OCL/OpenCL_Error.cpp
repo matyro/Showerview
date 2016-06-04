@@ -1,6 +1,9 @@
-#pragma once
+#include "OCL/OpenCL_Error.h"
 
 
+#include <iostream>
+
+#include "OCL/OpenCL_Include.h"
 
 
 const char *getCL_ErrorString(const int error)

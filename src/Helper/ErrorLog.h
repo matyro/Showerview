@@ -17,7 +17,7 @@ private:
 
 	static std::ostream m_std_output;
 
-	static constexpr bool verboseCheck()
+	static inline constexpr bool verboseCheck()
 	{
 		return (TdebugLevel - VERBOSE_LEVEL) <= 0;
 	}
@@ -28,7 +28,7 @@ private:
 public:
 
 	
-	static void setOutput(const std::ostream output = std::cerr)
+	static inline void setOutput(const std::ostream output = std::cerr)
 	{
 		m_std_output = output;
 	}

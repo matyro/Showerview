@@ -25,7 +25,7 @@ namespace helper
 
 		CameraControll();
 		CameraControll(CameraControll const &);					// No copy-Constructor
-		CameraControll& operator=(CameraControll const &){return *this;}	// No assignment opertor
+		inline CameraControll& operator=(CameraControll const &){return *this;}	// No assignment opertor
 
 		double m_dDeltaTime;
 

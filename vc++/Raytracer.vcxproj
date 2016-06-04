@@ -23,6 +23,11 @@
     <ClCompile Include="..\src\Camera\CameraMatrix.cpp" />
     <ClCompile Include="..\src\Helper\CameraControll.cpp" />
     <ClCompile Include="..\src\OCL.cpp" />
+    <ClCompile Include="..\src\OCL\OpenCL_Error.cpp" />
+    <ClCompile Include="..\src\OCL\OpenCL_Hardware.cpp" />
+    <ClCompile Include="..\src\OCL\OpenCL_Kernel.cpp" />
+    <ClCompile Include="..\src\OCL\OpenCL_Program.cpp" />
+    <ClCompile Include="..\src\OCL\OpenCL_Queue.cpp" />
     <ClCompile Include="..\src\OGL.cpp" />
     <ClCompile Include="..\src\OGLWrapper\Shader.cpp" />
     <ClCompile Include="..\src\OGLWrapper\Texture.cpp" />
@@ -35,9 +40,14 @@
     <ClInclude Include="..\src\Helper\CameraControll.h" />
     <ClInclude Include="..\src\Helper\ErrorLog.h" />
     <ClInclude Include="..\src\Helper\Line.h" />
-    <ClInclude Include="..\src\Helper\OpenCL_Error.h" />
     <ClInclude Include="..\src\Helper\Quadtree.h" />
     <ClInclude Include="..\src\OCL.h" />
+    <ClInclude Include="..\src\OCL\OpenCL_Error.h" />
+    <ClInclude Include="..\src\OCL\OpenCL_Hardware.h" />
+    <ClInclude Include="..\src\OCL\OpenCL_Include.h" />
+    <ClInclude Include="..\src\OCL\OpenCL_Kernel.h" />
+    <ClInclude Include="..\src\OCL\OpenCL_Program.h" />
+    <ClInclude Include="..\src\OCL\OpenCL_Queue.h" />
     <ClInclude Include="..\src\OGL.h" />
     <ClInclude Include="..\src\OGLWrapper\Shader.h" />
     <ClInclude Include="..\src\OGLWrapper\Texture.h" />
@@ -103,15 +113,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glfw\include;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\include;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\src;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glfw\lib-vc2015;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
-    <ExecutablePath>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\bin\Release\x64;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(ProjectDir)..\glfw\include;$(ProjectDir)..\glew-1.13.0\include;$(ProjectDir)..\src;$(ProjectDir)..\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\glfw\lib-vc2015;$(ProjectDir)..\glew-1.13.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ProjectDir)..\glew-1.13.0\bin\Release\Win32;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <ExecutablePath>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\bin\Release\x64;E:\Programme\NVIDIA Corporation\CUDA\bin\win64\Debug;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glfw\include;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\include;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\src;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glm;E:\Programme\NVIDIA Corporation\CUDA\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glfw\lib-vc2015;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\lib\Release\x64;E:\Programme\NVIDIA Corporation\CUDA\lib\x64;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ProjectDir)..\glew-1.13.0\bin\Release\x64;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(ProjectDir)..\glfw\include;$(ProjectDir)..\glew-1.13.0\include;$(ProjectDir)..\src;$(ProjectDir)..\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\glfw\lib-vc2015;$(ProjectDir)..\glew-1.13.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)..\build\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -130,13 +141,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\include;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glfw\include;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\src;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\glew-1.13.0\include;$(ProjectDir)..\glfw\include;$(ProjectDir)..\src;$(ProjectDir)..\glm;$(INTELOCLSDKROOT)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glfw\lib-vc2015;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;glfw3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\glfw\lib-vc2015;$(ProjectDir)..\glew-1.13.0\lib\Release\Win32;$(INTELOCLSDKROOT)lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;glu32.lib;opengl32.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -146,13 +157,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\include;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glfw\include;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\src;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glm;E:\Programme\NVIDIA Corporation\CUDA\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\glew-1.13.0\include;$(ProjectDir)..\glfw\include;$(ProjectDir)..\src;$(ProjectDir)..\glm;$(INTELOCLSDKROOT)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glfw\lib-vc2015;E:\Dokumente\Visual Studio 2015\Projects\Raytracer\glew-1.13.0\lib\Release\x64;E:\Programme\NVIDIA Corporation\CUDA\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\glfw\lib-vc2015;$(ProjectDir)..\glew-1.13.0\lib\Release\x64;$(INTELOCLSDKROOT)lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32.lib;glfw3.lib;glu32.lib;opengl32.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
