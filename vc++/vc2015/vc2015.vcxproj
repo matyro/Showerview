@@ -5,24 +5,46 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{18708CAC-DE05-4585-98D1-D27BD3D5E14D}</ProjectGuid>
     <RootNamespace>vc2013</RootNamespace>
     <ProjectName>vc2015</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
@@ -35,25 +57,71 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(SolutionDir)..\..\glm;$(SolutionDir)..\..\glfw\include;$(SolutionDir)..\..\glew-1.13.0\include;$(SolutionDir)..\..\freetype\include;$(SolutionDir)..\..\src;$(SolutionDir)..\..\FreeImage\Dist\x32;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\freetype\lib;$(SolutionDir)..\..\glfw\lib-vc2015;$(SolutionDir)..\..\glew-1.13.0\lib\Release\Win32;$(SolutionDir)..\..\FreeImage\Dist\x32;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)..\build\</OutDir>
+    <ExecutablePath>$(ProjectDir)..\glew-1.13.0\bin\Release\x64;$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ExecutablePath>$(ProjectDir)..\glew-1.13.0\bin\Release\x64;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)..\..\glm;$(SolutionDir)..\..\glfw\include;$(SolutionDir)..\..\glew-1.13.0\include;$(SolutionDir)..\..\freetype\include;$(SolutionDir)..\..\src;$(SolutionDir)..\..\FreeImage\Dist\x32;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\freetype\lib;$(SolutionDir)..\..\glfw\lib-vc2015;$(SolutionDir)..\..\glew-1.13.0\lib\Release\Win32;$(SolutionDir)..\..\FreeImage\Dist\x32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\glm;$(SolutionDir)..\..\glfw\include;$(SolutionDir)..\..\glew-1.13.0\include;$(SolutionDir)..\..\freetype\include;$(SolutionDir)..\..\src;$(SolutionDir)..\..\FreeImage\Dist\x32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\freetype\lib;$(SolutionDir)..\..\glfw\lib-vc2015;$(SolutionDir)..\..\glew-1.13.0\lib\Release\Win32;$(SolutionDir)..\..\FreeImage\Dist\x32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;freetype.lib;glew32.lib;glu32.lib;opengl32.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\glm;$(SolutionDir)..\..\glfw\include;$(SolutionDir)..\..\glew-1.13.0\include;$(SolutionDir)..\..\freetype\include;$(SolutionDir)..\..\src;$(SolutionDir)..\..\FreeImage\Dist\x32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\freetype\lib;$(SolutionDir)..\..\glfw\lib-vc2015;$(SolutionDir)..\..\glew-1.13.0\lib\Release\x64;$(SolutionDir)..\..\FreeImage\Dist\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;freetype.lib;glew32.lib;glu32.lib;opengl32.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\..\glm;..\..\..\glfw-3.1.1.bin.WIN32\include;..\..\..\glew-1.13.0\include;..\..\..\freetype-2.6\include;..\..\..\Showerview\src;..\..\..\FreeImage\Dist\x32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\..\..\freetype-2.6\objs\vc2010\Win32;..\..\..\glfw-3.1.1.bin.WIN32\lib-vc2013;..\..\..\glew-1.13.0\lib\Release\Win32;..\..\..\FreeImage\Dist\x32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3dll.lib;freetype26d.lib;glew32.lib;glu32.lib;opengl32.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3dll.lib;freetype26.lib;glew32.lib;glu32.lib;opengl32.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
@@ -82,7 +150,6 @@
     <ClInclude Include="..\..\src\OGLWrapper\Texture.h" />
     <ClInclude Include="..\..\src\OGLWrapper\Vertex.h" />
     <ClInclude Include="..\..\src\OGLWrapper\VertexAttribute.h" />
-    <ClInclude Include="..\..\src\OGLWrapper\VertexData.h" />
     <ClInclude Include="..\..\src\RenderUnits\Ball.h" />
     <ClInclude Include="..\..\src\RenderUnits\MultiLineRenderUnit.h" />
     <ClInclude Include="..\..\src\RenderUnits\RenderUnit.h" />
@@ -101,7 +168,6 @@
     <ClCompile Include="..\..\src\OGLWrapper\Texture.cpp" />
     <ClCompile Include="..\..\src\OGLWrapper\Vertex.cpp" />
     <ClCompile Include="..\..\src\OGLWrapper\VertexAttribute.cpp" />
-    <ClCompile Include="..\..\src\OGLWrapper\VertexData.cpp" />
     <ClCompile Include="..\..\src\OpenGL-Viewer.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\Ball.cpp" />
     <ClCompile Include="..\..\src\RenderUnits\MultiLineRenderUnit.cpp" />

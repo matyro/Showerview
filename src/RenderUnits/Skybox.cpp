@@ -49,7 +49,7 @@ namespace render
 		std::cout << "Skybox init .."<< std::endl;
 
 
-		m_o_Shader = std::unique_ptr<Shader>(new Shader("Shader/SkyBox.vs", "Shader/SkyBox.frag") );
+		m_o_Shader = std::unique_ptr<Shader>(new Shader("../Shader/SkyBox.vs", "../Shader/SkyBox.frag") );
 		m_o_Shader->addUniform("camera");
 		m_o_Shader->addUniform("skybox");
 

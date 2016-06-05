@@ -28,58 +28,10 @@
 
 #include "Helper/CameraControll.h"
 
-#include "Network/Client.h"
-#include "Network/Server.h"
-//#include "Network/Basic.h"
 
-#include <unistd.h>
 
 int main(int argc, const char* argv[])
 {
-
-	network::Server s(12345);
-	auto recv = [&s](unsigned int id, std::vector<char>&& data)->void
-	{
-		std::cout << "Message from ID-" << id << " :";
-		for(auto itr : data)
-		std::cout << itr;
-		std::cout << std::endl;
-
-		std::vector<char> tmp
-		{	'A','B','C'};
-		s.send(id, std::move(tmp) );
-	};
-
-	auto newCon = [](unsigned int id, Socket* sock)->bool
-	{
-		std::cout << "New Connection with ID-" << id << " from IP " << sock->getIP() << std::endl;
-		return true;
-	};
-
-	s.setRecvFunc(recv);
-	s.setNewConFunc(newCon);
-
-	sleep(2);
-	network::Client c1("127.0.0.1", 12345);
-	network::Client c2("127.0.0.1", 12345);
-	network::Client c3("127.0.0.1", 12345);
-
-	std::cout << "Client Send:" << std::endl;
-
-	c1.send("HalloWelt\0", 5);
-	auto a1 = c1.recv();
-	for (auto itr : a1)
-		std::cout << itr;
-	std::cout << std::endl;
-
-	c3.send("Test\0", 5);
-	auto a2 = c3.recv();
-	for (auto itr : a1)
-		std::cout << itr;
-
-	std::cin.get();
-	exit(0);
-
 	FreeImage_Initialise(true);
 	FreeImage_SetOutputMessage(FreeImageErrorHandler);
 

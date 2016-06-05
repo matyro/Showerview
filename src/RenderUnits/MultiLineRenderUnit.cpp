@@ -38,7 +38,7 @@ namespace render
 
 	MultiLineRenderUnit::MultiLineRenderUnit()
 	{
-		m_o_Shader = std::unique_ptr<Shader>(new Shader("Shader/MultiLine.vs", "Shader/MultiLine.frag", "Shader/MultiLine.geo"));//
+		m_o_Shader = std::unique_ptr<Shader>(new Shader("../Shader/MultiLine.vs", "../Shader/MultiLine.frag", "../Shader/MultiLine.geo"));//
 		m_o_Shader->addUniform("projectionView");
 		m_o_Shader->addUniform("camPos");
 

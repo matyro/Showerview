@@ -114,7 +114,7 @@ namespace render
 			m_fScale[i] = 1;
 		}
 
-		m_o_Shader = std::unique_ptr<Shader>(new Shader("Shader/generic.vs", "Shader/generic.frag"));
+		m_o_Shader = std::unique_ptr<Shader>(new Shader("../Shader/generic.vs", "../Shader/generic.frag"));
 		m_o_Shader->addUniform("projectionView");
 		m_o_Shader->addUniform("model");
 		m_o_Shader->addAttribute("color");

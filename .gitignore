@@ -28,3 +28,14 @@
 *.app
 /Debug/
 /Release/
+*.tlog
+vc++/x64/Debug/vc140.pdb
+*.idb
+*.pdb
+*.db
+*.suo
+*.txt
+*.ipdb
+*.ilk
+*.iobj
+*.log
