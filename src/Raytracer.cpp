@@ -13,7 +13,7 @@
 #include "Callback.h"
 
 #include "Helper/Line.h"
-#include "Camera/CameraMatrix.h"
+#include "Camera/Camera.h"
 
 #include "OCL.h"
 #include "OGL.h"
@@ -42,7 +42,7 @@ int main()
 	//Early error Callback
 	glfwSetErrorCallback(error_callback);
 
-	GLFWwindow* window = glfwCreateWindow(1024, 1024, "Showerview", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(768, 768, "Showerview", NULL, NULL);
 	if (!window)
 	{
 		std::cerr << "Window creation failed" << std::endl;
@@ -79,14 +79,14 @@ int main()
 	// Inits
 
 	// dist, fov, ratio
-	auto cam = std::make_shared<CameraMatrix>(1.0f, 90.0f, static_cast<float>(width) / static_cast<float>(height) );
+	auto cam = std::make_shared<Camera>(1.0f, 90.0f, static_cast<float>(width) / static_cast<float>(height) );
 	
 	SCamControll().setCamera(cam);	
 
 	//glfwMakeContextCurrent(window);
 
-	int textureWidth = 1024;// static_cast<int>(width * 1.00f);
-	int textureHeight = 1024;//static_cast<int>(height * 1.00f);
+	int textureWidth = static_cast<int>(width * 1.00f);
+	int textureHeight = static_cast<int>(height * 1.00f);
 
 	//initOCL();
 	auto oglData = initOGL(textureWidth, textureHeight);
@@ -174,9 +174,7 @@ int main()
 		
 		time2 = glfwGetTime();
 
-		// calcOCL(std::tuple<cl::CommandQueue, cl::Kernel, cl::Memory>& data, const float count, const cl_float4& mov, const cl_float16& rot, const cl_float16& proj, const int width, const int height)
-
-		calcOCL( oclData, static_cast<float>(absCounter), toFloat16(cam->getViewMatrix()), toFloat16(cam->getProjectionMatrix()), lines.size(), textureWidth, textureHeight);
+		calcOCL( oclData, static_cast<float>(absCounter), *cam.get(), lines.size(), width, height);
 
 		timeCache2 += glfwGetTime() - time2;
 
@@ -186,11 +184,12 @@ int main()
 		timeCache4 += glfwGetTime() - time;
 
 		//Buffer switch
+		std::cout << ">>Swap" << std::endl;
 		glfwSwapBuffers(window);
 		counter++;
 		absCounter++;
 
-		std::cin.get();
+		///std::cin.get();
 	}
 
 	//Terminate everything

@@ -36,6 +36,8 @@ void drawOGL( std::tuple<std::shared_ptr<Texture>, std::shared_ptr<Shader>, std:
 {	
 	// Clear the colorbuffer		
 
+	//std::cout << "Start OGL" << std::endl;
+
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	
@@ -44,8 +46,12 @@ void drawOGL( std::tuple<std::shared_ptr<Texture>, std::shared_ptr<Shader>, std:
 
 	std::get<0>(data)->bindTexture();
 
+	//std::cout << "Start DRAW" << std::endl;
 	std::get<2>(data)->draw(GL_TRIANGLE_FAN, 4);	
+	//std::cout << "End DRAW" << std::endl;
 
 	glFlush();	
-	
+	glFinish();
+
+	//std::cout << "End OGL" << std::endl;
 }

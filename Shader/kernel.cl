@@ -2,18 +2,9 @@
 typedef struct Line
 {
 	float4 start;
-	float4 direction;
-	float4 color;	
+	float4 end;
+	float4 col;
 } Line;
-
-typedef struct Plane
-{ 
-	float4 camPos;
-	float4 viewDir;
-	float4 planeTL;
-	float4 planeR;
-	float4 planeD;
-} Plane;
 
 
 //#define OWN_MATH 
@@ -80,48 +71,91 @@ const float vec_vec_distance(float4 A, float4 p1, float4 B, float4 p2)
 
 
 #define smoothEdge  0.01f
-#define thickness  0.1f
+#define thickness  3.2f
 
-//__constant for
-__kernel void writeTexture(__write_only image2d_t image, float t, const Plane cam, __global const Line* lines, const int lineSize)
+
+//cam: m_vec3CamPos, m_vec3TopLeft, m_vec3Right, m_vec3Down
+__kernel void writeTexture(__read_write image2d_t image, __global float16* lines, unsigned int lineCount, unsigned int lineSize, float16 cam)
 {
 	const int2 coordi = (int2)(get_global_id(0), get_global_id(1));
-
 	const float2 coordf = convert_float2(coordi) / (float2)(get_global_size(0), get_global_size(1));
 
-	const float4 ray = cam.planeTL + (coordf.x * cam.planeR) + (coordf.y * cam.planeD);
 
 
-	float4 color = (float4)(0, 0, 0, 0.0);
-	
-	//if(coordi.x == 100 && coordi.y == 100)
-	//{
-	//	printf("Lines: %i", lineSize);
-	//}
-	
-	
+	const float4 ray = cam.s4567 + (coordf.x * cam.s89AB) + (coordf.y * cam.sCDEF);
+	const float4 rayDir = cam.s0123 - ray;
 
-	const float4 rayDir = cam.camPos - ray;	
+	float4 color = (float4)(0.0, 0.0, 0.0, 0.0);
 
-#pragma unroll
-	for(int i=0; i<lineSize; i++)
+	if(get_global_id(0) == 0 &&  get_global_id(1) == 0)
 	{
-		/*float st = dot(lines[i].start - cam.camPos, cam.viewDir);
-		float en = dot(lines[i].start + lines[i].direction - cam.camPos, cam.viewDir);
-		if(st  > 0 && en > 0)
-		{ 			
-			continue;
-		}*/
+		printf("CamPos: %f,%f,%f,%f\n"	, cam.s0, cam.s1, cam.s2, cam.s3);
+		printf("TopLeft: %f,%f,%f,%f\n"	, cam.s4, cam.s5, cam.s6, cam.s7);
+		printf("Right: %f,%f,%f,%f\n"	, cam.s8, cam.s9, cam.sA, cam.sB);
+		printf("Down: %f,%f,%f,%f\n"	, cam.sC, cam.sD, cam.sE, cam.sF);
+	}
 
 
-		const float dist = vec_vec_distance(cam.camPos, rayDir, lines[i].start, lines[i].direction);		// Perspective
-		//const float dist = vec_vec_distance(ray, cam.viewDir, lines[i].start, lines[i].direction);			// Orthogonal
+	for(int i=0; i<lineCount; i++)
+	{
+		
+		//float st = dot(lines[i].start - cam.camPos, cam.viewDir);
+		//float en = dot(lines[i].start + lines[i].direction - cam.camPos, cam.viewDir);
+		//if(st  > 0 && en > 0)
+		//{
+			//continue;
+		//}
 
-		if(dist < thickness)
+
+		const float dist = vec_vec_distance(cam.s0123, rayDir, lines[i].s0123, lines[i].s4567 - lines[i].s0123);		// Perspective
+																														//const float dist = vec_vec_distance(ray, cam.viewDir, lines[i].start, lines[i].direction);			// Orthogonal
+
+		if (dist < thickness)
 		{
-			color = color + lines[i].color;
-		}		
-	}	 
+			color = color + lines[i].s89AB;
+		}
+	}
+
+
+	write_imagef(
+		image,
+		coordi,
+		color
+	);
+}
+
+
+void bla(__read_write image2d_t image, __global float16* lines, unsigned int lineSize, float16 cam)
+{
+	const int2 coordi = (int2)(get_global_id(0), get_global_id(1));
+	const float2 coordf = convert_float2(coordi) / (float2)(get_global_size(0), get_global_size(1));
+
+
+
+	const float4 ray = cam.s4567 + (coordf.x * cam.s89AB) + (coordf.y * cam.sCDEF);
+	const float4 rayDir = cam.s0123 - ray;
+
+	float4 color = (float4)(0.0, 0.0, 0.0, 0.0);
+
+
+	int i = get_global_id(2);
+	{/*
+	 float st = dot(lines[i].start - cam.camPos, cam.viewDir);
+	 float en = dot(lines[i].start + lines[i].direction - cam.camPos, cam.viewDir);
+	 if(st  > 0 && en > 0)
+	 {
+	 continue;
+	 }*/
+
+
+		const float dist = vec_vec_distance(cam.s0123, rayDir, lines[i].s0123, lines[i].s4567 - lines[i].s0123);		// Perspective
+																														//const float dist = vec_vec_distance(ray, cam.viewDir, lines[i].start, lines[i].direction);			// Orthogonal
+
+		if (dist < thickness)
+		{
+			color = color + lines[i].s89AB;
+		}
+	}
 
 	write_imagef(
 		image,

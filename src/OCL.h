@@ -16,6 +16,6 @@
 #include "OCL/OpenCL_Queue.h"
 
 
-std::tuple<OCL_Queue, OCL_Kernel, OCL_Kernel> initOCL(unsigned int textureFlag, unsigned int textureID, std::vector<Line>& lines);
+std::tuple<OCL_Hardware, OCL_Program, OCL_Queue, OCL_Kernel> initOCL(cl_GLenum textureFlag, unsigned int textureID, std::vector<Line>& lines);
 
-void calcOCL(std::tuple<OCL_Queue, OCL_Kernel, OCL_Kernel>& , const float , const cl_float16&, const cl_float16&, const int,  const int, const int);
+void calcOCL(std::tuple<OCL_Hardware, OCL_Program, OCL_Queue, OCL_Kernel>&, const float frameCount, const Camera& cam, const int lineCount, const int width, const int height);

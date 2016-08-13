@@ -30,7 +30,7 @@ namespace helper
 	{
 		if (m_o_OpenGLCam != nullptr)
 		{
-			m_o_OpenGLCam->rotateCam(-deltaY*m_fRotationSpeed, -deltaX*m_fRotationSpeed, 0);
+			m_o_OpenGLCam->rotateCam(deltaY*m_fRotationSpeed, deltaX*m_fRotationSpeed, 0);
 		}
 	}
 

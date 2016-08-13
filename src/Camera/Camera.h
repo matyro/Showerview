@@ -69,7 +69,7 @@ public:
 	inline const bool isMovable() const { return this->m_bCanMove; }
 
 
-	inline const Plane plane();
+	const cl_float16 Camera::plane() const;
 
 
 

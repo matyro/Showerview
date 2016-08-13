@@ -18,19 +18,12 @@
 struct Plane
 {
 	cl_float4 camPos;
-	cl_float4 viewDir;
+	//cl_float4 viewDir;
 	cl_float4 planeTL;
 	cl_float4 planeR;
 	cl_float4 planeD;
 };
 
-struct Matrix
-{
-	cl_float4 a;	// Zeile 1
-	cl_float4 b;   // Zeile 2
-	cl_float4 c;	// Zeile 3
-	cl_float4 d;	// Zeile 4
-};
 
 void Camera::update()
 {
@@ -72,7 +65,7 @@ void Camera::rotateCam(const float pitch, const float yaw, const float roll)
 	{
 		//m_vec3ViewDirection = glm::vec3(0.0f, 0.0f, -1.0f);
 
-		glm::vec3 cameraRight = glm::normalize(glm::cross(m_glm_up, m_vec3ViewDirection));
+		glm::vec3 cameraRight = glm::normalize(glm::cross(m_vec3ViewDirection, m_glm_up));
 		glm::vec3 cameraUp = glm::cross(m_vec3ViewDirection, cameraRight);
 
 
@@ -103,7 +96,7 @@ void Camera::moveCam(const float forward_backward, const float right_left, const
 	//if (m_bCanMove)
 	{
 		const glm::vec3 cameraForward = glm::normalize(m_vec3ViewDirection);
-		const glm::vec3 cameraRight = glm::normalize(glm::cross(m_glm_up, m_vec3ViewDirection));
+		const glm::vec3 cameraRight = glm::normalize(glm::cross(m_vec3ViewDirection, m_glm_up));
 		const glm::vec3 cameraUp = glm::normalize(glm::cross(m_vec3ViewDirection, cameraRight));
 
 		this->m_vec3CamPos += cameraForward*forward_backward + cameraRight*right_left + cameraUp*up_down;
@@ -119,13 +112,23 @@ const glm::vec3 Camera::getPosition()
 	return this->m_vec3CamPos;
 }
 
-inline const Plane  Camera::plane()
+const cl_float16 Camera::plane() const
 {
-	return{ m_vec3CamPos.x, m_vec3CamPos.y, m_vec3CamPos.z, 0.0f,
-		m_vec3ViewDirection.x,  m_vec3ViewDirection.y,  m_vec3ViewDirection.z, 0.0f,
-		m_vec3TopLeft.x, m_vec3TopLeft.y, m_vec3TopLeft.z, 0.0f,
-		m_vec3Right.x, m_vec3Right.y, m_vec3Right.z, 0.0f,
-		m_vec3Down.x, m_vec3Down.y, m_vec3Down.z, 0.0f };
+	std::cout << "Plane: " << std::endl;
+	std::cout << "vec3 CamPos: " << glm::to_string(m_vec3CamPos) << std::endl;
+
+	cl_float16 ret;
+	std::memset(ret.s, 0, sizeof(cl_float16) );
+	for (int i = 0; i < 3; i++)
+	{
+		ret.s[0 + i] = glm::value_ptr(m_vec3CamPos)[i];
+		ret.s[4 + i] = glm::value_ptr(m_vec3TopLeft)[i];
+		ret.s[8 + i] = glm::value_ptr(m_vec3Right)[i];
+		ret.s[12 + i] = glm::value_ptr(m_vec3Down)[i];
+	}
+
+
+	return ret;
 }
 
 

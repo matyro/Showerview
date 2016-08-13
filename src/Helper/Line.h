@@ -9,12 +9,15 @@
 
 #include "OCL/OpenCL_Include.h"
 
+/*
 struct Line
 {
 	cl_float4 start;
 	cl_float4 direction;
 	cl_float4 col;
-};
+};*/
+
+typedef cl_float16 Line;
 
 
 class LineSet
@@ -31,11 +34,13 @@ public:
 	inline void addLine(cl_float4 start, cl_float4 end, cl_float4 col)
 	{
 		Line tmp;
-		tmp.start = start;
-		//tmp.col = col;
-
 		for (int i = 0; i < 4; i++)
-			tmp.direction.s[i] = end.s[i];// -start.s[i];
+		{
+			tmp.s[0 + i] = start.s[i];
+			tmp.s[4 + i] = end.s[i];// -start.s[i];
+			tmp.s[8 + i] = col.s[i];
+			tmp.s[12 + i] = 0.0;
+		}
 		
 		m_vLines.push_back(tmp);
 	}

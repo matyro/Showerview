@@ -11,9 +11,8 @@
 #include <memory>
 
 #include "../Camera/Camera.h"
-#include "../Camera/CameraMatrix.h"
 
-#define TCam CameraMatrix
+#define TCam Camera
 
 
 namespace helper
