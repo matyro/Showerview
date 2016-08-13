@@ -75,6 +75,7 @@ const float vec_vec_distance(float4 A, float4 p1, float4 B, float4 p2)
 
 
 //cam: m_vec3CamPos, m_vec3TopLeft, m_vec3Right, m_vec3Down
+//line: start, end, color, none
 __kernel void writeTexture(__read_write image2d_t image, __global float16* lines, unsigned int lineCount, unsigned int lineSize, float16 cam)
 {
 	const int2 coordi = (int2)(get_global_id(0), get_global_id(1));
@@ -98,13 +99,13 @@ __kernel void writeTexture(__read_write image2d_t image, __global float16* lines
 
 	for(int i=0; i<lineCount; i++)
 	{
-		
-		//float st = dot(lines[i].start - cam.camPos, cam.viewDir);
-		//float en = dot(lines[i].start + lines[i].direction - cam.camPos, cam.viewDir);
-		//if(st  > 0 && en > 0)
-		//{
-			//continue;
-		//}
+		/*const float4 viewDir = cam.s4567 + cam.s4567 + (0.5 * cam.s89AB) + (0.5 * cam.sCDEF);
+		float st = dot(lines[i].s0123 - cam.s0123, viewDir);
+		float en = dot(lines[i].s4567 - cam.s0123, viewDir);
+		if(st  > 0 && en > 0)
+		{
+			continue;
+		}*/
 
 
 		float dist = vec_vec_distance(cam.s0123, rayDir, lines[i].s0123, lines[i].s4567 - lines[i].s0123);		// Perspective

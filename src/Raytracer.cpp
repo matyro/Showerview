@@ -111,7 +111,7 @@ int main()
 
 	
 
-	const int tmpSize = 15;
+	const int tmpSize = 25;
 	for (int i = 0; i < tmpSize; i++)
 	{
 		float x = -tmpSize + 2.0f * i;
