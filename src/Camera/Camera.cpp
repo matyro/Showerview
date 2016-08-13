@@ -47,10 +47,10 @@ Camera::Camera(const float dist, const float fov, const float ratio)
 	:m_fDist(dist), m_fFov(static_cast<float>(M_PI * fov) / 180.0f), m_fiRatio(1.0f / ratio), m_bCanMove(false)
 {
 	
-	m_vec3CamPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	m_vec3ViewDirection = glm::vec3(0.0f, 1.0f, 0.0f) * dist;
+	m_vec3CamPos = glm::vec3(0.0f, 0.0f, 10.0f);
+	m_vec3ViewDirection = glm::vec3(0.0f, 0.0f, 1.0f) * dist;
 
-	m_glm_up = glm::vec3(0, 0, 1);	
+	m_glm_up = glm::vec3(0.0, 1.0, 0.0);	
 
 
 	update();
@@ -114,8 +114,8 @@ const glm::vec3 Camera::getPosition()
 
 const cl_float16 Camera::plane() const
 {
-	std::cout << "Plane: " << std::endl;
-	std::cout << "vec3 CamPos: " << glm::to_string(m_vec3CamPos) << std::endl;
+	//std::cout << "Plane: " << std::endl;
+	//std::cout << "vec3 CamPos: " << glm::to_string(m_vec3CamPos) << std::endl;
 
 	cl_float16 ret;
 	std::memset(ret.s, 0, sizeof(cl_float16) );

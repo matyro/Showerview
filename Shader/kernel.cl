@@ -56,22 +56,22 @@ const float vec_vec_distance(float4 A, float4 p1, float4 B, float4 p2)
 	const float4 n1 = crossProduct(p1, n);
 	const float x2 = clamp(dotProduct(-diff, n1) / dotProduct(p2, n1), 0.0f, 1.0f);
 	
-	//if(x2 == 0.0f || x2 == 1.0f)
-	//{
+	if(x2 == 0.0f || x2 == 1.0f)
+	{
 	return fast_length(mad(x2, p2, B) - mad(x1, p1, A));	// mad(a,b,c) = a*b+c in fast  || faster -> FLT_MAX;// 
-	//}	
-	//else
-	//{
-		//return  fast_length( dot(n / fast_length(n), diff) ) ;
-	//}		
+	}	
+	else
+	{
+		return  fast_length( dot(n / fast_length(n), diff) ) ;
+	}		
 	
 
-	//return FLT_MAX;
+	return FLT_MAX;
 }
 
 
-#define smoothEdge  0.01f
-#define thickness  3.2f
+#define smoothEdge  0.02f
+#define thickness  0.3f
 
 
 //cam: m_vec3CamPos, m_vec3TopLeft, m_vec3Right, m_vec3Down
@@ -87,13 +87,13 @@ __kernel void writeTexture(__read_write image2d_t image, __global float16* lines
 
 	float4 color = (float4)(0.0, 0.0, 0.0, 0.0);
 
-	if(get_global_id(0) == 0 &&  get_global_id(1) == 0)
+	/*if(get_global_id(0) == 0 &&  get_global_id(1) == 0)
 	{
 		printf("CamPos: %f,%f,%f,%f\n"	, cam.s0, cam.s1, cam.s2, cam.s3);
 		printf("TopLeft: %f,%f,%f,%f\n"	, cam.s4, cam.s5, cam.s6, cam.s7);
 		printf("Right: %f,%f,%f,%f\n"	, cam.s8, cam.s9, cam.sA, cam.sB);
 		printf("Down: %f,%f,%f,%f\n"	, cam.sC, cam.sD, cam.sE, cam.sF);
-	}
+	}*/
 
 
 	for(int i=0; i<lineCount; i++)
@@ -107,13 +107,19 @@ __kernel void writeTexture(__read_write image2d_t image, __global float16* lines
 		//}
 
 
-		const float dist = vec_vec_distance(cam.s0123, rayDir, lines[i].s0123, lines[i].s4567 - lines[i].s0123);		// Perspective
+		float dist = vec_vec_distance(cam.s0123, rayDir, lines[i].s0123, lines[i].s4567 - lines[i].s0123);		// Perspective
 																														//const float dist = vec_vec_distance(ray, cam.viewDir, lines[i].start, lines[i].direction);			// Orthogonal
 
 		if (dist < thickness)
 		{
 			color = color + lines[i].s89AB;
 		}
+		else if(dist < thickness + smoothEdge)
+		{
+			dist = dist - thickness;
+			color = color + ((smoothEdge - dist)/smoothEdge) * lines[i].s89AB;
+		}
+
 	}
 
 

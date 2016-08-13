@@ -94,27 +94,24 @@ int main()
 
 
 	LineSet lines;
-	/*lines.addLine({  1.0f,  1.0f, 1.0f, 0.0f }, {  1.0f,  1.0f,-1.0f, 0.0f }, { 0.1f,0.8f,0.1f, 1.0f });
-	lines.addLine({ -1.0f,  1.0f, 1.0f, 0.0f }, { -1.0f,  1.0f,-1.0f, 0.0f }, { 0.1f,0.1f,0.8f, 1.0f });
-	lines.addLine({  1.0f, -1.0f, 1.0f, 0.0f }, {  1.0f, -1.0f,-1.0f, 0.0f }, { 0.8f,0.1f,0.1f, 1.0f });
-	lines.addLine({ -1.0f, -1.0f, 1.0f, 0.0f }, { -1.0f, -1.0f,-1.0f, 0.0f }, { 0.1f,0.8f,0.8f, 1.0f });
-
-	lines.addLine({ 1.0f,  1.0f, 1.0f, 0.0f }, { -1.0f, -1.0f,  1.0f, 0.0f }, { 0.8f,0.8f,0.1f, 1.0f });
-	lines.addLine({ 1.0f, -1.0f, 1.0f, 0.0f }, { -1.0f, 1.0f,  1.0f, 0.0f }, { 0.8f,0.1f,0.8f, 1.0f });*/
-
+	
 	std::default_random_engine g(1937);
 	std::uniform_real_distribution<float> dis(-100, 100);
 	std::uniform_real_distribution<float> dis2(0, 1);
 
 
-	lines.addLine({ 10.0f, 0.0f, 2.0f, 1.0f }, { -10.0f, 0.0f, 2.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
-	/*lines.addLine({ 0.0f, 10.0f, 0.0f, 1.0f }, { 0, -10.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f });
-	lines.addLine({ 0.0f, 0.0f, 10.0f, 1.0f }, { 0.0f, 0.0f, -10.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f });*/
+	lines.addLine({ 10.0f,  0.0f,  0.0f, 1.0f }, {   0.0f, 0.0f, 0.0f, 1.0f }, { 0.5f, 0.0f, 0.0f, 1.0f });
+	lines.addLine({  0.0f,  0.0f,  0.0f, 1.0f }, { -10.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
 
+	lines.addLine({  0.0f, 10.0f,  0.0f, 1.0f }, {   0, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.5f, 0.0f, 1.0f });
+	lines.addLine({ 0.0f, 0.0f,  0.0f, 1.0f }, { 0, -10.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f });
 
-	//lines.addLine({ 0.0f, 0.0f, 0.0f, 1.0f }, { 0, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f });
+	lines.addLine({  0.0f,  0.0f, 10.0f, 1.0f }, {   0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.5f, 1.0f });
+	lines.addLine({ 0.0f,  0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, -10.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f });
 
-	const int tmpSize = 0;
+	
+
+	const int tmpSize = 15;
 	for (int i = 0; i < tmpSize; i++)
 	{
 		float x = -tmpSize + 2.0f * i;
@@ -184,7 +181,7 @@ int main()
 		timeCache4 += glfwGetTime() - time;
 
 		//Buffer switch
-		std::cout << ">>Swap" << std::endl;
+		//std::cout << ">>Swap" << std::endl;
 		glfwSwapBuffers(window);
 		counter++;
 		absCounter++;
