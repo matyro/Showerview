@@ -79,7 +79,7 @@ int main()
 	// Inits
 
 	// dist, fov, ratio
-	auto cam = std::make_shared<Camera>(1.0f, 90.0f, static_cast<float>(width) / static_cast<float>(height) );
+	auto cam = std::make_shared<Camera>(1.0f, 100.0f, static_cast<float>(width) / static_cast<float>(height) );
 	
 	SCamControll().setCamera(cam);	
 
@@ -111,7 +111,7 @@ int main()
 
 	
 
-	const int tmpSize = 25;
+	const int tmpSize = 15;
 	for (int i = 0; i < tmpSize; i++)
 	{
 		float x = -tmpSize + 2.0f * i;
@@ -171,7 +171,7 @@ int main()
 		
 		time2 = glfwGetTime();
 
-		calcOCL( oclData, static_cast<float>(absCounter), *cam.get(), lines.size(), width, height);
+		calcOCL( oclData, static_cast<float>(absCounter), *cam.get(), lines.size(), width, height, cam->getViewMatrix(), cam->getProjectionMatrix());
 
 		timeCache2 += glfwGetTime() - time2;
 

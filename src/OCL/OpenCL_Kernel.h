@@ -74,7 +74,9 @@ public:
 	template<class T>
 	inline void setArg(const cl_uint parameterNumber, const T& data)
 	{
-		m_kernel.setArg(parameterNumber, data);
+		cl_int error = m_kernel.setArg(parameterNumber, data);
+
+		errorCheck("Kernel Argument", error);
 	}
 
 

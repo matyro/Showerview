@@ -138,5 +138,8 @@
     <None Include="..\Shader\kernel.cl">
       <Filter>Shader</Filter>
     </None>
+    <None Include="..\Shader\math.cl">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

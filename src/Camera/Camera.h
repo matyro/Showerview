@@ -7,6 +7,10 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include <glm/glm.hpp>
+#include <glm/gtx/vector_angle.hpp>
+#include <glm/gtx/transform.hpp>
+
 #include <array>
 #include <iostream>
 #include <math.h>
@@ -28,13 +32,12 @@ private:
 	glm::vec3 m_vec3CamPos;
 	glm::vec3 m_vec3ViewDirection;
 
-	glm::vec3 m_glm_up;
+	const glm::vec3 m_glm_up;
+	const glm::vec3 m_glm_right;
 
-
-	//View raster
-	glm::vec3 m_vec3TopLeft;
-	glm::vec3 m_vec3Right;
-	glm::vec3 m_vec3Down;
+	//Angle
+	float m_fPitch;
+	float m_fYaw;
 
 
 	// Basic infos
@@ -45,7 +48,6 @@ private:
 
 	bool m_bCanMove;
 
-	void update();
 
 public:
 
@@ -69,9 +71,10 @@ public:
 	inline const bool isMovable() const { return this->m_bCanMove; }
 
 
-	const cl_float16 Camera::plane() const;
+	const cl_float16 getViewMatrix() const;
 
-
+	const cl_float16 getProjectionMatrix() const;
 
 };
 
+cl_float16 toFloat16(glm::mat4 mat);

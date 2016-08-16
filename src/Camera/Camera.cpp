@@ -25,35 +25,15 @@ struct Plane
 };
 
 
-void Camera::update()
-{
-	glm::vec3 right = glm::normalize(glm::cross(m_vec3ViewDirection, m_glm_up));
-	glm::vec3 up = glm::normalize(glm::cross(right, m_vec3ViewDirection));
-
-	right = right * std::sin(m_fFov / 2.0f) * glm::length(m_vec3ViewDirection);
-	right = right * 2.0f;
-
-
-	up = up * glm::length(right) * m_fiRatio;
-
-	this->m_vec3TopLeft = m_vec3CamPos + m_vec3ViewDirection - right / 2.0 + up / 2.0;
-	
-	this->m_vec3Right = 1.0 * right;
-	this->m_vec3Down = -1.0 * up;
-}
-
 
 Camera::Camera(const float dist, const float fov, const float ratio)
-	:m_fDist(dist), m_fFov(static_cast<float>(M_PI * fov) / 180.0f), m_fiRatio(1.0f / ratio), m_bCanMove(false)
+	:m_fDist(dist), m_fFov(static_cast<float>(M_PI * fov) / 180.0f), m_fiRatio(1.0f / ratio), m_bCanMove(false), m_fPitch(0.0f), m_fYaw(0.0f),
+	m_glm_up(0.0, 1.0, 0.0), m_glm_right(1.0, 0.0, 0.0)
 {
 	
-	m_vec3CamPos = glm::vec3(0.0f, 0.0f, 10.0f);
-	m_vec3ViewDirection = glm::vec3(0.0f, 0.0f, 1.0f) * dist;
+	m_vec3CamPos = glm::vec3(0.0f, 0.0f, 30.0f);
+	m_vec3ViewDirection = glm::vec3(0.0f, 0.0f, -1.0f) * dist;
 
-	m_glm_up = glm::vec3(0.0, 1.0, 0.0);	
-
-
-	update();
 }
 
 
@@ -62,29 +42,30 @@ Camera::Camera(const float dist, const float fov, const float ratio)
 void Camera::rotateCam(const float pitch, const float yaw, const float roll)
 {
 	if (m_bCanMove)
-	{
-		//m_vec3ViewDirection = glm::vec3(0.0f, 0.0f, -1.0f);
+	{		
+		
 
-		glm::vec3 cameraRight = glm::normalize(glm::cross(m_vec3ViewDirection, m_glm_up));
-		glm::vec3 cameraUp = glm::cross(m_vec3ViewDirection, cameraRight);
+		
 
+		const float zAxisCut = (glm::pi<float>() / 2.0f) - 0.25f;
 
-		const float zAngle = glm::angle(m_vec3ViewDirection, m_glm_up);
-		const float zAxisCut = 0.25f;
+		m_fYaw += yaw;
 
-		m_vec3ViewDirection = glm::rotate(m_vec3ViewDirection, yaw, cameraUp);
-
-		if ((zAngle > (glm::pi<float>() - zAxisCut) && (pitch>0))
-			|| ((pitch<0) && zAngle < zAxisCut))
+		if ((m_fPitch > zAxisCut && (pitch>0))
+			|| ((pitch<0) && m_fPitch < -zAxisCut))
 		{			
 			return;
 		}
 		else
 		{
-			update();
-			m_vec3ViewDirection = glm::rotate(m_vec3ViewDirection, pitch, cameraRight);			
+			const glm::vec3 cameraRight = glm::normalize(glm::cross(m_vec3ViewDirection, m_glm_up));
+
+			m_vec3ViewDirection = glm::rotate(m_vec3ViewDirection, -pitch, cameraRight);
+			m_fPitch += pitch;
 		}
 
+		m_vec3ViewDirection = glm::rotate(m_vec3ViewDirection, -yaw, m_glm_up);
+		
 
 	}
 
@@ -99,9 +80,7 @@ void Camera::moveCam(const float forward_backward, const float right_left, const
 		const glm::vec3 cameraRight = glm::normalize(glm::cross(m_vec3ViewDirection, m_glm_up));
 		const glm::vec3 cameraUp = glm::normalize(glm::cross(m_vec3ViewDirection, cameraRight));
 
-		this->m_vec3CamPos += cameraForward*forward_backward + cameraRight*right_left + cameraUp*up_down;
-		
-		update();
+		this->m_vec3CamPos += cameraForward*forward_backward + cameraRight*right_left + cameraUp*up_down;		
 	}
 
 }
@@ -112,27 +91,40 @@ const glm::vec3 Camera::getPosition()
 	return this->m_vec3CamPos;
 }
 
-const cl_float16 Camera::plane() const
+
+
+
+const cl_float16 Camera::getViewMatrix() const
 {
-	//std::cout << "Plane: " << std::endl;
-	//std::cout << "vec3 CamPos: " << glm::to_string(m_vec3CamPos) << std::endl;
+	glm::mat4 rot1 = glm::rotate(m_fYaw, this->m_glm_up);
 
-	cl_float16 ret;
-	std::memset(ret.s, 0, sizeof(cl_float16) );
-	for (int i = 0; i < 3; i++)
-	{
-		ret.s[0 + i] = glm::value_ptr(m_vec3CamPos)[i];
-		ret.s[4 + i] = glm::value_ptr(m_vec3TopLeft)[i];
-		ret.s[8 + i] = glm::value_ptr(m_vec3Right)[i];
-		ret.s[12 + i] = glm::value_ptr(m_vec3Down)[i];
-	}
+	glm::mat4 rot2 = glm::rotate(m_fPitch, glm::vec3(1.0, 0.0, 0.0) );
 
+	glm::mat4 scale = glm::mat4(1);
 
-	return ret;
+	glm::mat4 view = rot2 * rot1 * scale;
+
+	view[3] = glm::vec4(-m_vec3CamPos.x, -m_vec3CamPos.y, -m_vec3CamPos.z, 0.0);
+
+	return toFloat16( view );
+}
+
+const cl_float16 Camera::getProjectionMatrix() const
+{
+	return toFloat16(glm::mat4(1));
 }
 
 
+cl_float16 toFloat16(glm::mat4 mat)
+{
+	cl_float16 tmp;
 
-
-
-
+	for (int i = 0; i < 4; i++)
+	{
+		tmp.s[0 + i * 4] = mat[0][i];
+		tmp.s[1 + i * 4] = mat[1][i];
+		tmp.s[2 + i * 4] = mat[2][i];
+		tmp.s[3 + i * 4] = mat[3][i];
+	}
+	return tmp;
+}

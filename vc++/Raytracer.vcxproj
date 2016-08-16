@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shader\kernel.cl" />
+    <None Include="..\Shader\math.cl" />
     <None Include="..\Shader\quad.fs" />
     <None Include="..\Shader\quad.vs" />
   </ItemGroup>
