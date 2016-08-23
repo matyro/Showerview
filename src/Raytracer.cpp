@@ -13,6 +13,8 @@
 #include "Callback.h"
 
 #include "Helper/Line.h"
+#include "Helper/TreeLoad.h"
+
 #include "Camera/Camera.h"
 
 #include "OCL.h"
@@ -42,7 +44,7 @@ int main()
 	//Early error Callback
 	glfwSetErrorCallback(error_callback);
 
-	GLFWwindow* window = glfwCreateWindow(768, 768, "Showerview", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1024, 976, "Showerview", NULL, NULL);
 	if (!window)
 	{
 		std::cerr << "Window creation failed" << std::endl;
@@ -64,6 +66,8 @@ int main()
 
 	glfwSwapInterval(1);
 
+	int textureWidth = static_cast<int>(width * 2.00f);
+	int textureHeight = static_cast<int>(height * 2.00f);
 
 	////////////////////////////////////////////////
 	/// Init things before the main loop
@@ -79,22 +83,24 @@ int main()
 	// Inits
 
 	// dist, fov, ratio
-	auto cam = std::make_shared<Camera>(1.0f, 100.0f, static_cast<float>(width) / static_cast<float>(height) );
+	auto cam = std::make_shared<Camera>(1.0f, 100.0f, static_cast<float>(textureWidth) / static_cast<float>(textureHeight) );
 	
 	SCamControll().setCamera(cam);	
 
 	//glfwMakeContextCurrent(window);
 
-	int textureWidth = static_cast<int>(width * 1.00f);
-	int textureHeight = static_cast<int>(height * 1.00f);
+	
 
 	//initOCL();
 	auto oglData = initOGL(textureWidth, textureHeight);
 	std::get<0>(oglData)->bindTexture();
 
 
-	LineSet lines;
-	
+	helper::TreeLoad tree("showerview.dat");
+
+	LineSet lines = tree.getTree();
+
+	/*	
 	std::default_random_engine g(1937);
 	std::uniform_real_distribution<float> dis(-100, 100);
 	std::uniform_real_distribution<float> dis2(0, 1);
@@ -122,7 +128,7 @@ int main()
 
 			lines.addLine({ x, y, 10, 1.0f }, { x, y, -10, 1.0f }, { dis2(g), dis2(g), dis2(g), 1.0f });
 		}		
-	}
+	}*/
 	
 	std::cout << "Init OCL: " << lines.size() << std::endl;
 
@@ -171,7 +177,7 @@ int main()
 		
 		time2 = glfwGetTime();
 
-		calcOCL( oclData, static_cast<float>(absCounter), *cam.get(), lines.size(), width, height, cam->getViewMatrix(), cam->getProjectionMatrix());
+		calcOCL( oclData, static_cast<float>(absCounter), *cam.get(), lines.size(), textureWidth, textureHeight, cam->getViewMatrix(), cam->getProjectionMatrix());
 
 		timeCache2 += glfwGetTime() - time2;
 

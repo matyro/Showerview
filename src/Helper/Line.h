@@ -31,7 +31,7 @@ public:
 	LineSet() {}
 
 
-	inline void addLine(cl_float4 start, cl_float4 end, cl_float4 col)
+	inline void addLine(const cl_float4 start, const cl_float4 end, const cl_float4 col)
 	{
 		Line tmp;
 		for (int i = 0; i < 4; i++)

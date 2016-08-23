@@ -54,9 +54,84 @@ __kernel void transform(__global float16* lineIn, unsigned int lineCount, float1
 }
 
 
+///////////////////////////////////////////////
 
-#define smoothEdge  0.02f
-#define thickness  0.3f
+#define BATCH_PRIMITIVE_COUNT 256
+#define BIN_SIZE 32
+
+//Each work-group (7) processes one batch of primitives at a time, while each workitem (1024) processes that batch for exactly one bin.
+// lineIn: line input
+// lineOut line Output
+// batchCounter: number of processed batches (internal control var)
+// batch_count: number of batches to calculate (each batch = 256 lines)
+// bin_count: number of bins in x and y direction
+__kernel void level1reduce(__global float16* lineIn, __global float16* lineOut, __global int* batchCounter, const int batch_count, const int2 binCount)
+{ 
+	const unsigned int global_id = get_global_id(0);
+	const unsigned int local_id = get_local_id(0);
+	const unsigned int local_size = get_local_size(0);
+
+	if (global_id == 0) 
+	{
+		batchCounter = 0;
+	}
+	barrier(CLK_GLOBAL_MEM_FENCE);
+
+	__local float16 localBatchStorage[BATCH_PRIMITIVE_COUNT];
+	__local unsigned int batchIdx;
+
+	while(true)
+	{
+		
+		// Recieve next (global) batchIdx for this workgroup
+		if (local_id == 0)
+		{
+			batchIdx = atomic_inc(batchCounter);
+		}
+		barrier(CLK_LOCAL_MEM_FENCE);
+
+		if (batchIdx >= batch_count) {
+			return;
+		}
+
+
+
+		// Load a batch of lines from global memory into local memory
+		const unsigned int primitive_id_offset = batchIdx * BATCH_PRIMITIVE_COUNT;
+
+		event_t event = async_work_group_copy(&localBatchStorage[0],
+												(__global const float16*)&lineIn[primitive_id_offset],
+												BATCH_PRIMITIVE_COUNT, 0);		
+		wait_group_events(1, &event);
+
+
+
+		// Bin worker part :
+
+		const int number_of_bins = binCount.x * binCount.y;
+		// in cases where #bins > #work-items, we need to iterate over all bins (simply offset the bin_idx by the #work-items)
+		for (int bin_idx = local_id; bin_idx < number_of_bins; bin_idx = bin_idx + local_size)
+		{
+			const uint2 bin_location = (uint2)(bin_idx % binCount.x, bin_idx / binCount.x);
+			
+
+
+
+
+			// copy queue to global memory (note that some/all implementations have 64-bit loads/stores -> use an ulong4)
+			const size_t tmp_offset = (bin_idx * number_of_bins + batchIdx);
+			lineOut[tmp_offset] = localBatchStorage[batchIdx];
+
+
+		}
+	}
+}
+
+
+
+
+#define smoothEdge  0.004f
+#define thickness  0.1f
 
 
 //cam: m_vec3CamPos, m_vec3TopLeft, m_vec3Right, m_vec3Down
@@ -85,7 +160,7 @@ __kernel void writeTexture(__read_write image2d_t image, __global float16* lineI
 		}*/
 
 
-		float dist = vec_vec_distance((float4)(0.0f, 0.0f, 0.0f, 0.0f), rayDir, lineIn[i].s0123, lineIn[i].s4567 - lineIn[i].s0123);		// Perspective
+		float dist = originvec_vec_distance(rayDir, lineIn[i].s0123, lineIn[i].s4567 - lineIn[i].s0123);		// Perspective
 																														//const float dist = vec_vec_distance(ray, cam.viewDir, Line3Ds[i].start, Line3Ds[i].direction);			// Orthogonal
 
 		if (dist < thickness)

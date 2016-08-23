@@ -29,7 +29,7 @@ const float vec_vec_distance(float4 A, float4 p1, float4 B, float4 p2)
 }
 
 
-const float vec_vec_distance(float4 p1, float4 B, float4 p2)
+const float originvec_vec_distance(float4 p1, float4 B, float4 p2)
 {
 	float4 n = cross(p1, p2);
 	float4 n2 = cross(p2, n);

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\Camera\Camera.cpp" />
     <ClCompile Include="..\src\Helper\CameraControll.cpp" />
+    <ClCompile Include="..\src\Helper\TreeLoad.cpp" />
     <ClCompile Include="..\src\OCL.cpp" />
     <ClCompile Include="..\src\OCL\OpenCL_Error.cpp" />
     <ClCompile Include="..\src\OCL\OpenCL_Hardware.cpp" />
@@ -39,6 +40,7 @@
     <ClInclude Include="..\src\Helper\ErrorLog.h" />
     <ClInclude Include="..\src\Helper\Line.h" />
     <ClInclude Include="..\src\Helper\Quadtree.h" />
+    <ClInclude Include="..\src\Helper\TreeLoad.h" />
     <ClInclude Include="..\src\OCL.h" />
     <ClInclude Include="..\src\OCL\OpenCL_Error.h" />
     <ClInclude Include="..\src\OCL\OpenCL_Hardware.h" />
