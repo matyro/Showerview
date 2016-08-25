@@ -5,6 +5,8 @@
 #include <string>
 
 
+#include <GL/glew.h>
+
 #ifdef _WIN32
 #include <Windows.h>
 #include <Wingdi.h>
@@ -12,7 +14,6 @@
 #include <GL/glx.h>
 #endif
 
-#include <GL/glew.h>
 
 #include "OCL.h"
 

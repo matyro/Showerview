@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008-2015 The Khronos Group Inc.
+ * Copyright (c) 2008-2016 The Khronos Group Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and/or associated documentation files (the
@@ -39,10 +39,10 @@
  *       Matt Gruenke, April 2012.
  *       Bruce Merry, February 2013.
  *       Tom Deakin and Simon McIntosh-Smith, July 2013
- *       James Price, June-November 2015
+ *       James Price, 2015-
  *
- *   \version 2.0.9
- *   \date 2015-12-07
+ *   \version 2.0.10
+ *   \date 2016-07-20
  *
  *   Optional extension support
  *
@@ -52,6 +52,8 @@
  *         #define CL_HPP_USE_DX_INTEROP
  *         cl_khr_sub_groups
  *         #define CL_HPP_USE_CL_SUB_GROUPS_KHR
+ *         cl_khr_image2d_from_buffer
+ *         #define CL_HPP_USE_CL_IMAGE2D_FROM_BUFFER_KHR
  *
  *   Doxygen documentation for this header is available here:
  *
@@ -1578,6 +1580,7 @@ struct ReferenceHandler<cl_event>
 };
 
 
+#if CL_HPP_TARGET_OPENCL_VERSION >= 120 && CL_HPP_MINIMUM_OPENCL_VERSION < 120
 // Extracts version number with major in the upper 16 bits, minor in the lower 16
 static cl_uint getVersion(const vector<char> &versionInfo)
 {
@@ -1598,12 +1601,11 @@ static cl_uint getVersion(const vector<char> &versionInfo)
     return (highVersion << 16) | lowVersion;
 }
 
-#if CL_HPP_TARGET_OPENCL_VERSION >= 120 && CL_HPP_MINIMUM_OPENCL_VERSION < 120
 static cl_uint getPlatformVersion(cl_platform_id platform)
 {
     size_type size = 0;
     clGetPlatformInfo(platform, CL_PLATFORM_VERSION, 0, NULL, &size);
-    
+
     vector<char> versionInfo(size);
     clGetPlatformInfo(platform, CL_PLATFORM_VERSION, size, versionInfo.data(), &size);
     return getVersion(versionInfo);
@@ -3458,7 +3460,7 @@ public:
             context_(),
             SVMTrait::getSVMMemFlags(),
             size*sizeof(T),
-            sizeof(T));
+            0);
         pointer retValue = reinterpret_cast<pointer>(
             voidPointer);
 #if defined(CL_HPP_ENABLE_EXCEPTIONS)
@@ -4589,7 +4591,7 @@ public:
 #endif // CL_HPP_MINIMUM_OPENCL_VERSION < 120
     }
 
-#if CL_HPP_TARGET_OPENCL_VERSION >= 200
+#if CL_HPP_TARGET_OPENCL_VERSION >= 200 || defined(CL_HPP_USE_CL_IMAGE2D_FROM_BUFFER_KHR)
     /*! \brief Constructs a 2D Image from a buffer.
     * \note This will share storage with the underlying buffer.
     *
@@ -4630,7 +4632,7 @@ public:
             *err = error;
         }
     }
-#endif //#if CL_HPP_TARGET_OPENCL_VERSION >= 200
+#endif //#if CL_HPP_TARGET_OPENCL_VERSION >= 200 || defined(CL_HPP_USE_CL_IMAGE2D_FROM_BUFFER_KHR)
 
 #if CL_HPP_TARGET_OPENCL_VERSION >= 200
     /*! \brief Constructs a 2D Image from an image.
@@ -9568,3 +9570,4 @@ namespace compatibility {
 } // namespace cl
 
 #endif // CL_HPP_
+

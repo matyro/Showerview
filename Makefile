@@ -10,7 +10,7 @@ RAY := src
 CC = gcc-5
 CFLAGS = -Wall -O2 -g -m64
 CXX = g++-5
-CXXFLAGS = -std=c++1y -Wall -O2 -m64 -g 
+CXXFLAGS = -std=c++11 -Wall -O2 -m64 -g 
 F77 = gfortran
 FFLAGS = -O2 -g 
 
@@ -36,7 +36,7 @@ RAY_OBJ  := $(patsubst $(SRCDIR)/%.$(CXXFILES),$(BUILDDIR)/%.o,$(RAY_SRCS))
 all: Ray
 
 Ray: $(RAY_OBJ)
-	@echo 'Compile UnitTest'
+	@echo 'Compile Ray'
 	$(CXX) $(CXX_FLAGS) $(LIB_DIR) -pthread -o build/$(RAY_EXECUTABLE) $(RAY_OBJ) $(LDFLAGS)
 ##	$(shell ./build/UnitTest)
 
@@ -52,6 +52,7 @@ $(BUILDDIR)/%.$(OFILES): %.$(CFILES)
 
 $(BUILDDIR)/%.$(OFILES): %.$(CXXFILES)
 	@echo 'Compile CPP'
+	@echo 'With ' $(CXX) $(CXXINCLUDE) $(CXXFLAGS)
 	$(shell mkdir -p $(shell dirname $@))
 	$(CXX) $(CXXINCLUDE) $(CXXFLAGS) -lglfw -lglew -lopengl32 -c $< -o $@
 
