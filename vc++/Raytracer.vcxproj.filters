@@ -147,5 +147,11 @@
     <None Include="..\Shader\math.cl">
       <Filter>Shader</Filter>
     </None>
+    <None Include="..\Shader\transformation.cl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\Shader\projection.cl">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -21,8 +21,21 @@
 #include "OGL.h"
 
 
-int main()
+int main(int argc, char *argv[])
 {
+	if (argc != 2)
+	{
+		std::cerr << "Set Tree file as first parameter!" << std::endl;
+		std::cin.get();
+		exit(-1);
+	}
+	else
+	{
+		std::cout << "Set Tree file to: " << argv[1] << std::endl;
+	}
+
+
+
 	std::cout << "Init GLFW" << std::endl;
 	if (!glfwInit())
 	{
@@ -96,7 +109,7 @@ int main()
 	std::get<0>(oglData)->bindTexture();
 
 
-	helper::TreeLoad tree("showerview.dat");
+	helper::TreeLoad tree(argv[1]);
 
 	LineSet lines = tree.getTree();
 

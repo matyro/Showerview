@@ -56,8 +56,10 @@
   <ItemGroup>
     <None Include="..\Shader\kernel.cl" />
     <None Include="..\Shader\math.cl" />
+    <None Include="..\Shader\projection.cl" />
     <None Include="..\Shader\quad.fs" />
     <None Include="..\Shader\quad.vs" />
+    <None Include="..\Shader\transformation.cl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D7807D45-6CC8-4370-A10A-C8F0105325AE}</ProjectGuid>

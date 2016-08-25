@@ -53,3 +53,60 @@ const float originvec_vec_distance(float4 p1, float4 B, float4 p2)
 
 	return FLT_MAX;
 }
+
+
+const float 2d_vec_point_distance(float2 A, float2 p1, float2 B)
+{	
+	printf("Point to Vec: (%f %f) to (%f %f)(%f %f)\n", p.x, p.y, sta.x, sta.y, end.x, end.y);
+
+	const float2 v = end - sta;
+	const float2 w = p - sta;
+
+
+	const float c1 = dot(v, w);
+	const float c2 = dot(v, v);
+
+	if (c1 <= 0)
+	{
+		return fast_length(p - sta);
+	}
+	else if (c2 <= c1)
+	{
+		return fast_length(p - end);
+	}
+	else
+	{
+		const float2 P = sta + (c1 / c2) * v;
+		return fast_length(p - P);
+	}
+
+	return FLT_MAX;
+	
+}
+
+bool 2d_line_intersect(float4 line1, float4 line2, float2 interPoint)
+{
+	float2 u0 = line1.xy;			// x00, y00
+	float2 v0 = line1.zw - u0;		// x01, y01
+
+	float2 u1 = line2.xy;			// x10, y10
+	float2 v1 = line2.zw - u0;		// x11, y11
+
+
+	float s = (((u0.x - u1.x) * v0.y) - ((u0.y - u1.y) * v0.x)) / ((v1.x * v0.y) - (v0.x * v1.y));
+	float t = -(-((u0.x - u1.x) * v1.y) + ((u0.y - u1.y) * v1.x)) / ((v1.x * v0.y) - (v0.x * v1.y));
+
+	interPoint = u0 + s * v0;
+
+	if (s < 0 || t < 0)
+	{
+		return false;
+	}
+	else if (s > 1 || t > 1)
+	{
+		return false;
+	}
+
+	return true;
+}
+
