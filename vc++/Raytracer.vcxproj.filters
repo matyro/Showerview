@@ -36,15 +36,24 @@
     <Filter Include="Header Files\OCL">
       <UniqueIdentifier>{7637b209-e766-45f7-b5f6-e83a22fe38a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Interface">
+      <UniqueIdentifier>{727e0536-440b-4152-b781-db1f59d0dfbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Interface">
+      <UniqueIdentifier>{3df3e278-9943-4e3d-948f-3ecc80542c1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Renderer">
+      <UniqueIdentifier>{3aaa33b1-a459-47c8-95be-745392ed158f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Renderer">
+      <UniqueIdentifier>{f2ee7324-9146-405b-9d2d-a6196e8c2e59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Raytracer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\OGL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\OCL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\OGLWrapper\Shader.cpp">
@@ -77,15 +86,24 @@
     <ClCompile Include="..\src\Helper\TreeLoad.cpp">
       <Filter>Source Files\Helper</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\OpenCL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Interface\GLFW_Startup.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Renderer\window_render.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Renderer\file_render.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Renderer\render.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Callback.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\OGL.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\OCL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\OGLWrapper\Vertex.h">
@@ -133,6 +151,24 @@
     <ClInclude Include="..\src\Helper\TreeLoad.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\OpenCL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Interface\GLFW_Startup.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Callback.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Renderer\window_render.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Renderer\file_render.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Renderer\render.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shader\quad.fs">
@@ -151,6 +187,9 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="..\Shader\projection.cl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\Shader\output_kernel.cl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

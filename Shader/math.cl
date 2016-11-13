@@ -17,7 +17,7 @@ const float vec_vec_distance(float4 A, float4 p1, float4 B, float4 p2)
 	
 	if(x2 == 0.0f || x2 == 1.0f)
 	{
-	return fast_length(mad(x2, p2, B) - mad(x1, p1, A));	// mad(a,b,c) = a*b+c in fast  || faster -> FLT_MAX;// 
+		return fast_length(mad(x2, p2, B) - mad(x1, p1, A));	// mad(a,b,c) = a*b+c in fast  || faster -> FLT_MAX;// 
 	}	
 	else
 	{
@@ -43,7 +43,7 @@ const float originvec_vec_distance(float4 p1, float4 B, float4 p2)
 
 	if (x2 == 0.0f || x2 == 1.0f)
 	{
-		return fast_length(mad(x2, p2, B) - (x1* p1) );	// mad(a,b,c) = a*b+c in fast  || faster -> FLT_MAX;// 
+		return fast_length( mad(x2, p2, B) - (x1* p1) );	// mad(a,b,c) = a*b+c in fast  || faster -> FLT_MAX;// 
 	}
 	else
 	{
@@ -54,10 +54,10 @@ const float originvec_vec_distance(float4 p1, float4 B, float4 p2)
 	return FLT_MAX;
 }
 
-
+/*
 const float 2d_vec_point_distance(float2 A, float2 p1, float2 B)
 {	
-	printf("Point to Vec: (%f %f) to (%f %f)(%f %f)\n", p.x, p.y, sta.x, sta.y, end.x, end.y);
+	//printf("Point to Vec: (%f %f) to (%f %f)(%f %f)\n", p.x, p.y, sta.x, sta.y, end.x, end.y);
 
 	const float2 v = end - sta;
 	const float2 w = p - sta;
@@ -110,3 +110,4 @@ bool 2d_line_intersect(float4 line1, float4 line2, float2 interPoint)
 	return true;
 }
 
+*/

@@ -40,3 +40,5 @@
 *.iobj
 *.ipdb
 *.opendb
+*.dat
+*.bmp

@@ -62,8 +62,10 @@ public:
 	void rotateCam(const float pitch, const float yaw, const float roll);
 	void moveCam(const float forward_backward, const float right_left, const float up_down);
 
-	
 
+	void setViewDir(float pitch, float yaw);
+	
+	void setPosition(float x, float y, float z);
 	const glm::vec3 getPosition();
 
 

@@ -67,9 +67,28 @@ public:
 		m_buffer.push_back(std::make_tuple(buffer, nullptr, 0));
 	}
 
+	template<class T>
+	inline void replaceBuffer(const int bufferID, cl::Context& context, cl_mem_flags memoryFlag, cl_uint parameterNumber, std::vector<T>& data)
+	{
+		cl_int error;
+
+		size_t size = sizeof(T) * data.size();
+
+		cl::Buffer buffer = cl::Buffer(context, memoryFlag, size, 0, &error);
+		errorCheck("Add Buffer (vector) Create", error);
+
+		error = m_kernel.setArg(parameterNumber, buffer);
+		errorCheck("Add Buffer (vector) Set", error);
+
+		//std::get<0>(m_buffer[bufferID]).release();
+		m_buffer[bufferID] = std::make_tuple(buffer, data.data(), size);
+		
+
+	}
 	
-	
-	void setupQueue(cl::CommandQueue& queue);
+	void writeData(cl::CommandQueue& queue);
+
+	void readData(cl::CommandQueue& queue, unsigned int i);
 
 	template<class T>
 	inline void setArg(const cl_uint parameterNumber, const T& data)
@@ -80,9 +99,9 @@ public:
 	}
 
 
-	void init(cl::CommandQueue& queue);
+	void acquireOGL(cl::CommandQueue& queue);
 
-	void release(cl::CommandQueue& queue);
+	void releaseOGL(cl::CommandQueue& queue);
 
 
 

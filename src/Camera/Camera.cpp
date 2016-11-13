@@ -86,6 +86,26 @@ void Camera::moveCam(const float forward_backward, const float right_left, const
 }
 
 
+void Camera::setViewDir(float pitch, float yaw)
+{
+	std::cout << "(vorher) Pitch:" << m_fPitch << " Yaw:" << m_fYaw << std::endl;
+	std::cout << "(input) Pitch:" << pitch << " Yaw:" << yaw << std::endl;
+
+	bool old = this->m_bCanMove;
+	this->m_bCanMove = true;
+	this->rotateCam(pitch - m_fPitch, yaw - m_fYaw, 0.0);
+	this->m_bCanMove = old;
+
+	std::cout << "(nachher) Pitch:" << m_fPitch << " Yaw:" << m_fYaw << std::endl;
+}
+
+void Camera::setPosition(float x, float y, float z)
+{
+	m_vec3CamPos.x = x;
+	m_vec3CamPos.y = y;
+	m_vec3CamPos.z = z;
+}
+
 const glm::vec3 Camera::getPosition()
 {
 	return this->m_vec3CamPos;
@@ -105,6 +125,8 @@ const cl_float16 Camera::getViewMatrix() const
 	glm::mat4 view = rot2 * rot1 * scale;
 
 	view[3] = glm::vec4(-m_vec3CamPos.x, -m_vec3CamPos.y, -m_vec3CamPos.z, 0.0);
+
+	std::cout << "Matrix: " << glm::to_string(rot1)<<std::endl;
 
 	return toFloat16( view );
 }

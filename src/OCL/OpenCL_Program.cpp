@@ -13,7 +13,7 @@ std::string OCL_Program::loadSource()
 
 	try
 	{
-		file.open(m_path);
+		file.open(m_path, std::ios::in | std::ios::binary);
 
 		std::stringstream sstr;
 		sstr << file.rdbuf();

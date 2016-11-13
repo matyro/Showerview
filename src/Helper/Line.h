@@ -51,5 +51,7 @@ public:
 	inline const Line* const data() const { return m_vLines.data(); }
 
 	inline std::vector<Line>& vec() { return m_vLines; }
+
+	inline void clear() { m_vLines.clear(); }
 };
 

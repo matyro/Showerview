@@ -44,7 +44,7 @@ cl::Platform OCL_Hardware::loadPlatform()
 	return platform;
 }
 
-cl::Device OCL_Hardware::loadDevice()
+cl::Device OCL_Hardware::loadDevice(bool gl_device_sharing)
 {
 
 	//Get Devices
@@ -57,13 +57,17 @@ cl::Device OCL_Hardware::loadDevice()
 	}
 
 
-	std::cout << "Needed Extension: cl_khr_gl_sharing" << std::endl;
-	for (auto itr : all_devices)
+	if (gl_device_sharing)
 	{
-		static int count = 1;
-		std::cout << "Devices [" << count++ << "]: " << itr.getInfo<CL_DEVICE_NAME>() << std::endl;
-		std::cout << "Extensions cl_khr_gl_sharing: " << std::boolalpha << (itr.getInfo<CL_DEVICE_EXTENSIONS>().find("cl_khr_gl_sharing") != std::string::npos) << std::endl;
+		std::cout << "Needed Extension: cl_khr_gl_sharing" << std::endl;
+		for (auto itr : all_devices)
+		{
+			static int count = 1;
+			std::cout << "Devices [" << count++ << "]: " << itr.getInfo<CL_DEVICE_NAME>() << std::endl;
+			std::cout << "Extensions cl_khr_gl_sharing: " << std::boolalpha << (itr.getInfo<CL_DEVICE_EXTENSIONS>().find("cl_khr_gl_sharing") != std::string::npos) << std::endl;
+		}
 	}
+	
 
 
 	cl::Device device;
@@ -86,12 +90,13 @@ cl::Device OCL_Hardware::loadDevice()
 	}
 
 
-	if (device.getInfo<CL_DEVICE_EXTENSIONS>().find("cl_khr_gl_sharing") == std::string::npos)
+	
+	if (gl_device_sharing && device.getInfo<CL_DEVICE_EXTENSIONS>().find("cl_khr_gl_sharing") == std::string::npos)
 	{
 		std::cout << "\n\n Extension cl_khr_gl_sharing needed but not available!" << std::endl;
 		std::cout << "Currently no fallback modus implemented ..." << std::endl;
 		std::cin.get();
-		exit(-1);
+		//exit(-1);
 	}
 	else
 	{

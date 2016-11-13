@@ -8,6 +8,7 @@
 #pragma once
 
 #include <string>
+#include <limits>
 
 #include "Helper/Line.h"
 
@@ -19,12 +20,16 @@ namespace helper
 		
 		LineSet m_tree;
 
+		std::vector<double> m_fileContent;
+
 	protected:
 		
 
 	public:
 
 		TreeLoad(std::string file);
+
+		void reload(float p_time = std::numeric_limits<float>::max(), double scale = 1.0);
 
 
 		inline LineSet& getTree() { return m_tree; }

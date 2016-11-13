@@ -33,7 +33,7 @@ void OCL_Kernel::addMemoryGL(cl::Context& context, const int parameterNumber, co
 
 
 
-void OCL_Kernel::setupQueue(cl::CommandQueue& queue)
+void OCL_Kernel::writeData(cl::CommandQueue& queue)
 {
 	cl_int error;
 
@@ -49,10 +49,16 @@ void OCL_Kernel::setupQueue(cl::CommandQueue& queue)
 	queue.finish();
 }
 
+void OCL_Kernel::readData(cl::CommandQueue& queue, unsigned int i)
+{
+	cl_int error;
+	error = queue.enqueueReadBuffer(std::get<0>(m_buffer[i]) , CL_TRUE, 0, std::get<2>(m_buffer[i]), std::get<1>(m_buffer[i]));
+	errorCheck("Buffer Read", error);
+}
 
 
 
-void OCL_Kernel::init(cl::CommandQueue& queue)
+void OCL_Kernel::acquireOGL(cl::CommandQueue& queue)
 {
 	cl_int error;
 
@@ -67,7 +73,7 @@ void OCL_Kernel::init(cl::CommandQueue& queue)
 	errorCheck("Acquire Texture", error);
 }
 
-void OCL_Kernel::release(cl::CommandQueue& queue)
+void OCL_Kernel::releaseOGL(cl::CommandQueue& queue)
 {
 	cl_int error;
 
