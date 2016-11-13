@@ -3,10 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <random>
-
-#include <GL/glew.h>
-
-
+#include <chrono>
 
 #include "Helper/Line.h"
 #include "Helper/TreeLoad.h"
@@ -15,15 +12,8 @@
 #include "Camera/Camera.h"
 
 
-
-
-#include "Interface/GLFW_Startup.h"
-
 #include "Renderer/file_render.h"
-#include "Renderer/window_render.h"
 
-
-#include "OGL.h"
 
 
 
@@ -44,7 +34,6 @@ int main(int argc, char *argv[])
 
 	const int width = 2*2048;
 	const int height = 2*2048;
-	GLFW_control glfw(200, 200);
 	
 
 	// Inits
@@ -56,11 +45,6 @@ int main(int argc, char *argv[])
 
 	cam->moveCam(-10000.0, 0.0, -0.9);
 		
-
-	//initOCL();
-	auto oglData = initOGL(width, height);
-	std::get<0>(oglData)->bindTexture();
-
 
 	helper::TreeLoad tree(argv[1]);
 	tree.reload(1.0001, 1.0 / 1000000.0);
@@ -74,7 +58,7 @@ int main(int argc, char *argv[])
 		
 	std::cout << "Init OCL: " << lines.size() << std::endl;
 	opencl_file render(width, height);
-	render.init(GL_TEXTURE_2D, std::get<0>(oglData)->getTextureID(), lines.vec() );
+	render.init(lines.vec() );
 
 	std::cout << "Init ready, start rendering..." << std::endl;
 	
@@ -83,15 +67,14 @@ int main(int argc, char *argv[])
 	//Mainloop	
 	std::chrono::high_resolution_clock::time_point time_start = std::chrono::high_resolution_clock::now();
 
-	double time, timeCache = glfwGetTime();
-	double timeCache2 = 0;
-	double time2, timeCache3 = 0, timeCache4 = 0;
+	auto time = std::chrono::high_resolution_clock::now();
 
-
+	auto timeCache = std::chrono::high_resolution_clock::duration();
+	
 	unsigned long long counter = 0;
 
 	
-	while (glfw.closed())
+	while (true)
 	{		
 
 		double phi = ( 2.0 * 3.1415926 ) * (counter / 360.0); 
@@ -115,20 +98,10 @@ int main(int argc, char *argv[])
 
 		render.draw(lines.size(), cam->getViewMatrix(), cam->getProjectionMatrix());
 		
-		timeCache2 += glfwGetTime() - time2;
-
-		drawOGL( oglData );
-
+				
 		
-		counter++;		
-
-		glfw.loop( time_sinceStart.count() );		
-
+		counter++;						
 		
-		//tree.reload((0.0001) + (200* 0.00000083) + (static_cast<double>(counter)*0.00000040));
-
-		//tree.reload(10.0);
-		//lines = tree.getTree();
 		std::cout << lines.size() << " Line to draw!" << std::endl;
 		render.update(lines.vec());
 
@@ -140,10 +113,6 @@ int main(int argc, char *argv[])
 	}
 
 	//Terminate everything
-
-	
-	glfw.close();
-	
 
 	std::cout << "Press enter to terminate" << std::endl;
 	std::cin.get();

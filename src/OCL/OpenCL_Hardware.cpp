@@ -60,13 +60,14 @@ cl::Device OCL_Hardware::loadDevice(bool gl_device_sharing)
 	if (gl_device_sharing)
 	{
 		std::cout << "Needed Extension: cl_khr_gl_sharing" << std::endl;
-		for (auto itr : all_devices)
-		{
-			static int count = 1;
-			std::cout << "Devices [" << count++ << "]: " << itr.getInfo<CL_DEVICE_NAME>() << std::endl;
-			std::cout << "Extensions cl_khr_gl_sharing: " << std::boolalpha << (itr.getInfo<CL_DEVICE_EXTENSIONS>().find("cl_khr_gl_sharing") != std::string::npos) << std::endl;
-		}
 	}
+	for (auto itr : all_devices)
+	{
+		static int count = 1;
+		std::cout << "Devices [" << count++ << "]: " << itr.getInfo<CL_DEVICE_NAME>() << std::endl;
+		std::cout << "Extensions cl_khr_gl_sharing: " << std::boolalpha << (itr.getInfo<CL_DEVICE_EXTENSIONS>().find("cl_khr_gl_sharing") != std::string::npos) << std::endl;
+	}
+	
 	
 
 
@@ -116,20 +117,12 @@ cl::Device OCL_Hardware::loadDevice(bool gl_device_sharing)
 }
 
 
-cl::Context OCL_Hardware::loadContext(cl_context_properties dc, cl_context_properties rc)
+cl::Context OCL_Hardware::loadContext()
 {
-
-	cl_context_properties props[] =
-	{
-		CL_GL_CONTEXT_KHR, rc,
-		CL_WGL_HDC_KHR, dc,
-		CL_CONTEXT_PLATFORM, (cl_context_properties)(m_platform)(),
-		0
-	};
-
+	
 
 	cl_int error;
-	m_context = cl::Context(m_device, props, 0, 0, &error);
+	m_context = cl::Context(m_device, 0, 0, 0, &error);
 	errorCheck("context creation", error);
 
 	return m_context;
@@ -143,15 +136,5 @@ OCL_Hardware::OCL_Hardware()
 
 	m_device = loadDevice();
 
-
-#ifdef _WIN32
-	auto hDC = wglGetCurrentDC();
-	auto hRC = wglGetCurrentContext();
-#else
-	auto hDC = glXGetCurrentContext();
-	auto hRC = glXGetCurrentDisplay();
-#endif
-
-
-	m_context = loadContext(reinterpret_cast<cl_context_properties>(hDC), reinterpret_cast<cl_context_properties>(hRC));
+	m_context = loadContext();
 }

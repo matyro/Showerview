@@ -21,12 +21,6 @@
     <Filter Include="Header Files\Camera">
       <UniqueIdentifier>{5fd2e484-9555-496b-acfa-8d49ff71a9d3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\OGLWrapper">
-      <UniqueIdentifier>{ffa4c129-514d-4225-893a-9769e5254d15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\OGLWrapper">
-      <UniqueIdentifier>{5591da81-da01-4e32-9612-4ede074266ac}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shader">
       <UniqueIdentifier>{4fc2611d-50af-4316-882c-653248ac0344}</UniqueIdentifier>
     </Filter>
@@ -35,12 +29,6 @@
     </Filter>
     <Filter Include="Header Files\OCL">
       <UniqueIdentifier>{7637b209-e766-45f7-b5f6-e83a22fe38a2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Interface">
-      <UniqueIdentifier>{727e0536-440b-4152-b781-db1f59d0dfbc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Interface">
-      <UniqueIdentifier>{3df3e278-9943-4e3d-948f-3ecc80542c1e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Renderer">
       <UniqueIdentifier>{3aaa33b1-a459-47c8-95be-745392ed158f}</UniqueIdentifier>
@@ -52,15 +40,6 @@
   <ItemGroup>
     <ClCompile Include="..\src\Raytracer.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\OGL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\OGLWrapper\Shader.cpp">
-      <Filter>Source Files\OGLWrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\OGLWrapper\Texture.cpp">
-      <Filter>Source Files\OGLWrapper</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Helper\CameraControll.cpp">
       <Filter>Source Files\Helper</Filter>
@@ -89,12 +68,6 @@
     <ClCompile Include="..\src\OpenCL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Interface\GLFW_Startup.cpp">
-      <Filter>Source Files\Interface</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Renderer\window_render.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Renderer\file_render.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
@@ -103,18 +76,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\OGL.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\OGLWrapper\Vertex.h">
-      <Filter>Header Files\OGLWrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\OGLWrapper\Shader.h">
-      <Filter>Header Files\OGLWrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\OGLWrapper\Texture.h">
-      <Filter>Header Files\OGLWrapper</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Helper\ErrorLog.h">
       <Filter>Header Files\Helper</Filter>
     </ClInclude>
@@ -153,15 +114,6 @@
     </ClInclude>
     <ClInclude Include="..\src\OpenCL.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Interface\GLFW_Startup.h">
-      <Filter>Header Files\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Callback.h">
-      <Filter>Header Files\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Renderer\window_render.h">
-      <Filter>Header Files\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Renderer\file_render.h">
       <Filter>Header Files\Renderer</Filter>

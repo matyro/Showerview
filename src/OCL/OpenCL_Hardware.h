@@ -32,7 +32,7 @@ private:
 	cl::Device loadDevice(bool gl_device_sharing = false);
 
 
-	cl::Context loadContext(cl_context_properties dc, cl_context_properties rc);
+	cl::Context loadContext();
 
 public:
 

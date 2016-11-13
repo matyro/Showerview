@@ -26,7 +26,7 @@ private:
 public:
 	opencl_file(const int width, const int height);
 
-	void init(cl_GLenum textureFlag, unsigned int textureID, std::vector<Line>& lines);
+	void init(std::vector<Line>& lines);
 
 	void update(std::vector<Line>& lines);
 

@@ -15,7 +15,7 @@ opencl_file::opencl_file(const int width, const int height)
 }
 
 
-void opencl_file::init(cl_GLenum textureFlag, unsigned int textureID, std::vector<Line>& lines)
+void opencl_file::init(std::vector<Line>& lines)
 {
 	m_ocl = std::make_shared<OpenCL>("../Shader/output_kernel.cl");
 	std::cout << "Init Kernel" << std::endl;
