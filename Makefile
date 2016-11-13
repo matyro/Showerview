@@ -7,10 +7,10 @@ TESTDIR = $(SRCDIR)/test
 RAY_EXECUTABLE := Raytrace
 RAY := src
 
-CC = gcc-5
+CC = gcc
 CFLAGS = -Wall -O2 -g -m64
-CXX = g++-5
-CXXFLAGS = -std=c++11 -Wall -O2 -m64 -g 
+CXX = g++
+CXXFLAGS = -std=c++1y -Wall -O2 -m64 -g 
 F77 = gfortran
 FFLAGS = -O2 -g 
 
@@ -18,7 +18,7 @@ CINCLUDE = -I$(SRCDIR)/$(RAY) -I$(SRCDIR)/glm/ -I. -Iquote
 CXXINCLUDE = -I$(SRCDIR)/$(RAY) -I$(SRCDIR)/glm/ -I. -Iquote
 
 LIB_DIR := -L/usr/lib/ 
-LDFLAGS := -lglfw -lGL -lGLU -lGLEW -lOpenCL
+LDFLAGS := -lOpenCL
 
 
 CFILES := c

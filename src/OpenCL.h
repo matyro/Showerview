@@ -8,7 +8,7 @@
 #include "Helper/Line.h"
 
 
-
+#include "OCL/OpenCL_Include.h"
 #include "OCL/OpenCL_Error.h"
 #include "OCL/OpenCL_Hardware.h"
 #include "OCL/OpenCL_Kernel.h"

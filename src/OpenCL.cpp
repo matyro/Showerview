@@ -3,7 +3,7 @@
 #include <vector>
 #include <tuple>
 
-
+#include <memory>
 
 
 #include "OpenCL.h"
@@ -12,12 +12,12 @@
 
 OpenCL::OpenCL(std::string kernel)
 {
-	m_hardware = std::make_unique<OCL_Hardware>();
+	m_hardware = std::unique_ptr<OCL_Hardware>(new OCL_Hardware());
 
-	m_program = std::make_unique<OCL_Program>( kernel.c_str() );
+	m_program = std::unique_ptr<OCL_Program>( new OCL_Program(kernel.c_str()) );
 	m_program->load(m_hardware->getDevice(), m_hardware->getContext());
 
-	m_queue = std::make_unique<OCL_Queue>(m_hardware->getContext(), m_hardware->getDevice());
+	m_queue = std::unique_ptr<OCL_Queue>(new OCL_Queue(m_hardware->getContext(), m_hardware->getDevice()));
 }
 
 

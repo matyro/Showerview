@@ -15,7 +15,7 @@ typedef unsigned short WORD;
 
 // __attribute__((packed)) on non-Intel arch may cause some unexpected error, plz be informed.
 
-typedef struct tagBITMAPFILEHEADER
+typedef struct BITMAPFILEHEADER
 {
 	WORD    bfType; // 2  /* Magic identifier */
 	DWORD   bfSize; // 4  /* File size in bytes */
@@ -24,14 +24,14 @@ typedef struct tagBITMAPFILEHEADER
 	DWORD   bfOffBits; // 4 /* Offset to image data, bytes */ 
 } __attribute__((packed)) BITMAPFILEHEADER;
 
-typedef struct tagBITMAPINFOHEADER
+typedef struct BITMAPINFOHEADER
 {
 	DWORD    biSize; // 4 /* Header size in bytes */
 	LONG     biWidth; // 4 /* Width of image */
 	LONG     biHeight; // 4 /* Height of image */
 	WORD     biPlanes; // 2 /* Number of colour planes */
 	WORD     biBitCount; // 2 /* Bits per pixel */
-	DWORD    biCompress; // 4 /* Compression type */
+	DWORD    biCompression; // 4 /* Compression type */
 	DWORD    biSizeImage; // 4 /* Image size in bytes */
 	LONG     biXPelsPerMeter; // 4
 	LONG     biYPelsPerMeter; // 4 /* Pixels per meter */
@@ -146,7 +146,7 @@ void opencl_file::writeBitmap(std::string filename)
 	bmpInfoHeader.biSize = sizeof(BITMAPINFOHEADER);
 	bmpInfoHeader.biBitCount = 24;
 
-	bmpInfoHeader.biCompression = BI_RGB;
+	bmpInfoHeader.biCompression = 0L; //BI_RGB;
 
 	bmpInfoHeader.biHeight = m_width;
 	bmpInfoHeader.biWidth = m_height;
