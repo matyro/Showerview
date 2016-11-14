@@ -41,7 +41,7 @@ namespace helper
 		f.close();		
 	}
 
-	void TreeLoad::reload(float p_time, double scale)
+	void TreeLoad::reload(float p_time, double scaleX, double scaleY, double scaleZ)
 	{
 		m_tree.clear();
 
@@ -74,26 +74,26 @@ namespace helper
 
 
 
-				start = { static_cast<float>(m_fileContent[i + 7] * scale),
-					static_cast<float>(m_fileContent[i + 5] * scale),
-					static_cast<float>(m_fileContent[i + 8] * scale),
+				start = { static_cast<float>(m_fileContent[i + 7] * scaleX),
+					static_cast<float>(m_fileContent[i + 5] * scaleY),
+					static_cast<float>(m_fileContent[i + 8] * scaleZ),
 					0.0f };
 
-				end = { static_cast<float>((m_fileContent[i + 7] + dx*x) * scale),
-					static_cast<float>((m_fileContent[i + 5] + dh*x) * scale),
-					static_cast<float>((m_fileContent[i + 8] + dy*x) * scale),
+				end = { static_cast<float>((m_fileContent[i + 7] + dx*x) * scaleX),
+					static_cast<float>((m_fileContent[i + 5] + dh*x) * scaleY),
+					static_cast<float>((m_fileContent[i + 8] + dy*x) * scaleZ),
 					0.0f };
 			}
 			else
 			{
-				start = { static_cast<float>(m_fileContent[i + 7] * scale),
-						static_cast<float>(m_fileContent[i + 5] * scale),
-						static_cast<float>(m_fileContent[i + 8] * scale),
+				start = { static_cast<float>(m_fileContent[i + 7] * scaleX),
+						static_cast<float>(m_fileContent[i + 5] * scaleY),
+						static_cast<float>(m_fileContent[i + 8] * scaleZ),
 						0.0f };
 
-				end = { static_cast<float>(m_fileContent[i + 7 + 17] * scale),
-						static_cast<float>(m_fileContent[i + 5 + 17] * scale),
-						static_cast<float>(m_fileContent[i + 8 + 17] * scale),
+				end = { static_cast<float>(m_fileContent[i + 7 + 17] * scaleX),
+						static_cast<float>(m_fileContent[i + 5 + 17] * scaleY),
+						static_cast<float>(m_fileContent[i + 8 + 17] * scaleZ),
 						0.0f };
 			}
 

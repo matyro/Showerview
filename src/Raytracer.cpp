@@ -43,18 +43,14 @@ int main(int argc, char *argv[])
 	
 	SCamControll().setCamera(cam);	
 
-	cam->moveCam(-10000.0, 0.0, -0.9);
-		
-
 	helper::TreeLoad tree(argv[1]);
-	tree.reload(1.0001, 1.0 / 1000000.0);
+
+	double scale = 1.0 / 10000.0;
+
+	tree.reload(1.0001, 0.5*scale, 0.31 * scale, 0.5*scale);
 
 	LineSet lines = tree.getTree();
-
-	//LineSet lines;
-
-	//lines.addLine({ 0.0, 30.0, 0.0, 1.0 }, { 0.0, -30.0, 0.0, 1.0 }, { 1.0, 0.0, 0.0, 0.5 });
-
+	
 		
 	std::cout << "Init OCL: " << lines.size() << std::endl;
 	opencl_file render(width, height);
@@ -83,7 +79,7 @@ int main(int argc, char *argv[])
 		double y = 10000 * cos(phi);
 
 		
-		cam->setPosition(x, 0.8, y);
+		cam->setPosition(x, 96.0, y);
 
 		cam->setViewDir(0.0, -phi);
 
@@ -94,7 +90,7 @@ int main(int argc, char *argv[])
 		SCamControll().setTime( time_sinceStart.count() );
 		SCamControll().update();
 
-		
+		std::cout << "Elapsed time: " << time_sinceStart.count();
 
 		render.draw(lines.size(), cam->getViewMatrix(), cam->getProjectionMatrix());
 		
@@ -106,7 +102,7 @@ int main(int argc, char *argv[])
 		render.update(lines.vec());
 
 		std::cout << "Frame: " << counter << std::endl;
-		if (counter > 359)
+		if (counter > 0)
 			break;
 		//break;
 		///std::cin.get();
@@ -115,8 +111,7 @@ int main(int argc, char *argv[])
 	//Terminate everything
 
 	std::cout << "Press enter to terminate" << std::endl;
-	std::cin.get();
-	std::cin.get();
+	std::cin.get();	
 
 	return 0;
 }

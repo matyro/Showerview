@@ -29,7 +29,7 @@ namespace helper
 
 		TreeLoad(std::string file);
 
-		void reload(float p_time = std::numeric_limits<float>::max(), double scale = 1.0);
+		void reload(float p_time, double scaleX, double scaleY, double scaleZ);
 
 
 		inline LineSet& getTree() { return m_tree; }

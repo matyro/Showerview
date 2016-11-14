@@ -8,8 +8,8 @@
 #define BATCH_PRIMITIVE_COUNT 256
 #define BIN_SIZE 32
 
-#define smoothEdge  0.004f
-#define thickness  0.002f
+#define smoothEdge  0.08f
+#define thickness  0.01f
 
 //cam: m_vec3CamPos, m_vec3TopLeft, m_vec3Right, m_vec3Down
 //Line3D: start, end, color, none
@@ -18,9 +18,12 @@ __kernel void writeTexture(__global float* image, __global float16* lineIn, unsi
 	const int2 coordi = (int2)(get_global_id(0), get_global_id(1));
 	const int2 sizei = (int2)(get_global_size(0), get_global_size(1));
 
-	
+	const float2 coordf = convert_float2(coordi);
+	const float2 sizef = convert_float2(sizei);
 
-	const float2 coordf = (convert_float2(coordi) - (convert_float2(sizei) / 2.0f)) / (convert_float2(sizei) / 2.0);	
+	const float2 pixel = (float2)( (2.0*(coordf.x / sizef.x)) - 1.0, (2.0*(coordf.y / sizef.y)) - 1.0);
+
+	//const float2 coordf = (convert_float2(coordi) - (convert_float2(sizei) / 2.0f)) / (convert_float2(sizei) / 2.0);	
 	
 	float4 color = (float4)(1.0, 1.0, 1.0, 0.0);
 
@@ -39,7 +42,7 @@ __kernel void writeTexture(__global float* image, __global float16* lineIn, unsi
 		//float dist = originvec_vec_distance(rayDir, lineIn[i].s0123, lineIn[i].s4567 - lineIn[i].s0123);		// Perspective
 
 
-		float4 pixelPos = (float4)(coordf.x, coordf.y, 0.0, 0.0);
+		float4 pixelPos = (float4)(pixel.x * 100.0, pixel.y * 100.0, 0.0, 0.0);
 		float4 viewDir = (float4)(0.0, 0.0, -1.0, 0.0);
 		float dist = vec_vec_distance(pixelPos, viewDir, lineIn[i].s0123, lineIn[i].s4567 - lineIn[i].s0123);			// Orthogonal
 

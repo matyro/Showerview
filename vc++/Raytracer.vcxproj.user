@@ -4,11 +4,11 @@
     <LocalDebuggerEnvironment>PATH=$(VCRedistPaths)%PATH%</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\build\</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerCommandArguments>showerview_gamma_10TeV.dat</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>showerview_fe_10TeV.dat</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\build\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>showerview_gamma_10TeV.dat</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>showerview_fe_10TeV.dat</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>
